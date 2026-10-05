@@ -390,7 +390,6 @@
 
     <!-- 4. VIEW: ADMIN OVERVIEW & MACROECONOMIC ERA -->
     <main id="view-admin" class="hidden flex-1 p-4 max-w-7xl mx-auto w-full space-y-5">
-      <!-- Macro Era & Market Trend Overview -->
       <div class="bg-gradient-to-r from-slate-900 to-indigo-950/60 border border-indigo-900/60 rounded-3xl p-6 shadow-xl space-y-4">
         <div class="flex justify-between items-start flex-wrap gap-3">
           <div>
@@ -400,14 +399,12 @@
             </div>
             <p id="admin-era-years" class="text-xs text-indigo-300 font-semibold mt-1">ช่วงเวลาประวัติศาสตร์: ---</p>
           </div>
-          <!-- Time Duration Comparison Card -->
           <div class="bg-slate-900/90 border border-slate-700/80 px-4 py-2.5 rounded-2xl text-right font-mono text-xs space-y-1">
             <div class="text-slate-400">เวลาจริงที่เปิดระบบ: <b id="real-elapsed-time" class="text-emerald-400">00:00:00</b></div>
             <div class="text-slate-400">เวลาจำลองในระบบ: <b id="sim-elapsed-time" class="text-indigo-300">ปีที่ 1 สัปดาห์ที่ 1</b></div>
           </div>
         </div>
 
-        <!-- News Flash Summary -->
         <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl">
           <div class="flex items-center gap-2 text-amber-400 font-bold text-xs mb-1">
             <i data-lucide="newspaper" class="w-4 h-4"></i> ข่าวสรุปสั้น & ปัจจัยชี้นำตลาดรอบนี้ (Catalyst Flash):
@@ -415,9 +412,7 @@
           <p id="admin-era-news" class="text-xs text-slate-300 leading-relaxed"></p>
         </div>
 
-        <!-- Asset Trends Breakdown (Bullish vs Bearish) -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-          <!-- Bullish -->
           <div class="bg-emerald-950/30 border border-emerald-900/50 p-4 rounded-2xl">
             <h3 class="text-xs font-bold text-emerald-400 flex items-center gap-1.5 mb-2.5">
               <i data-lucide="trending-up" class="w-4 h-4"></i> สินทรัพย์แนวโน้มขาขึ้น (Bullish Bias 🟢)
@@ -425,7 +420,6 @@
             <div id="admin-bullish-list" class="space-y-1.5 text-xs font-mono"></div>
           </div>
 
-          <!-- Bearish -->
           <div class="bg-rose-950/30 border border-rose-900/50 p-4 rounded-2xl">
             <h3 class="text-xs font-bold text-rose-400 flex items-center gap-1.5 mb-2.5">
               <i data-lucide="trending-down" class="w-4 h-4"></i> สินทรัพย์แนวโน้มขาลง / เสี่ยงสูง (Bearish Bias 🔴)
@@ -435,7 +429,6 @@
         </div>
       </div>
 
-      <!-- Members Summary Table -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
         <h3 class="text-sm font-bold text-indigo-400 mb-3 flex items-center gap-2">
           <i data-lucide="users" class="w-4 h-4"></i> สรุปสมาชิกในระบบ (ไม่รวม Admin)
@@ -512,7 +505,7 @@
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzIesDWStmrzxzBlNefVftd1PRtKL3GIgfVYb4V_7zOKfGNujCwp_p-DjgVO5ZIYGy/exec";
 
     const USD_RATE = 35.0;
-    const TICK_INTERVAL_MS = 8500; // 8.5s ต่อการคำนวณราคา (60s ≈ 1 สัปดาห์)
+    const TICK_INTERVAL_MS = 8500;
     let currentCurrency = 'THB';
     let currentAuthTab = 'login';
     let currentUser = null;
@@ -525,7 +518,6 @@
     let nextTickTimestamp = 0;
     let realTimeElapsedSeconds = 0;
 
-    // Macroeconomic Eras Database
     const MACRO_ERAS = [
       {
         id: "dotcom_asia",
@@ -641,12 +633,26 @@
     }
     function saveUsers(u) { localStorage.setItem('fsgs_users', JSON.stringify(u)); }
 
+    // ฟังก์ชัน loadAssets พร้อมระบบ Auto-Repair ตรวจสอบความถูกต้องของ candles
     function loadAssets() {
       try {
         const stored = localStorage.getItem('fsgs_assets');
-        return stored ? JSON.parse(stored) : generate20Assets();
+        if (!stored) return generate20Assets();
+        const parsed = JSON.parse(stored);
+        if (!parsed || typeof parsed !== 'object') return generate20Assets();
+
+        const keys = Object.keys(parsed);
+        // หากไม่มีข้อมูล หรือมีไม่ครบ 20 ตัว หรือข้อมูลเดิมไม่มี candles ให้สร้างใหม่ทันที
+        if (keys.length < 20 || !parsed[keys[0]].candles || !Array.isArray(parsed[keys[0]].candles)) {
+          const fresh = generate20Assets();
+          saveAssets(fresh);
+          return fresh;
+        }
+        return parsed;
       } catch(e) {
-        return generate20Assets();
+        const fresh = generate20Assets();
+        saveAssets(fresh);
+        return fresh;
       }
     }
     function saveAssets(a) { localStorage.setItem('fsgs_assets', JSON.stringify(a)); }
@@ -781,6 +787,8 @@
       document.getElementById('role-badge').innerText = isAdmin ? "ผู้ดูแลระบบ (Admin)" : "สมาชิกทั่วไป";
       document.getElementById('user-display-name').innerText = currentUser.username;
 
+      // ตรวจสอบและรีเฟรช assets ให้พร้อม
+      assets = loadAssets();
       const syms = Object.keys(assets);
       activeSymbol = syms[0];
 
@@ -795,7 +803,6 @@
         try { lucide.createIcons(); } catch(e){}
       }
 
-      // เริ่มจับเวลาจริง
       startRealTimeClock();
 
       if (isAdmin && !simInterval) {
@@ -841,11 +848,19 @@
       const container = document.getElementById('watchlist-list');
       if (!container) return;
       container.innerHTML = '';
-      Object.values(assets).forEach(a => {
+      
+      const assetList = Object.values(assets);
+      if (assetList.length === 0) {
+        container.innerHTML = '<div class="p-4 text-center text-slate-500 text-xs">กำลังสร้างข้อมูลสินทรัพย์...</div>';
+        return;
+      }
+
+      assetList.forEach(a => {
         if (currentFilter !== 'all' && a.type !== currentFilter) return;
-        const lastCandle = a.candles[a.candles.length - 1];
-        const prevCandle = a.candles[a.candles.length - 2] || lastCandle;
-        const change = ((lastCandle.c - prevCandle.c) / prevCandle.c) * 100;
+        const candles = a.candles || [];
+        const lastCandle = candles[candles.length - 1] || { c: a.priceUSD, o: a.priceUSD };
+        const prevCandle = candles[candles.length - 2] || lastCandle;
+        const change = prevCandle.c > 0 ? ((lastCandle.c - prevCandle.c) / prevCandle.c) * 100 : 0;
         const isUp = change >= 0;
 
         const div = document.createElement('div');
@@ -886,15 +901,17 @@
       activeSymbol = sym;
       const a = assets[sym];
       if (!a) return;
+
       document.getElementById('active-sym').innerText = a.sym;
       document.getElementById('active-name').innerText = a.name;
       document.getElementById('active-sector').innerText = `หมวดหมู่: ${a.sec} | ${a.type === 'stock' ? 'หุ้นจำลอง' : 'คริปโตจำลอง'}`;
       document.getElementById('active-risk-badge').innerHTML = getRiskBadge(a.r);
       document.getElementById('active-div-rate').innerText = a.d > 0 ? `💰 ผลตอบแทนปันผล/ปี: ${(a.d * 100).toFixed(1)}%` : 'ไม่มีนโยบายปันผล';
 
-      const lastCandle = a.candles[a.candles.length - 1];
-      const prevCandle = a.candles[a.candles.length - 2] || lastCandle;
-      const change = ((lastCandle.c - prevCandle.c) / prevCandle.c) * 100;
+      const candles = a.candles || [];
+      const lastCandle = candles[candles.length - 1] || { c: a.priceUSD, o: a.priceUSD };
+      const prevCandle = candles[candles.length - 2] || lastCandle;
+      const change = prevCandle.c > 0 ? ((lastCandle.c - prevCandle.c) / prevCandle.c) * 100 : 0;
       const isUp = change >= 0;
       const priceText = formatMoney(lastCandle.c * (currentCurrency === 'USD' ? 1 : USD_RATE));
 
@@ -908,17 +925,15 @@
       renderWatchlist();
     }
 
-    /* =========================================================================
-       HTML5 Canvas Candlestick Chart Renderer (เขียว / แดง ชัดเจน)
-       ========================================================================= */
     function drawCandlestickChart(asset) {
       const canvas = document.getElementById('candleCanvas');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
 
-      // ปรับความคมชัด Retina/HiDPI
       const dpr = window.devicePixelRatio || 1;
       const rect = canvas.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+
       canvas.width = rect.width * dpr;
       canvas.height = rect.height * dpr;
       ctx.scale(dpr, dpr);
@@ -971,20 +986,19 @@
         ctx.strokeStyle = color;
         ctx.fillStyle = color;
 
-        // ไส้เทียน (Wick)
+        // ไส้เทียน
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.moveTo(x + candleWidth / 2, highY);
         ctx.lineTo(x + candleWidth / 2, lowY);
         ctx.stroke();
 
-        // ตัวเทียน (Candle Body)
+        // ตัวเทียน
         const top = Math.min(openY, closeY);
         const bodyHeight = Math.max(2, Math.abs(closeY - openY));
         ctx.fillRect(x, top, candleWidth, bodyHeight);
       });
 
-      // อัปเดตข้อมูลกล่อง Inspector
       const last = candles[candles.length - 1];
       document.getElementById('ins-open').innerText = formatMoney(last.o * mult);
       document.getElementById('ins-high').innerText = formatMoney(last.h * mult);
@@ -1012,7 +1026,8 @@
     function calcOrderTotal() {
       const a = assets[activeSymbol];
       if (!a) return;
-      const lastPrice = a.candles[a.candles.length - 1].c;
+      const candles = a.candles || [{ c: a.priceUSD }];
+      const lastPrice = candles[candles.length - 1].c;
       const qty = parseFloat(document.getElementById('input-qty').value) || 0;
       document.getElementById('order-total-price').innerText = formatMoney(qty * lastPrice * USD_RATE);
 
@@ -1031,7 +1046,8 @@
       const qty = parseFloat(document.getElementById('input-qty').value);
       if (!qty || qty <= 0) { alert("กรุณาระบุจำนวนให้ถูกต้อง"); return; }
 
-      const lastPrice = a.candles[a.candles.length - 1].c;
+      const candles = a.candles || [{ c: a.priceUSD }];
+      const lastPrice = candles[candles.length - 1].c;
       const totalCostTHB = qty * lastPrice * USD_RATE;
 
       if (currentSide === 'buy') {
@@ -1083,7 +1099,6 @@
       document.getElementById('user-balance-display').innerText = formatMoney(currentUser.balanceTHB);
     }
 
-    /* Holdings Tab (#2) */
     function renderHoldings() {
       const tbody = document.getElementById('holdings-rows');
       if (!tbody) return;
@@ -1100,7 +1115,8 @@
       hEntries.forEach(([sym, h]) => {
         const a = assets[sym];
         if (!a) return;
-        const curPriceTHB = a.candles[a.candles.length - 1].c * USD_RATE;
+        const candles = a.candles || [{ c: a.priceUSD }];
+        const curPriceTHB = candles[candles.length - 1].c * USD_RATE;
         const curValTHB = h.qty * curPriceTHB;
         totalPortfolioValTHB += curValTHB;
         const pnlTHB = curValTHB - (h.qty * h.costTHB);
@@ -1135,9 +1151,6 @@
       submitTradeOrder();
     }
 
-    /* =========================================================================
-       Simulation Engine & LED State Controller
-       ========================================================================= */
     function setLedStatus(state) {
       const led = document.getElementById('status-led');
       const text = document.getElementById('status-text');
@@ -1147,7 +1160,6 @@
         led.className = "w-3 h-3 rounded-full bg-emerald-500 inline-block animate-ping shadow-[0_0_8px_#10b981]";
         text.innerText = "กำลังจำลองราคา";
         text.className = "text-[11px] font-bold text-emerald-400";
-        // ปุ่มเริ่มเปลี่ยนเป็นสีเทาและกดไม่ได้
         btnStart.className = "bg-slate-700 text-slate-400 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 cursor-not-allowed";
         btnStart.disabled = true;
       } else if (state === 'paused') {
@@ -1170,7 +1182,6 @@
       setLedStatus('running');
       nextTickTimestamp = Date.now() + TICK_INTERVAL_MS;
 
-      // เริ่มการนับถอยหลังตัวเลข
       startCountdownTimer();
 
       simInterval = setInterval(() => {
@@ -1201,7 +1212,6 @@
       simWeek++;
       localStorage.setItem('fsgs_sim_week', simWeek.toString());
 
-      // คำนวณราคา Candlestick ใหม่ตาม Macro Regime
       Object.values(assets).forEach(a => {
         const last = a.candles[a.candles.length - 1];
         const openPrice = last.c;
@@ -1242,7 +1252,6 @@
       updateSimTimeDisplay();
     }
 
-    /* Live Real Time & Sim Time Tracker */
     function startRealTimeClock() {
       if (realTimeTimer) clearInterval(realTimeTimer);
       realTimeTimer = setInterval(() => {
@@ -1262,7 +1271,6 @@
       if (el) el.innerText = `ปีที่ ${year} สัปดาห์ที่ ${weekInYear} (รวม ${simWeek} สัปดาห์)`;
     }
 
-    /* Admin Macro Era & Trend Analysis Renderer */
     function renderAdminEraInfo() {
       document.getElementById('admin-era-title').innerText = currentEra.title;
       document.getElementById('admin-era-years').innerText = `ช่วงเวลาประวัติศาสตร์: ${currentEra.years}`;
@@ -1313,7 +1321,6 @@
       adminPauseSim();
       setLedStatus('stopped');
 
-      // ขายคืนเป็นเงินสดให้ผู้เล่นทุกคน
       Object.keys(users).forEach(u => {
         const usr = users[u];
         Object.entries(usr.holdings || {}).forEach(([sym, h]) => {
@@ -1322,7 +1329,6 @@
         usr.holdings = {};
       });
 
-      // สุ่ม Macro Era และสินทรัพย์ใหม่
       const randomIndex = Math.floor(Math.random() * MACRO_ERAS.length);
       currentEra = MACRO_ERAS[randomIndex];
       saveCurrentEra(currentEra);
@@ -1433,7 +1439,6 @@
       document.getElementById('dash-unrealized').className = `text-2xl font-bold font-mono mt-1 ${unrealized >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
       document.getElementById('dash-dividend').innerText = formatMoney(totalDiv);
 
-      // Dividend Rows
       const divBody = document.getElementById('dividend-rows');
       if (divBody) {
         divBody.innerHTML = '';
@@ -1456,7 +1461,6 @@
         }
       }
 
-      // Game Sessions History
       const gameHistoryBody = document.getElementById('game-history-rows');
       if (gameHistoryBody) {
         gameHistoryBody.innerHTML = '';
@@ -1480,7 +1484,6 @@
         }
       }
 
-      // Trade Orders History
       const hBody = document.getElementById('trade-history-rows');
       if (hBody) {
         hBody.innerHTML = '';
@@ -1503,7 +1506,6 @@
         }
       }
 
-      // Admin Members Overview Table
       const adminBody = document.getElementById('admin-members-rows');
       if (adminBody) {
         adminBody.innerHTML = '';
