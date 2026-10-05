@@ -4,8 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Family Stock Game Simulation (FSGS)</title>
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&family=Sarabun:wght@400;500;600;700&display=swap');
@@ -19,7 +22,7 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between custom-scroll">
 
-  <!-- ================= AUTH VIEW ================= -->
+  <!-- ================= AUTH VIEW (LOGIN / REGISTER) ================= -->
   <div id="auth-screen" class="min-h-screen flex items-center justify-center p-4 bg-slate-950">
     <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
       <div class="text-center space-y-2">
@@ -32,24 +35,24 @@
 
       <!-- Auth Switcher -->
       <div class="flex border-b border-slate-800 text-sm font-semibold">
-        <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 pb-2 border-b-2 border-emerald-500 text-emerald-400">เข้าสู่ระบบ</button>
-        <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-white">ลงทะเบียนใหม่</button>
+        <button type="button" id="tab-login" onclick="switchAuthTab('login')" class="flex-1 pb-2 border-b-2 border-emerald-500 text-emerald-400">เข้าสู่ระบบ</button>
+        <button type="button" id="tab-register" onclick="switchAuthTab('register')" class="flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-white">ลงทะเบียนใหม่</button>
       </div>
 
       <div id="auth-alert" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
 
-      <!-- Input Form -->
+      <!-- Form Inputs -->
       <div class="space-y-4">
         <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">ชื่อผู้ใช้งาน (Username / บัญชี)</label>
-          <input type="text" id="auth-username" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-base text-white focus:outline-none focus:border-emerald-500" />
+          <label class="block text-xs font-medium text-slate-300 mb-1">ชื่อผู้ใช้งาน (Username)</label>
+          <input type="text" id="auth-username" autocomplete="off" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-base text-white focus:outline-none focus:border-emerald-500" />
         </div>
         <div>
           <label class="block text-xs font-medium text-slate-300 mb-1">รหัสผ่าน (Password)</label>
           <input type="password" id="auth-password" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-base text-white focus:outline-none focus:border-emerald-500" />
         </div>
 
-        <button type="button" onclick="handleAuthSubmit()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-600/30 transition text-base">
+        <button type="button" id="auth-btn" onclick="handleAuthSubmit()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-600/30 transition text-base">
           <span id="auth-btn-label">เข้าสู่ระบบ</span>
         </button>
       </div>
@@ -81,29 +84,34 @@
         </div>
       </div>
 
-      <!-- Controls: Text Scaling & Currency & Logout -->
+      <!-- Controls -->
       <div class="flex items-center gap-3 flex-wrap">
         <!-- Font Size Adjuster for 50+ -->
         <div class="flex items-center bg-slate-800 p-1 rounded-xl gap-1 text-xs">
-          <span class="text-slate-400 px-1 font-semibold">ขนาดตัวอักษร:</span>
-          <button onclick="changeFontSize('normal')" id="fs-normal" class="px-2 py-1 bg-slate-700 text-white rounded font-bold">ปกติ</button>
-          <button onclick="changeFontSize('large')" id="fs-large" class="px-2 py-1 text-slate-300 hover:text-white rounded font-bold">ใหญ่ (A+)</button>
-          <button onclick="changeFontSize('xl')" id="fs-xl" class="px-2 py-1 text-slate-300 hover:text-white rounded font-bold">ใหญ่พิเศษ (A++)</button>
+          <span class="text-slate-400 px-1 font-semibold">ขนาดอักษร:</span>
+          <button type="button" onclick="changeFontSize('normal')" id="fs-normal" class="px-2 py-1 bg-slate-700 text-white rounded font-bold">ปกติ</button>
+          <button type="button" onclick="changeFontSize('large')" id="fs-large" class="px-2 py-1 text-slate-300 hover:text-white rounded font-bold">ใหญ่ (A+)</button>
+          <button type="button" onclick="changeFontSize('xl')" id="fs-xl" class="px-2 py-1 text-slate-300 hover:text-white rounded font-bold">ใหญ่พิเศษ (A++)</button>
         </div>
 
-        <!-- Currency -->
+        <!-- Currency Switcher -->
         <div class="flex bg-slate-800 p-1 rounded-xl text-xs font-bold">
-          <button id="curr-thb" onclick="setCurrency('THB')" class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white">฿ THB</button>
-          <button id="curr-usd" onclick="setCurrency('USD')" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white">$ USD</button>
+          <button type="button" id="curr-thb" onclick="setCurrency('THB')" class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white">฿ THB</button>
+          <button type="button" id="curr-usd" onclick="setCurrency('USD')" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white">$ USD</button>
         </div>
 
-        <!-- User Balance -->
+        <!-- Drive Sync Button -->
+        <button type="button" onclick="syncStatsToGoogleDrive(true)" title="ซิงค์ข้อมูลสถิติเข้า Google Drive" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow transition">
+          <i data-lucide="cloud-upload" class="w-4 h-4"></i> ซิงค์ Drive
+        </button>
+
+        <!-- Balance -->
         <div class="bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700/60 text-right">
           <div id="user-display-name" class="text-xs text-slate-300 font-medium">---</div>
           <div id="user-balance-display" class="text-sm font-bold text-emerald-400 font-mono">฿0</div>
         </div>
 
-        <button onclick="handleLogout()" title="ออกจากระบบ" class="p-2 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 rounded-xl transition">
+        <button type="button" onclick="handleLogout()" title="ออกจากระบบ" class="p-2 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 rounded-xl transition">
           <i data-lucide="log-out" class="w-5 h-5"></i>
         </button>
       </div>
@@ -116,13 +124,13 @@
         <span class="text-slate-300">อัตราเวลา: 60 วินาที = 1 สัปดาห์</span>
       </div>
       <div class="flex items-center gap-2">
-        <button onclick="adminStartSim()" id="btn-start" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1">
+        <button type="button" onclick="adminStartSim()" id="btn-start" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1">
           <i data-lucide="play" class="w-4 h-4"></i> เริ่มจำลองราคา
         </button>
-        <button onclick="adminPauseSim()" id="btn-pause" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1">
+        <button type="button" onclick="adminPauseSim()" id="btn-pause" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1">
           <i data-lucide="pause" class="w-4 h-4"></i> พักจำลอง
         </button>
-        <button onclick="openResetModal()" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1">
+        <button type="button" onclick="openResetModal()" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1">
           <i data-lucide="rotate-ccw" class="w-4 h-4"></i> รีเซ็ตและสุ่มใหม่
         </button>
       </div>
@@ -130,32 +138,30 @@
 
     <!-- Navigation Tabs -->
     <div class="bg-slate-900 border-b border-slate-800 px-4 flex gap-6 text-sm font-bold">
-      <button onclick="switchTab('trade')" id="tab-btn-trade" class="py-3 border-b-2 border-emerald-500 text-emerald-400">กระดานเทรดจำลอง</button>
-      <button onclick="switchTab('dashboard')" id="tab-btn-dash" class="py-3 border-b-2 border-transparent text-slate-400 hover:text-white">แดชบอร์ดสมาชิก & สรุปปันผล</button>
-      <button onclick="switchTab('admin-view')" id="tab-btn-admin" class="hidden py-3 border-b-2 border-transparent text-indigo-400 hover:text-white">ภาพรวมระบบ (Admin)</button>
+      <button type="button" onclick="switchTab('trade')" id="tab-btn-trade" class="py-3 border-b-2 border-emerald-500 text-emerald-400">กระดานเทรดจำลอง</button>
+      <button type="button" onclick="switchTab('dashboard')" id="tab-btn-dash" class="py-3 border-b-2 border-transparent text-slate-400 hover:text-white">แดชบอร์ดสมาชิก & สรุปปันผล</button>
+      <button type="button" onclick="switchTab('admin-view')" id="tab-btn-admin" class="hidden py-3 border-b-2 border-transparent text-indigo-400 hover:text-white">ภาพรวมระบบ (Admin)</button>
     </div>
 
-    <!-- Toast Notification Container for Dividends -->
+    <!-- Toast Notifications Container -->
     <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
 
     <!-- 1. VIEW: TRADE -->
     <main id="view-trade" class="flex-1 p-4 grid grid-cols-1 lg:grid-cols-4 gap-4">
-      <!-- Watchlist (1 Col) -->
+      <!-- Watchlist -->
       <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col h-[740px]">
         <div class="flex items-center justify-between pb-3 border-b border-slate-800">
           <span class="font-bold text-sm text-slate-200">สินทรัพย์ 20 ตัว</span>
           <div class="flex gap-1 text-xs">
-            <button onclick="filterWatchlist('all')" id="flt-all" class="px-2.5 py-1 rounded-lg bg-slate-800 text-white font-semibold">ทั้งหมด</button>
-            <button onclick="filterWatchlist('stock')" id="flt-stock" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-semibold">หุ้น (10)</button>
-            <button onclick="filterWatchlist('crypto')" id="flt-crypto" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-semibold">คริปโต (10)</button>
+            <button type="button" onclick="filterWatchlist('all')" id="flt-all" class="px-2.5 py-1 rounded-lg bg-slate-800 text-white font-semibold">ทั้งหมด</button>
+            <button type="button" onclick="filterWatchlist('stock')" id="flt-stock" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-semibold">หุ้น (10)</button>
+            <button type="button" onclick="filterWatchlist('crypto')" id="flt-crypto" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-semibold">คริปโต (10)</button>
           </div>
         </div>
-        <div id="watchlist-list" class="flex-1 overflow-y-auto divide-y divide-slate-800/80 custom-scroll pr-1 mt-2">
-          <!-- Dynamically generated items -->
-        </div>
+        <div id="watchlist-list" class="flex-1 overflow-y-auto divide-y divide-slate-800/80 custom-scroll pr-1 mt-2"></div>
       </section>
 
-      <!-- Center: Chart & Positions (2 Cols) -->
+      <!-- Center: Chart & Positions -->
       <section class="lg:col-span-2 flex flex-col gap-4">
         <!-- Asset Header -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-wrap items-center justify-between gap-4">
@@ -172,7 +178,7 @@
               <div id="active-price" class="text-3xl font-bold font-mono text-emerald-400">฿0.00</div>
               <div id="active-change" class="text-xs font-mono text-emerald-500 font-semibold">+0.00%</div>
             </div>
-            <button onclick="openDescModal()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
+            <button type="button" onclick="openDescModal()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
               <i data-lucide="info" class="w-4 h-4 text-emerald-400"></i> คำบรรยายหุ้น
             </button>
           </div>
@@ -204,20 +210,18 @@
                   <th class="p-2.5 text-right">ดำเนินการ</th>
                 </tr>
               </thead>
-              <tbody id="holdings-rows" class="divide-y divide-slate-800">
-                <!-- Holdings rows -->
-              </tbody>
+              <tbody id="holdings-rows" class="divide-y divide-slate-800"></tbody>
             </table>
           </div>
         </div>
       </section>
 
-      <!-- Right: Senior-Friendly Trading Panel (1 Col) -->
+      <!-- Right: Trading Panel -->
       <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
         <div class="space-y-4">
           <div class="flex border-b border-slate-800 pb-2">
-            <button id="btn-side-buy" onclick="setSide('buy')" class="flex-1 py-2 rounded-xl bg-emerald-600 text-white font-bold text-sm">ซื้อ (Buy)</button>
-            <button id="btn-side-sell" onclick="setSide('sell')" class="flex-1 py-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white font-bold text-sm ml-2">ขาย (Sell)</button>
+            <button type="button" id="btn-side-buy" onclick="setSide('buy')" class="flex-1 py-2 rounded-xl bg-emerald-600 text-white font-bold text-sm">ซื้อ (Buy)</button>
+            <button type="button" id="btn-side-sell" onclick="setSide('sell')" class="flex-1 py-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white font-bold text-sm ml-2">ขาย (Sell)</button>
           </div>
 
           <div>
@@ -228,12 +232,12 @@
             <input type="number" id="input-qty" oninput="calcOrderTotal()" step="any" min="0.001" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-3 text-lg font-bold text-white font-mono" />
           </div>
 
-          <!-- Stepper Buttons for 50+ Users -->
+          <!-- Stepper Buttons for 50+ -->
           <div class="grid grid-cols-4 gap-2">
-            <button onclick="stepQty(-10)" class="bg-slate-800 hover:bg-slate-700 py-2 rounded-lg text-xs font-bold text-slate-300">-10</button>
-            <button onclick="stepQty(-1)" class="bg-slate-800 hover:bg-slate-700 py-2 rounded-lg text-xs font-bold text-slate-300">-1</button>
-            <button onclick="stepQty(1)" class="bg-slate-800 hover:bg-slate-700 py-2 rounded-lg text-xs font-bold text-slate-300">+1</button>
-            <button onclick="stepQty(10)" class="bg-slate-800 hover:bg-slate-700 py-2 rounded-lg text-xs font-bold text-slate-300">+10</button>
+            <button type="button" onclick="stepQty(-10)" class="bg-slate-800 hover:bg-slate-700 py-2 rounded-lg text-xs font-bold text-slate-300">-10</button>
+            <button type="button" onclick="stepQty(-1)" class="bg-slate-800 hover:bg-slate-700 py-2 rounded-lg text-xs font-bold text-slate-300">-1</button>
+            <button type="button" onclick="stepQty(1)" class="bg-slate-800 hover:bg-slate-700 py-2 rounded-lg text-xs font-bold text-slate-300">+1</button>
+            <button type="button" onclick="stepQty(10)" class="bg-slate-800 hover:bg-slate-700 py-2 rounded-lg text-xs font-bold text-slate-300">+10</button>
           </div>
 
           <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-800 space-y-2 text-xs font-mono">
@@ -255,7 +259,8 @@
     </main>
 
     <!-- 2. VIEW: MEMBER DASHBOARD -->
-    <main id="view-dashboard" class="hidden flex-1 p-4 max-w-7xl mx-auto w-full space-y-4">
+    <main id="view-dashboard" class="hidden flex-1 p-4 max-w-7xl mx-auto w-full space-y-5">
+      <!-- Metric Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
           <div class="text-xs text-slate-400">กำไร/ขาดทุนสะสมที่ขายแล้ว (Realized P&L)</div>
@@ -292,23 +297,59 @@
         </div>
       </div>
 
-      <!-- Trade History Table -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
-        <h3 class="text-sm font-bold text-slate-200 mb-3">ประวัติการซื้อ-ขายย้อนหลัง</h3>
-        <div class="overflow-x-auto max-h-80 custom-scroll">
-          <table class="w-full text-left text-xs font-mono">
-            <thead class="bg-slate-800/80 text-slate-400 sticky top-0">
-              <tr>
-                <th class="p-2.5">เวลาจำลอง</th>
-                <th class="p-2.5">ประเภท</th>
-                <th class="p-2.5">สินทรัพย์</th>
-                <th class="p-2.5">ราคา</th>
-                <th class="p-2.5">จำนวน</th>
-                <th class="p-2.5">มูลค่ารวม</th>
-              </tr>
-            </thead>
-            <tbody id="trade-history-rows" class="divide-y divide-slate-800"></tbody>
-          </table>
+      <!-- Tabbed History Card -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+        <!-- Sub-tabs switcher (flex container with flex-row) -->
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3 flex-wrap gap-2">
+          <div id="dash-subtabs-container" class="flex flex-wrap gap-2">
+            <!-- Normal Sub-tabs (แท็บอื่นๆ ที่เพิ่มเข้ามาในอนาคตจะอยู่ก่อนหน้าแท็บนี้) -->
+            <button type="button" id="dash-btn-orders" onclick="activateSubTab('orders')" class="dash-subtab-btn px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white flex items-center gap-1.5 transition">
+              <i data-lucide="list-ordered" class="w-4 h-4"></i> ประวัติการส่งคำสั่งซื้อ-ขาย
+            </button>
+
+            <!-- แท็บนี้จะถูกตั้งค่า order-last เสมอ ไม่ว่าจะมีแท็บอื่นเพิ่มเข้ามาใหม่อีกกี่แท็บ -->
+            <button type="button" id="dash-btn-history" onclick="activateSubTab('history')" class="dash-subtab-btn order-last px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:text-white flex items-center gap-1.5 transition border border-indigo-500/30">
+              <i data-lucide="history" class="w-4 h-4 text-indigo-400"></i> สถิติรอบการเล่น (ย้อนหลัง 5 ครั้ง)
+            </button>
+          </div>
+          <span class="text-[11px] text-slate-400">บันทึกล่าสุด 5 รายการตามเงื่อนไขโฟลเดอร์ FSGS</span>
+        </div>
+
+        <!-- Sub-tab Content Area -->
+        <div id="dash-subviews-container">
+          <!-- Content: Order Trades History -->
+          <div id="dash-view-orders" class="dash-subview overflow-x-auto max-h-80 custom-scroll">
+            <table class="w-full text-left text-xs font-mono">
+              <thead class="bg-slate-800/80 text-slate-400 sticky top-0">
+                <tr>
+                  <th class="p-2.5">เวลาจำลอง</th>
+                  <th class="p-2.5">ประเภท</th>
+                  <th class="p-2.5">สินทรัพย์</th>
+                  <th class="p-2.5">ราคา</th>
+                  <th class="p-2.5">จำนวน</th>
+                  <th class="p-2.5">มูลค่ารวม</th>
+                </tr>
+              </thead>
+              <tbody id="trade-history-rows" class="divide-y divide-slate-800"></tbody>
+            </table>
+          </div>
+
+          <!-- Content: Game Session History (Max 5 items) -->
+          <div id="dash-view-history" class="dash-subview hidden overflow-x-auto">
+            <table class="w-full text-left text-xs font-mono">
+              <thead class="bg-slate-800/80 text-slate-400">
+                <tr>
+                  <th class="p-2.5">รอบที่</th>
+                  <th class="p-2.5">วัน-เวลาที่บันทึก</th>
+                  <th class="p-2.5">เงินสดคงเหลือ</th>
+                  <th class="p-2.5">ปันผลสะสม</th>
+                  <th class="p-2.5">จำนวนไม้ที่เทรด</th>
+                  <th class="p-2.5">สินทรัพย์ที่ถือครอง</th>
+                </tr>
+              </thead>
+              <tbody id="game-history-rows" class="divide-y divide-slate-800"></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </main>
@@ -345,8 +386,8 @@
         ระบบจะหยุดรอบปัจจุบัน สุ่มสร้างหุ้นและคริปโตใหม่ 20 ตัว พร้อมสุ่มกรอบเวลาประวัติศาสตร์ใหม่อีกครั้ง
       </p>
       <div class="flex justify-end gap-3 pt-2">
-        <button onclick="closeResetModal()" class="px-4 py-2 bg-slate-800 rounded-xl text-xs font-bold text-slate-300">ยกเลิก</button>
-        <button onclick="confirmResetSim()" class="px-4 py-2 bg-rose-600 rounded-xl text-xs font-bold text-white">ยืนยันและสุ่มใหม่</button>
+        <button type="button" onclick="closeResetModal()" class="px-4 py-2 bg-slate-800 rounded-xl text-xs font-bold text-slate-300">ยกเลิก</button>
+        <button type="button" onclick="confirmResetSim()" class="px-4 py-2 bg-rose-600 rounded-xl text-xs font-bold text-white">ยืนยันและสุ่มใหม่</button>
       </div>
     </div>
   </div>
@@ -362,7 +403,7 @@
           </div>
           <p id="modal-desc-name" class="text-xs text-slate-400">---</p>
         </div>
-        <button onclick="closeDescModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
+        <button type="button" onclick="closeDescModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
       </div>
       <div class="space-y-3 text-xs leading-relaxed">
         <div>
@@ -379,17 +420,14 @@
         </div>
       </div>
       <div class="text-right pt-2 border-t border-slate-800">
-        <button onclick="closeDescModal()" class="px-4 py-2 bg-slate-800 rounded-xl text-xs font-bold text-white">ปิดหน้าต่าง</button>
+        <button type="button" onclick="closeDescModal()" class="px-4 py-2 bg-slate-800 rounded-xl text-xs font-bold text-white">ปิดหน้าต่าง</button>
       </div>
     </div>
   </div>
 
   <!-- JAVASCRIPT LOGIC -->
   <script>
-    /* ========================================================
-       1. ใส่ URL จาก Google Apps Script (Web App) ตรงนี้
-       ======================================================== */
-    const GOOGLE_SCRIPT_URL = https://script.google.com/macros/s/AKfycbxzIesDWStmrzxzBlNefVftd1PRtKL3GIgfVYb4V_7zOKfGNujCwp_p-DjgVO5ZIYGy/exec ;
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzIesDWStmrzxzBlNefVftd1PRtKL3GIgfVYb4V_7zOKfGNujCwp_p-DjgVO5ZIYGy/exec";
 
     const USD_RATE = 35.0;
     let currentCurrency = 'THB';
@@ -403,34 +441,34 @@
 
     // Seed Data
     const INITIAL_USERS = {
-      admin: { password: '00', role: 'admin', balanceTHB: 1000000, holdings: {}, trades: [], dividends: {} }
+      admin: { password: '00', role: 'admin', balanceTHB: 1000000, holdings: {}, trades: [], dividends: {}, gameHistory: [] }
     };
 
     function generate20Assets() {
       const stocks = [
-        { sym: "NVTC", name: "NovaTech Solutions", sec: "AI & Cloud", r: 3, d: 0.025, ov: "ผู้นำด้านการประมวลผล Cloud และ AI ขนาดใหญ่", dr: "รายได้จากศูนย์ข้อมูลระดับองค์กร", rk: "การแข่งขันจากต่างชาติ" },
-        { sym: "SREN", name: "Siam Renewable Energy", sec: "พลังงานสะอาด", r: 2, d: 0.05, ov: "ผลิตไฟฟ้าจากพลังงานแสงอาทิตย์และลม", dr: "สัญญาซื้อขายไฟฟ้าระยะยาว", rk: "ต้นทุนอุปกรณ์และการซ่อมบำรุง" },
-        { sym: "AVGD", name: "AeroVanguard Defence", sec: "อากาศยาน & อวกาศ", r: 4, d: 0.02, ov: "วิจัยและผลิตโดรนสำรวจและดาวเทียม", dr: "งบประมาณด้านความมั่นคง", rk: "ข้อจำกัดการถ่ายทอดเทคโนโลยี" },
-        { sym: "VTLS", name: "Vitalis BioPharma", sec: "เทคโนโลยีชีวภาพ", r: 5, d: 0.015, ov: "พัฒนายีนบำบัดรักษาโรคเฉพาะทาง", dr: "ความคืบหน้าการทดลองทางคลินิก", rk: "ความเสี่ยงการอนุมัติยา" },
-        { sym: "MTRL", name: "MetroRail Logistics", sec: "ขนส่งและโลจิสติกส์", r: 1, d: 0.06, ov: "เครือข่ายรถไฟและคลังสินค้าอัตโนมัติ", dr: "ปริมาณขนส่งสินค้า e-Commerce", rk: "ต้นทุนราคาน้ำมัน" },
-        { sym: "QCHW", name: "Quantum Chipworks", sec: "ชิปประมวลผล", r: 4, d: 0.01, ov: "ออกแบบชิปประมวลผลควอนตัม", dr: "ความต้องการชิปความเร็วสูง", rk: "ปัญหาห่วงโซ่อุปทาน" },
-        { sym: "TAGR", name: "TerraAgri FoodTech", sec: "อาหารและฟาร์มแนวตั้ง", r: 2, d: 0.04, ov: "ฟาร์มอัจฉริยะในเมืองและโปรตีนทางเลือก", dr: "ความต้องการอาหารยั่งยืน", rk: "ต้นทุนค่าไฟฟ้าหลอดไฟปลูก" },
-        { sym: "APXF", name: "Apex FinSecure", sec: "การเงินดิจิทัล", r: 3, d: 0.035, ov: "แพลตฟอร์มรับชำระเงินข้ามพรมแดน", dr: "ปริมาณธุรกรรมดิจิทัลที่เติบโต", rk: "การกำกับดูแลของแบงก์ชาติ" },
-        { sym: "ZRTG", name: "Zenith Retail Group", sec: "ค้าปลีกและอุปโภค", r: 2, d: 0.045, ov: "เครือข่ายร้านสะดวกซื้อทั่วประเทศ", dr: "การบริโภคและการท่องเที่ยว", rk: "ภาวะเงินเฟ้อชะลอการจับจ่าย" },
-        { sym: "CYBS", name: "CyberShield Security", sec: "ความปลอดภัยไซเบอร์", r: 3, d: 0.02, ov: "ซอฟต์แวร์ป้องกันข้อมูลรั่วไหล", dr: "ภัยคุกคามทางไซเบอร์ที่เพิ่มขึ้น", rk: "ความเสี่ยงข้อผิดพลาดของระบบ" }
+        { sym: "NVTC", name: "NovaTech Solutions", sec: "AI & Cloud", r: 3, d: 0.025, ov: "ผู้นำด้านการประมวลผล Cloud และ AI ขนาดใหญ่สำหรับธุรกิจองค์กร", dr: "รายได้จากศูนย์ข้อมูลระดับองค์กรและสัญญาคลาวด์ระยะยาว", rk: "การแข่งขันจากต่างชาติและความเร็วในการอัปเกรดชิป" },
+        { sym: "SREN", name: "Siam Renewable Energy", sec: "พลังงานสะอาด", r: 2, d: 0.05, ov: "ผลิตและจำหน่ายกระแสไฟฟ้าจากพลังงานแสงอาทิตย์และลม", dr: "สัญญาซื้อขายไฟฟ้าระยะยาวกับภาครัฐและเอกชน", rk: "ต้นทุนอุปกรณ์และการซ่อมบำรุงตามสภาพอากาศ" },
+        { sym: "AVGD", name: "AeroVanguard Defence", sec: "อากาศยาน & อวกาศ", r: 4, d: 0.02, ov: "วิจัยและผลิตโดรนสำรวจ อากาศยานไร้คนขับ และดาวเทียมสื่อสาร", dr: "งบประมาณด้านความมั่นคงและเทคโนโลยีการบินขั้นสูง", rk: "ข้อจำกัดการถ่ายทอดเทคโนโลยีระหว่างประเทศ" },
+        { sym: "VTLS", name: "Vitalis BioPharma", sec: "เทคโนโลยีชีวภาพ", r: 5, d: 0.015, ov: "พัฒนายีนบำบัดรักษาโรคเฉพาะทางและยาต้านเซลล์มะเร็ง", dr: "ความคืบหน้าการทดลองทางคลินิกและการจดสิทธิบัตรยา", rk: "ความเสี่ยงการไม่ผ่านอนุมัติจากสำนักงานคณะกรรมการอาหารและยา" },
+        { sym: "MTRL", name: "MetroRail Logistics", sec: "ขนส่งและโลจิสติกส์", r: 1, d: 0.06, ov: "เครือข่ายรถไฟความเร็วสูงและคลังสินค้าควบคุมอุณหภูมิอัตโนมัติ", dr: "ปริมาณขนส่งสินค้า e-Commerce และการขยายเส้นทางรถไฟ", rk: "ต้นทุนราคาน้ำมันและค่าบำรุงรักษาโครงข่ายราง" },
+        { sym: "QCHW", name: "Quantum Chipworks", sec: "ชิปประมวลผล", r: 4, d: 0.01, ov: "ออกแบบและผลิตชิปประมวลผลควอนตัมความเร็วสูง", dr: "ความต้องการชิปความเร็วสูงสำหรับ AI และศูนย์ข้อมูล", rk: "ปัญหาห่วงโซ่อุปทานและข้อจำกัดด้านแร่หายาก" },
+        { sym: "TAGR", name: "TerraAgri FoodTech", sec: "อาหารและฟาร์มแนวตั้ง", r: 2, d: 0.04, ov: "ฟาร์มอัจฉริยะในเมืองและโปรตีนทางเลือกจากพืช", dr: "ความต้องการอาหารยั่งยืนและเทรนด์สุขภาพโลก", rk: "ต้นทุนค่าไฟฟ้าหลอดไฟปลูกและกำลังซื้อผู้บริโภค" },
+        { sym: "APXF", name: "Apex FinSecure", sec: "การเงินดิจิทัล", r: 3, d: 0.035, ov: "แพลตฟอร์มรับชำระเงินข้ามพรมแดนและระบบความปลอดภัยการเงิน", dr: "ปริมาณธุรกรรมดิจิทัลที่เติบโตต่อเนื่อง", rk: "การกำกับดูแลของแบงก์ชาติและการแข่งขันด้านค่าธรรมเนียม" },
+        { sym: "ZRTG", name: "Zenith Retail Group", sec: "ค้าปลีกและอุปโภค", r: 2, d: 0.045, ov: "เครือข่ายร้านสะดวกซื้อและห้างสรรพสินค้าทั่วประเทศ", dr: "การบริโภคในประเทศและการฟื้นตัวของการท่องเที่ยว", rk: "ภาวะเงินเฟ้อชะลอการจับจ่ายใช้สอย" },
+        { sym: "CYBS", name: "CyberShield Security", sec: "ความปลอดภัยไซเบอร์", r: 3, d: 0.02, ov: "ซอฟต์แวร์ป้องกันข้อมูลรั่วไหลและตรวจจับมัลแวร์ระดับองค์กร", dr: "ภัยคุกคามทางไซเบอร์ที่เพิ่มขึ้นทั่วโลก", rk: "ความเสี่ยงข้อผิดพลาดหรือช่องโหว่ของระบบตนเอง" }
       ];
 
       const cryptos = [
-        { sym: "CRON", name: "ChronoChain", sec: "Layer-1 Blockchain", r: 8, d: 0.07, ov: "บล็อกเชนความเร็วสูง 200k TPS", dr: "ผู้ใช้งาน dApps และกระเป๋าเงิน", rk: "ข้อผิดพลาดของเครือข่าย" },
-        { sym: "ETHU", name: "Etherium Ultra", sec: "Smart Contract Hub", r: 7, d: 0.06, ov: "ระบบสัญญาอัจฉริยะแบบกระจายศูนย์", dr: "ค่าธรรมเนียม Gas และการ Staking", rk: "คู่แข่งบล็อกเชนรุ่นใหม่" },
-        { sym: "SPEC", name: "Spectre Privacy", sec: "ZK Privacy Token", r: 9, d: 0, ov: "โอนเงินปกปิดข้อมูลด้วยเทคโนโลยี ZK", dr: "ความต้องการธุรกรรมนิรนาม", rk: "การถูกเพ่งเล็งจากกฎหมาย" },
-        { sym: "VORX", name: "Liquidity Vortex", sec: "DeFi Automated Market", r: 9, d: 0.12, ov: "ฟาร์มสภาพคล่องและกู้ยืมอัตโนมัติ", dr: "มูลค่าสินทรัพย์ค้ำประกัน (TVL)", rk: "ความเสี่ยงช่องโหว่ Smart Contract" },
-        { sym: "SYNP", name: "Synapse DePIN", sec: "AI Computing Network", r: 8, d: 0.08, ov: "เครือข่ายแชร์พลัง GPU สำหรับ AI", dr: "ดีมานด์การเทรนโมเดล AI", rk: "เสถียรภาพของผู้ปล่อยสัญญาณ" },
-        { sym: "CLNK", name: "ChronoLink Oracle", sec: "Oracle Data Feed", r: 7, d: 0.065, ov: "เชื่อมต่อข้อมูลโลกจริงสู่โลกบล็อกเชน", dr: "การใช้งานของโปรเจกต์ DeFi", rk: "ความแม่นยำของฟีดราคา" },
-        { sym: "TERA", name: "Terrastone RWA", sec: "Real World Asset", r: 6, d: 0.065, ov: "แปลงอสังหาฯ และพันธบัตรเป็นเหรียญ", dr: "เงินทุนสถาบันไหลเข้าสู่ระบบ", rk: "สิทธิ์ทางกฎหมายของทรัพย์สินจริง" },
-        { sym: "OMBI", name: "OmniBridge Protocol", sec: "Cross-Chain Bridge", r: 9, d: 0.09, ov: "สะพานโอนสินทรัพย์ข้ามบล็อกเชน", dr: "วอลุ่มการโอนเงินข้ามเชน", rk: "ความเสี่ยงแฮกเกอร์โจมตีสะพาน" },
-        { sym: "MRLM", name: "MetaRealm Game", sec: "GameFi & Metaverse", r: 10, d: 0, ov: "เหรียญเศรษฐกิจในเกมโลกเสมือนจริง", dr: "จำนวนผู้เล่นเกมประจำวัน", rk: "กระแสเกมเสื่อมความนิยมเร็ว" },
-        { sym: "SHBG", name: "ShibaGalaxy Meme", sec: "Meme Community", r: 10, d: 0, ov: "เหรียญชุมชนเน้นพลังไวรัลโซเชียล", dr: "กระแสไวรัลและการปั่นราคา", rk: "ไม่มีปัจจัยพื้นฐานรองรับ ผันผวนสูงสุด" }
+        { sym: "CRON", name: "ChronoChain", sec: "Layer-1 Blockchain", r: 8, d: 0.07, ov: "บล็อกเชนความเร็วสูง 200k TPS รองรับธุรกรรมการเงินระดับโลก", dr: "จำนวนผู้ใช้งาน dApps และธุรกรรมบนเครือข่าย", rk: "โอกาสเกิดข้อผิดพลาดของเครือข่ายและการแข่งขันจากเชนอื่น" },
+        { sym: "ETHU", name: "Etherium Ultra", sec: "Smart Contract Hub", r: 7, d: 0.06, ov: "ระบบสัญญาอัจฉริยะแบบกระจายศูนย์ที่เชื่อมโยงแอปรุ่นใหม่", dr: "ค่าธรรมเนียม Gas และการ Staking ของนักลงทุน", rk: "คู่แข่งบล็อกเชนรุ่นใหม่ที่ค่าธรรมเนียมถูกกว่า" },
+        { sym: "SPEC", name: "Spectre Privacy", sec: "ZK Privacy Token", r: 9, d: 0, ov: "โอนเงินปกปิดข้อมูลด้วยเทคโนโลยี Zero-Knowledge ขั้นสูง", dr: "ความต้องการธุรกรรมที่ไม่เปิดเผยตัวตน", rk: "การถูกเพ่งเล็งจากหน่วยงานกำกับดูแลด้านกฎหมายฟอกเงิน" },
+        { sym: "VORX", name: "Liquidity Vortex", sec: "DeFi Automated Market", r: 9, d: 0.12, ov: "ฟาร์มสภาพคล่องและกู้ยืมอัตโนมัติบนโลกไร้ตัวกลาง", dr: "มูลค่าสินทรัพย์ค้ำประกัน (Total Value Locked - TVL)", rk: "ความเสี่ยงช่องโหว่ Smart Contract โดน Exploit" },
+        { sym: "SYNP", name: "Synapse DePIN", sec: "AI Computing Network", r: 8, d: 0.08, ov: "เครือข่ายแชร์พลัง GPU กระจายศูนย์สำหรับประมวลผลโมเดล AI", dr: "ดีมานด์การเทรนโมเดล AI ของนักพัฒนาทั่วโลก", rk: "เสถียรภาพและคุณภาพของผู้ปล่อยสัญญาณ Node" },
+        { sym: "CLNK", name: "ChronoLink Oracle", sec: "Oracle Data Feed", r: 7, d: 0.065, ov: "เชื่อมต่อข้อมูลราคาโลกจริงเข้าสู่โลกบล็อกเชนแบบเรียลไทม์", dr: "การใช้งานของโปรเจกต์ DeFi และอนุพันธ์ดิจิทัล", rk: "ความแม่นยำของฟีดราคาในสภาวะตลาดผันผวนจัด" },
+        { sym: "TERA", name: "Terrastone RWA", sec: "Real World Asset", r: 6, d: 0.065, ov: "แปลงอสังหาริมทรัพย์และพันธบัตรรัฐบาลเป็นเหรียญดิจิทัล", dr: "เงินทุนสถาบันดั้งเดิมไหลเข้าสู่ระบบโทเคน", rk: "สิทธิ์ทางกฎหมายและการบังคับใช้ของทรัพย์สินจริง" },
+        { sym: "OMBI", name: "OmniBridge Protocol", sec: "Cross-Chain Bridge", r: 9, d: 0.09, ov: "สะพานเชื่อมโอนเหรียญและสินทรัพย์ข้ามบล็อกเชนต่างระบบ", dr: "ปริมาณวอลุ่มการโอนเงินข้ามเชน", rk: "ความเสี่ยงแฮกเกอร์โจมตี Smart Contract ของ Bridge" },
+        { sym: "MRLM", name: "MetaRealm Game", sec: "GameFi & Metaverse", r: 10, d: 0, ov: "เหรียญเศรษฐกิจในเกมโลกเสมือนจริง 3 มิติและไอเทม NFT", dr: "จำนวนผู้เล่นเกมประจำวันและการซื้อขายไอเทม", rk: "กระแสเกมเสื่อมความนิยมอย่างรวดเร็ว" },
+        { sym: "SHBG", name: "ShibaGalaxy Meme", sec: "Meme Community", r: 10, d: 0, ov: "เหรียญชุมชนเน้นพลังไวรัลโซเชียลและการรวมกลุ่มของคอมมูนิตี้", dr: "กระแสไวรัลบนสื่อสังคมออนไลน์และการเก็งกำไร", rk: "ไม่มีปัจจัยพื้นฐานรองรับ ความผันผวนสูงที่สุดในตลาด" }
       ];
 
       const res = {};
@@ -455,13 +493,27 @@
       return arr;
     }
 
-    /* Storage */
     function loadUsers() {
-      try { return JSON.parse(localStorage.getItem('fsgs_users')) || INITIAL_USERS; } catch(e) { return INITIAL_USERS; }
+      try {
+        const stored = localStorage.getItem('fsgs_users');
+        if (!stored) return INITIAL_USERS;
+        const parsed = JSON.parse(stored);
+        if (!parsed || typeof parsed !== 'object') return INITIAL_USERS;
+        if (!parsed.admin) parsed.admin = INITIAL_USERS.admin;
+        return parsed;
+      } catch(e) {
+        return INITIAL_USERS;
+      }
     }
     function saveUsers(u) { localStorage.setItem('fsgs_users', JSON.stringify(u)); }
+
     function loadAssets() {
-      try { return JSON.parse(localStorage.getItem('fsgs_assets')) || generate20Assets(); } catch(e) { return generate20Assets(); }
+      try {
+        const stored = localStorage.getItem('fsgs_assets');
+        return stored ? JSON.parse(stored) : generate20Assets();
+      } catch(e) {
+        return generate20Assets();
+      }
     }
     function saveAssets(a) { localStorage.setItem('fsgs_assets', JSON.stringify(a)); }
 
@@ -469,46 +521,65 @@
     let assets = loadAssets();
     let simWeek = parseInt(localStorage.getItem('fsgs_sim_week') || '1');
 
-    /* Font Size Scaler for 50+ */
     function changeFontSize(size) {
       const root = document.documentElement;
-      document.getElementById('fs-normal').className = "px-2 py-1 text-slate-300 rounded font-bold";
-      document.getElementById('fs-large').className = "px-2 py-1 text-slate-300 rounded font-bold";
-      document.getElementById('fs-xl').className = "px-2 py-1 text-slate-300 rounded font-bold";
+      const bNormal = document.getElementById('fs-normal');
+      const bLarge = document.getElementById('fs-large');
+      const bXl = document.getElementById('fs-xl');
+      if (bNormal) bNormal.className = "px-2 py-1 text-slate-300 rounded font-bold";
+      if (bLarge) bLarge.className = "px-2 py-1 text-slate-300 rounded font-bold";
+      if (bXl) bXl.className = "px-2 py-1 text-slate-300 rounded font-bold";
 
       if (size === 'normal') {
         root.style.fontSize = "16px";
-        document.getElementById('fs-normal').className = "px-2 py-1 bg-slate-700 text-white rounded font-bold";
+        if (bNormal) bNormal.className = "px-2 py-1 bg-slate-700 text-white rounded font-bold";
       } else if (size === 'large') {
         root.style.fontSize = "18px";
-        document.getElementById('fs-large').className = "px-2 py-1 bg-slate-700 text-white rounded font-bold";
+        if (bLarge) bLarge.className = "px-2 py-1 bg-slate-700 text-white rounded font-bold";
       } else if (size === 'xl') {
         root.style.fontSize = "20px";
-        document.getElementById('fs-xl').className = "px-2 py-1 bg-slate-700 text-white rounded font-bold";
+        if (bXl) bXl.className = "px-2 py-1 bg-slate-700 text-white rounded font-bold";
       }
       localStorage.setItem('fsgs_font_size', size);
     }
 
-    /* Auth Handlers */
     function switchAuthTab(t) {
       currentAuthTab = t;
-      document.getElementById('tab-login').className = t === 'login' ? "flex-1 pb-2 border-b-2 border-emerald-500 text-emerald-400" : "flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-white";
-      document.getElementById('tab-register').className = t === 'register' ? "flex-1 pb-2 border-b-2 border-emerald-500 text-emerald-400" : "flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-white";
-      document.getElementById('auth-btn-label').innerText = t === 'login' ? "เข้าสู่ระบบ" : "ลงทะเบียนและรับทุนฟรี ฿30,000";
+      const tabLogin = document.getElementById('tab-login');
+      const tabReg = document.getElementById('tab-register');
+      const btnLabel = document.getElementById('auth-btn-label');
+      const alertBox = document.getElementById('auth-alert');
+      if (alertBox) alertBox.classList.add('hidden');
+
+      if (t === 'login') {
+        tabLogin.className = "flex-1 pb-2 border-b-2 border-emerald-500 text-emerald-400";
+        tabReg.className = "flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-white";
+        btnLabel.innerText = "เข้าสู่ระบบ";
+      } else {
+        tabReg.className = "flex-1 pb-2 border-b-2 border-emerald-500 text-emerald-400";
+        tabLogin.className = "flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-white";
+        btnLabel.innerText = "ลงทะเบียนและรับทุนฟรี ฿30,000";
+      }
     }
 
     function handleAuthSubmit() {
-      const u = document.getElementById('auth-username').value.trim();
-      const p = document.getElementById('auth-password').value.trim();
+      const uEl = document.getElementById('auth-username');
+      const pEl = document.getElementById('auth-password');
       const alertBox = document.getElementById('auth-alert');
+      if (!uEl || !pEl || !alertBox) return;
+
+      const u = uEl.value.trim();
+      const p = pEl.value.trim();
       alertBox.classList.add('hidden');
 
       if (!u || !p) {
         alertBox.innerText = "กรุณากรอกชื่อผู้ใช้และรหัสผ่าน";
-        alertBox.className = "p-3 rounded-xl text-xs font-semibold bg-rose-500/20 text-rose-400";
+        alertBox.className = "p-3 rounded-xl text-xs font-semibold bg-rose-500/20 text-rose-400 border border-rose-500/30";
         alertBox.classList.remove('hidden');
         return;
       }
+
+      users = loadUsers();
 
       if (currentAuthTab === 'login') {
         if (u === 'admin' && p === '00') {
@@ -521,19 +592,20 @@
           startSession();
           return;
         }
-        alertBox.innerText = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
-        alertBox.className = "p-3 rounded-xl text-xs font-semibold bg-rose-500/20 text-rose-400";
+        alertBox.innerText = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง (Admin: admin / 00)";
+        alertBox.className = "p-3 rounded-xl text-xs font-semibold bg-rose-500/20 text-rose-400 border border-rose-500/30";
         alertBox.classList.remove('hidden');
       } else {
-        if (users[u]) {
-          alertBox.innerText = "ชื่อผู้ใช้นี้ถูกใช้งานแล้ว";
-          alertBox.className = "p-3 rounded-xl text-xs font-semibold bg-rose-500/20 text-rose-400";
+        if (users[u] || u === 'admin') {
+          alertBox.innerText = "ชื่อผู้ใช้นี้ถูกใช้งานแล้ว กรุณาเลือกชื่ออื่น";
+          alertBox.className = "p-3 rounded-xl text-xs font-semibold bg-rose-500/20 text-rose-400 border border-rose-500/30";
           alertBox.classList.remove('hidden');
           return;
         }
-        users[u] = { username: u, password: p, role: 'member', balanceTHB: 30000, holdings: {}, trades: [], dividends: {} };
+        users[u] = { username: u, password: p, role: 'member', balanceTHB: 30000, holdings: {}, trades: [], dividends: {}, gameHistory: [] };
         saveUsers(users);
         currentUser = users[u];
+        alert("ลงทะเบียนสำเร็จ! ได้รับเงินจำลองเริ่มต้น ฿30,000");
         startSession();
       }
     }
@@ -541,11 +613,12 @@
     function loginWithGmailPrompt() {
       const email = prompt("กรุณาระบุ Gmail สำหรับเข้าเล่น Family Stock Game Simulation:");
       if (!email || !email.includes('@')) {
-        alert("กรุณาระบุอีเมลให้ถูกต้อง");
+        if (email !== null) alert("กรุณาระบุอีเมลให้ถูกต้อง (ต้องมี @)");
         return;
       }
+      users = loadUsers();
       if (!users[email]) {
-        users[email] = { username: email, password: 'gmail_user', role: 'member', balanceTHB: 30000, holdings: {}, trades: [], dividends: {} };
+        users[email] = { username: email, password: 'gmail_user', role: 'member', balanceTHB: 30000, holdings: {}, trades: [], dividends: {}, gameHistory: [] };
         saveUsers(users);
       }
       currentUser = users[email];
@@ -557,17 +630,15 @@
       document.getElementById('auth-screen').classList.add('hidden');
       document.getElementById('app-screen').classList.remove('hidden');
 
-      // Admin role isolation
       const isAdmin = currentUser.role === 'admin';
       document.getElementById('admin-bar').classList.toggle('hidden', !isAdmin);
       document.getElementById('tab-btn-admin').classList.toggle('hidden', !isAdmin);
       document.getElementById('role-badge').innerText = isAdmin ? "ผู้ดูแลระบบ (Admin)" : "สมาชิกทั่วไป";
-
       document.getElementById('user-display-name').innerText = currentUser.username;
-      
+
       const syms = Object.keys(assets);
       activeSymbol = syms[0];
-      
+
       initChart();
       renderWatchlist();
       selectAsset(activeSymbol);
@@ -575,20 +646,21 @@
       renderHoldings();
       renderDashboard();
 
-      // auto-start simulation if admin
+      if (window.lucide) {
+        try { lucide.createIcons(); } catch(e){}
+      }
+
       if (isAdmin && !simInterval) {
         adminStartSim();
       }
     }
 
     function handleLogout() {
-      // ซิงค์สถิติล่าสุดเข้า Google Drive
-      syncStatsToGoogleDrive();
+      syncStatsToGoogleDrive(false);
       sessionStorage.removeItem('fsgs_active_user');
       location.reload();
     }
 
-    /* Currency Manager */
     function setCurrency(c) {
       currentCurrency = c;
       document.getElementById('curr-thb').className = c === 'THB' ? "px-3 py-1.5 rounded-lg bg-emerald-600 text-white" : "px-3 py-1.5 rounded-lg text-slate-400 hover:text-white";
@@ -608,11 +680,6 @@
       return '฿' + valTHB.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    function getAssetPrice(a) {
-      return currentCurrency === 'USD' ? a.priceUSD : (a.priceUSD * USD_RATE);
-    }
-
-    /* Risk Badge Helper (1-10) */
     function getRiskBadge(r) {
       let color = "bg-emerald-500/20 text-emerald-400 border-emerald-500/40";
       let text = "ต่ำ";
@@ -622,13 +689,12 @@
       return `<span class="px-2 py-0.5 rounded border text-[11px] font-bold ${color}">ความเสี่ยง ${r}/10 (${text})</span>`;
     }
 
-    /* Render Watchlist */
     function renderWatchlist() {
       const container = document.getElementById('watchlist-list');
+      if (!container) return;
       container.innerHTML = '';
       Object.values(assets).forEach(a => {
         if (currentFilter !== 'all' && a.type !== currentFilter) return;
-        const price = getAssetPrice(a);
         const change = ((a.history[a.history.length - 1] - a.history[a.history.length - 2]) / a.history[a.history.length - 2]) * 100;
         const isUp = change >= 0;
 
@@ -666,10 +732,10 @@
       renderWatchlist();
     }
 
-    /* Asset Selection & Chart */
     function selectAsset(sym) {
       activeSymbol = sym;
       const a = assets[sym];
+      if (!a) return;
       document.getElementById('active-sym').innerText = a.sym;
       document.getElementById('active-name').innerText = a.name;
       document.getElementById('active-sector').innerText = `หมวดหมู่: ${a.sec} | ${a.type === 'stock' ? 'หุ้นจำลอง' : 'คริปโตจำลอง'}`;
@@ -690,7 +756,12 @@
     }
 
     function initChart() {
-      const ctx = document.getElementById('tradeChart').getContext('2d');
+      const canvas = document.getElementById('tradeChart');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (tradeChart) {
+        tradeChart.destroy();
+      }
       tradeChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -727,7 +798,6 @@
       tradeChart.update();
     }
 
-    /* Trading & Steppers */
     function setSide(s) {
       currentSide = s;
       document.getElementById('btn-side-buy').className = s === 'buy' ? "flex-1 py-2 rounded-xl bg-emerald-600 text-white font-bold text-sm" : "flex-1 py-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white font-bold text-sm ml-2";
@@ -747,14 +817,14 @@
 
     function calcOrderTotal() {
       const a = assets[activeSymbol];
+      if (!a) return;
       const qty = parseFloat(document.getElementById('input-qty').value) || 0;
-      const unitPrice = a.priceUSD * (currentCurrency === 'USD' ? 1 : USD_RATE);
-      const total = qty * unitPrice;
       document.getElementById('order-total-price').innerText = formatMoney(qty * a.priceUSD * USD_RATE);
 
-      const holdingQty = (currentUser.holdings && currentUser.holdings[activeSymbol]) ? currentUser.holdings[activeSymbol].qty : 0;
+      const holdingQty = (currentUser && currentUser.holdings && currentUser.holdings[activeSymbol]) ? currentUser.holdings[activeSymbol].qty : 0;
       if (currentSide === 'buy') {
-        const maxBuy = Math.floor(currentUser.balanceTHB / (a.priceUSD * USD_RATE));
+        const bal = currentUser ? currentUser.balanceTHB : 0;
+        const maxBuy = Math.floor(bal / (a.priceUSD * USD_RATE));
         document.getElementById('label-max-order').innerText = `ซื้อได้สูงสุด: ${maxBuy}`;
       } else {
         document.getElementById('label-max-order').innerText = `มีให้ขาย: ${holdingQty}`;
@@ -791,7 +861,6 @@
         if (h.qty <= 0) delete currentUser.holdings[activeSymbol];
       }
 
-      // บันทึกประวัติการเทรด
       currentUser.trades.unshift({
         week: `สัปดาห์ที่ ${simWeek}`,
         side: currentSide,
@@ -810,17 +879,17 @@
       renderDashboard();
       calcOrderTotal();
 
-      // บันทึกสถิติลง Google Drive หลังจบคำสั่ง
-      syncStatsToGoogleDrive();
+      syncStatsToGoogleDrive(false);
     }
 
-    /* Holdings & Balances */
     function updateUserBalances() {
+      if (!currentUser) return;
       document.getElementById('user-balance-display').innerText = formatMoney(currentUser.balanceTHB);
     }
 
     function renderHoldings() {
       const tbody = document.getElementById('holdings-rows');
+      if (!tbody) return;
       tbody.innerHTML = '';
       const hEntries = Object.entries(currentUser.holdings || {});
       if (hEntries.length === 0) {
@@ -845,7 +914,7 @@
           <td class="p-2.5">${formatMoney(curValTHB)}</td>
           <td class="p-2.5 ${isUp ? 'text-emerald-400' : 'text-rose-400'} font-semibold">${isUp ? '+' : ''}${formatMoney(pnlTHB)} (${pnlPct.toFixed(2)}%)</td>
           <td class="p-2.5 text-right">
-            <button onclick="sellAllHolding('${sym}')" class="px-2.5 py-1 bg-rose-600/30 hover:bg-rose-600 text-rose-300 hover:text-white rounded text-[11px] font-bold">ขายทั้งหมด</button>
+            <button type="button" onclick="sellAllHolding('${sym}')" class="px-2.5 py-1 bg-rose-600/30 hover:bg-rose-600 text-rose-300 hover:text-white rounded text-[11px] font-bold">ขายทั้งหมด</button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -860,14 +929,12 @@
       submitTradeOrder();
     }
 
-    /* Simulation Engine (60s = 1 week) */
     function adminStartSim() {
       if (simInterval) return;
       simInterval = setInterval(() => {
         simWeek++;
         localStorage.setItem('fsgs_sim_week', simWeek.toString());
 
-        // Price drift per asset
         Object.values(assets).forEach(a => {
           const vol = a.type === 'crypto' ? 0.05 * (a.r - 4) : 0.02 * a.r;
           const drift = (Math.random() - 0.49) * vol;
@@ -877,7 +944,6 @@
         });
         saveAssets(assets);
 
-        // จ่ายเงินปันผลทุก 12 สัปดาห์จำลอง (1 ไตรมาส)
         if (simWeek % 12 === 0) {
           distributeDividends();
         }
@@ -886,7 +952,7 @@
         selectAsset(activeSymbol);
         renderHoldings();
         renderDashboard();
-      }, 8500); // 8.5s advance ~ 1 day, 60s ≈ 1 week
+      }, 8500);
     }
 
     function adminPauseSim() {
@@ -899,7 +965,6 @@
 
     function confirmResetSim() {
       adminPauseSim();
-      // ขายคืนเป็นเงินสดให้ผู้เล่น
       Object.keys(users).forEach(u => {
         const usr = users[u];
         Object.entries(usr.holdings || {}).forEach(([sym, h]) => {
@@ -922,21 +987,20 @@
       alert("รีเซ็ตระบบและสุ่มสร้าง 20 สินทรัพย์ใหม่เรียบร้อยแล้ว!");
     }
 
-    /* Dividends Distribution & Golden Toast */
     function distributeDividends() {
       Object.keys(users).forEach(u => {
         const usr = users[u];
         Object.entries(usr.holdings || {}).forEach(([sym, h]) => {
           const a = assets[sym];
           if (a && a.d > 0 && h.qty > 0) {
-            const divAmount = (h.qty * a.priceUSD * USD_RATE) * (a.d / 4); // ไตรมาสละ 1 ครั้ง
+            const divAmount = (h.qty * a.priceUSD * USD_RATE) * (a.d / 4);
             usr.balanceTHB += divAmount;
             if (!usr.dividends[sym]) usr.dividends[sym] = { count: 0, totalTHB: 0, lastWeek: '' };
             usr.dividends[sym].count += 1;
             usr.dividends[sym].totalTHB += divAmount;
             usr.dividends[sym].lastWeek = `สัปดาห์ที่ ${simWeek}`;
 
-            if (usr.username === currentUser.username) {
+            if (currentUser && usr.username === currentUser.username) {
               showDividendToast(sym, a.name, divAmount);
             }
           }
@@ -948,26 +1012,61 @@
 
     function showDividendToast(sym, name, amount) {
       const container = document.getElementById('toast-container');
+      if (!container) return;
       const toast = document.createElement('div');
-      toast.className = "p-4 bg-gradient-to-r from-amber-500 to-yellow-600 text-slate-950 font-bold rounded-2xl shadow-2xl flex items-center gap-3 animate-bounce";
+      toast.className = "p-4 bg-gradient-to-r from-amber-500 to-yellow-600 text-slate-950 font-bold rounded-2xl shadow-2xl flex items-center gap-3";
       toast.innerHTML = `
-        <div class="p-2 bg-white/20 rounded-xl"><i data-lucide="coins" class="w-6 h-6"></i></div>
+        <div class="p-2 bg-white/20 rounded-xl">💰</div>
         <div>
           <div class="text-xs uppercase tracking-wide">ได้รับเงินปันผล!</div>
           <div class="text-sm font-extrabold">${sym} +${formatMoney(amount)}</div>
         </div>
       `;
       container.appendChild(toast);
-      lucide.createIcons();
       setTimeout(() => toast.remove(), 6000);
     }
 
-    /* Dashboard & Admin Views */
-    function renderDashboard() {
-      let realized = 0;
-      let totalDiv = 0;
+    // =========================================================================
+    // Dynamic Sub-tab Controller: แท็บ "สถิติรอบการเล่น (ย้อนหลัง 5 ครั้ง)" อยู่ท้ายสุดเสมอ
+    // =========================================================================
+    function activateSubTab(selectedId) {
+      // 1. จัดการปุ่มทั้งหมด
+      const allButtons = document.querySelectorAll('.dash-subtab-btn');
+      allButtons.forEach(btn => {
+        btn.classList.remove('bg-emerald-600', 'text-white');
+        btn.classList.add('bg-slate-800', 'text-slate-300');
+      });
 
-      // Realized calculation
+      const activeBtn = document.getElementById(`dash-btn-${selectedId}`);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-emerald-600', 'text-white');
+        activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
+      }
+
+      // 2. จัดการส่วนแสดงผลทั้งหมด
+      const allViews = document.querySelectorAll('.dash-subview');
+      allViews.forEach(v => v.classList.add('hidden'));
+
+      const activeView = document.getElementById(`dash-view-${selectedId}`);
+      if (activeView) {
+        activeView.classList.remove('hidden');
+      }
+
+      // 3. กฎเหล็ก: ล็อกให้ปุ่มประวัติย้อนหลัง 5 ครั้งอยู่ท้ายสุดเสมอ แม้มีแท็บใหม่แทรกเข้ามา
+      ensureHistoryTabIsLast();
+    }
+
+    function ensureHistoryTabIsLast() {
+      const historyBtn = document.getElementById('dash-btn-history');
+      const container = document.getElementById('dash-subtabs-container');
+      if (historyBtn && container && container.lastElementChild !== historyBtn) {
+        container.appendChild(historyBtn);
+      }
+    }
+
+    function renderDashboard() {
+      if (!currentUser) return;
+      let totalDiv = 0;
       Object.values(currentUser.dividends || {}).forEach(d => totalDiv += d.totalTHB);
 
       let unrealized = 0;
@@ -977,61 +1076,98 @@
         }
       });
 
-      document.getElementById('dash-realized').innerText = formatMoney(realized);
+      document.getElementById('dash-realized').innerText = formatMoney(0);
       document.getElementById('dash-unrealized').innerText = (unrealized >= 0 ? '+' : '') + formatMoney(unrealized);
       document.getElementById('dash-unrealized').className = `text-2xl font-bold font-mono mt-1 ${unrealized >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
       document.getElementById('dash-dividend').innerText = formatMoney(totalDiv);
 
-      // Dividend Rows
+      // 1. Dividend Rows
       const divBody = document.getElementById('dividend-rows');
-      divBody.innerHTML = '';
-      const divEntries = Object.entries(currentUser.dividends || {});
-      if (divEntries.length === 0) {
-        divBody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">ยังไม่ได้รับเงินปันผลในรอบนี้</td></tr>`;
-      } else {
-        divEntries.forEach(([sym, d]) => {
-          const a = assets[sym];
+      if (divBody) {
+        divBody.innerHTML = '';
+        const divEntries = Object.entries(currentUser.dividends || {});
+        if (divEntries.length === 0) {
+          divBody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">ยังไม่ได้รับเงินปันผลในรอบนี้</td></tr>`;
+        } else {
+          divEntries.forEach(([sym, d]) => {
+            const a = assets[sym];
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td class="p-2.5 font-bold text-white">${sym}</td>
+              <td class="p-2.5 text-slate-400">${a ? a.name : '-'}</td>
+              <td class="p-2.5">${d.count} ครั้ง</td>
+              <td class="p-2.5 text-amber-400 font-bold">${formatMoney(d.totalTHB)}</td>
+              <td class="p-2.5 text-slate-400">${d.lastWeek}</td>
+            `;
+            divBody.appendChild(tr);
+          });
+        }
+      }
+
+      // 2. Game Sessions History (5 records)
+      const gameHistoryBody = document.getElementById('game-history-rows');
+      if (gameHistoryBody) {
+        gameHistoryBody.innerHTML = '';
+        const historyList = currentUser.gameHistory || [];
+        if (historyList.length === 0) {
+          gameHistoryBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500">ยังไม่มีบันทึกประวัติการเล่นย้อนหลัง (กดปุ่ม "ซิงค์ Drive" เพื่อบันทึกรอบปัจจุบัน)</td></tr>`;
+        } else {
+          historyList.slice(0, 5).forEach((item, idx) => {
+            const tr = document.createElement('tr');
+            const holdCount = Object.keys(item.portfolio_summary || {}).length;
+            tr.innerHTML = `
+              <td class="p-2.5 font-bold text-indigo-400">รอบที่ ${idx + 1}</td>
+              <td class="p-2.5 text-slate-300">${item.date_time}</td>
+              <td class="p-2.5 font-bold text-emerald-400">${formatMoney(item.balance_thb)}</td>
+              <td class="p-2.5 text-amber-400 font-bold">${formatMoney(item.total_dividend)}</td>
+              <td class="p-2.5">${item.trades_count} ไม้</td>
+              <td class="p-2.5 text-slate-300">${holdCount > 0 ? `${holdCount} รายการ` : 'เงินสด 100%'}</td>
+            `;
+            gameHistoryBody.appendChild(tr);
+          });
+        }
+      }
+
+      // 3. Trade Orders History
+      const hBody = document.getElementById('trade-history-rows');
+      if (hBody) {
+        hBody.innerHTML = '';
+        const trades = currentUser.trades || [];
+        if (trades.length === 0) {
+          hBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500">ยังไม่มีรายการส่งคำสั่งซื้อ-ขาย</td></tr>`;
+        } else {
+          trades.slice(0, 30).forEach(t => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td class="p-2.5 text-slate-400">${t.week}</td>
+              <td class="p-2.5 font-bold ${t.side === 'buy' ? 'text-emerald-400' : 'text-rose-400'}">${t.side === 'buy' ? 'ซื้อ' : 'ขาย'}</td>
+              <td class="p-2.5 font-bold text-white">${t.sym}</td>
+              <td class="p-2.5">${formatMoney(t.priceTHB)}</td>
+              <td class="p-2.5">${t.qty}</td>
+              <td class="p-2.5 font-bold">${formatMoney(t.totalTHB)}</td>
+            `;
+            hBody.appendChild(tr);
+          });
+        }
+      }
+
+      // 4. Admin Members Overview Table
+      const adminBody = document.getElementById('admin-members-rows');
+      if (adminBody) {
+        adminBody.innerHTML = '';
+        Object.values(users).filter(u => u.role !== 'admin').forEach(u => {
           const tr = document.createElement('tr');
           tr.innerHTML = `
-            <td class="p-2.5 font-bold text-white">${sym}</td>
-            <td class="p-2.5 text-slate-400">${a ? a.name : '-'}</td>
-            <td class="p-2.5">${d.count} ครั้ง</td>
-            <td class="p-2.5 text-amber-400 font-bold">${formatMoney(d.totalTHB)}</td>
-            <td class="p-2.5 text-slate-400">${d.lastWeek}</td>
+            <td class="p-2.5 font-bold text-white">${u.username}</td>
+            <td class="p-2.5 font-bold text-emerald-400">${formatMoney(u.balanceTHB)}</td>
+            <td class="p-2.5">${Object.keys(u.holdings || {}).length} รายการ</td>
+            <td class="p-2.5">${(u.trades || []).length} ครั้ง</td>
           `;
-          divBody.appendChild(tr);
+          adminBody.appendChild(tr);
         });
       }
 
-      // History Rows
-      const hBody = document.getElementById('trade-history-rows');
-      hBody.innerHTML = '';
-      (currentUser.trades || []).slice(0, 30).forEach(t => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="p-2.5 text-slate-400">${t.week}</td>
-          <td class="p-2.5 font-bold ${t.side === 'buy' ? 'text-emerald-400' : 'text-rose-400'}">${t.side === 'buy' ? 'ซื้อ' : 'ขาย'}</td>
-          <td class="p-2.5 font-bold text-white">${t.sym}</td>
-          <td class="p-2.5">${formatMoney(t.priceTHB)}</td>
-          <td class="p-2.5">${t.qty}</td>
-          <td class="p-2.5 font-bold">${formatMoney(t.totalTHB)}</td>
-        `;
-        hBody.appendChild(tr);
-      });
-
-      // Admin Members Overview Table
-      const adminBody = document.getElementById('admin-members-rows');
-      adminBody.innerHTML = '';
-      Object.values(users).filter(u => u.role !== 'admin').forEach(u => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="p-2.5 font-bold text-white">${u.username}</td>
-          <td class="p-2.5 font-bold text-emerald-400">${formatMoney(u.balanceTHB)}</td>
-          <td class="p-2.5">${Object.keys(u.holdings || {}).length} รายการ</td>
-          <td class="p-2.5">${(u.trades || []).length} ครั้ง</td>
-        `;
-        adminBody.appendChild(tr);
-      });
+      ensureHistoryTabIsLast();
     }
 
     function switchTab(t) {
@@ -1044,9 +1180,9 @@
       document.getElementById('tab-btn-admin').className = t === 'admin-view' ? "py-3 border-b-2 border-indigo-500 text-indigo-400" : "py-3 border-b-2 border-transparent text-indigo-400 hover:text-white";
     }
 
-    /* Modal Desc */
     function openDescModal() {
       const a = assets[activeSymbol];
+      if (!a) return;
       document.getElementById('modal-desc-sym').innerText = a.sym;
       document.getElementById('modal-desc-name').innerText = a.name;
       document.getElementById('modal-desc-risk').innerHTML = getRiskBadge(a.r);
@@ -1057,14 +1193,32 @@
     }
     function closeDescModal() { document.getElementById('modal-desc').classList.add('hidden'); }
 
-    /* ========================================================
-       2. ส่งสถิติบันทึกลง Google Drive (โฟลเดอร์ FSGS) 5 ครั้งล่าสุด
-       ======================================================== */
-    function syncStatsToGoogleDrive() {
-      if (!currentUser || GOOGLE_SCRIPT_URL.includes("วาง_URL_GOOGLE_APPS_SCRIPT_ที่นี่")) return;
-
+    // ฟังก์ชันซิงค์ข้อมูลสถิติเข้า Google Drive (โฟลเดอร์ FSGS) เก็บ 5 ครั้งล่าสุด
+    function syncStatsToGoogleDrive(showAlert = false) {
+      if (!currentUser) return;
       let totalDiv = 0;
       Object.values(currentUser.dividends || {}).forEach(d => totalDiv += d.totalTHB);
+
+      const recordNow = {
+        record_id: new Date().getTime(),
+        date_time: new Date().toLocaleString('th-TH', { hour12: false }),
+        username: currentUser.username,
+        role: currentUser.role,
+        balance_thb: currentUser.balanceTHB,
+        realized_pnl: 0,
+        total_dividend: totalDiv,
+        trades_count: (currentUser.trades || []).length,
+        portfolio_summary: currentUser.holdings || {}
+      };
+
+      if (!currentUser.gameHistory) currentUser.gameHistory = [];
+      currentUser.gameHistory.unshift(recordNow);
+      if (currentUser.gameHistory.length > 5) {
+        currentUser.gameHistory = currentUser.gameHistory.slice(0, 5);
+      }
+      users[currentUser.username] = currentUser;
+      saveUsers(users);
+      renderDashboard();
 
       const payload = {
         username: currentUser.username,
@@ -1083,15 +1237,27 @@
         body: JSON.stringify(payload)
       }).then(() => {
         console.log("บันทึกสถิติไปยัง Google Drive (FSGS) เรียบร้อย");
-      }).catch(e => console.warn("Sync stats failed:", e));
+        if (showAlert) alert("บันทึกรอบการเล่นลงตารางประวัติ และซิงค์เข้า Google Drive (โฟลเดอร์ FSGS) เรียบร้อย!");
+      }).catch(e => {
+        console.warn("Sync stats failed:", e);
+        if (showAlert) alert("บันทึกลงเครื่องสำเร็จ แต่การเชื่อมต่อ Google Drive ขัดข้อง");
+      });
     }
 
-    // Auto initialize on load
-    window.addEventListener('DOMContentLoaded', () => {
-      lucide.createIcons();
+    // Auto Run on Window Load
+    window.onload = function() {
+      if (window.lucide) {
+        try { lucide.createIcons(); } catch(e){}
+      }
       const savedFontSize = localStorage.getItem('fsgs_font_size') || 'normal';
       changeFontSize(savedFontSize);
-    });
+
+      const savedUser = sessionStorage.getItem('fsgs_active_user');
+      if (savedUser && users[savedUser]) {
+        currentUser = users[savedUser];
+        startSession();
+      }
+    };
   </script>
 </body>
 </html>
