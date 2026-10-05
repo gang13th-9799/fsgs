@@ -65,9 +65,8 @@
         </button>
       </div>
 
-      <div class="text-xs text-slate-500 flex justify-between pt-2">
-        <span>Admin: <b class="text-slate-400">admin</b> / รหัส: <b class="text-slate-400">00</b></span>
-        <span>สมาชิกใหม่รับทุน ฿30,000</span>
+      <div class="text-xs text-slate-500 text-center pt-2">
+        <span>สมาชิกใหม่รับทุนจำลองเริ่มต้น ฿30,000</span>
       </div>
     </div>
   </div>
@@ -86,7 +85,20 @@
 
       <!-- Controls -->
       <div class="flex items-center gap-3 flex-wrap">
-        <!-- Font Size Adjuster for 50+ -->
+        <!-- Live Countdown & Status Box -->
+        <div class="flex items-center bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700/60 gap-2.5">
+          <div class="flex items-center gap-1.5">
+            <span id="status-led" class="w-3 h-3 rounded-full bg-rose-500 inline-block shadow-sm"></span>
+            <span id="status-text" class="text-[11px] font-bold text-slate-300">หยุดจำลอง</span>
+          </div>
+          <div class="h-4 w-px bg-slate-700"></div>
+          <div class="flex items-center gap-1.5 text-xs font-mono">
+            <span class="text-slate-400 text-[11px]">ถัดไป:</span>
+            <span id="tick-countdown" class="font-bold text-amber-400">8.5s</span>
+          </div>
+        </div>
+
+        <!-- Font Size Scaler for 50+ -->
         <div class="flex items-center bg-slate-800 p-1 rounded-xl gap-1 text-xs">
           <span class="text-slate-400 px-1 font-semibold">ขนาดอักษร:</span>
           <button type="button" onclick="changeFontSize('normal')" id="fs-normal" class="px-2 py-1 bg-slate-700 text-white rounded font-bold">ปกติ</button>
@@ -121,16 +133,16 @@
     <div id="admin-bar" class="hidden bg-indigo-950/60 border-b border-indigo-900/50 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
       <div class="flex items-center gap-2">
         <span class="bg-indigo-600 text-white px-2 py-0.5 rounded font-bold">โหมดผู้ดูแลระบบ (Admin)</span>
-        <span class="text-slate-300">อัตราเวลา: 60 วินาที = 1 สัปดาห์</span>
+        <span class="text-slate-300">อัตราเวลา: 60 วินาทีจริง = 1 สัปดาห์จำลอง</span>
       </div>
       <div class="flex items-center gap-2">
-        <button type="button" onclick="adminStartSim()" id="btn-start" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1">
+        <button type="button" onclick="adminStartSim()" id="btn-start" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 transition">
           <i data-lucide="play" class="w-4 h-4"></i> เริ่มจำลองราคา
         </button>
-        <button type="button" onclick="adminPauseSim()" id="btn-pause" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1">
+        <button type="button" onclick="adminPauseSim()" id="btn-pause" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 transition">
           <i data-lucide="pause" class="w-4 h-4"></i> พักจำลอง
         </button>
-        <button type="button" onclick="openResetModal()" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1">
+        <button type="button" onclick="openResetModal()" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 transition">
           <i data-lucide="rotate-ccw" class="w-4 h-4"></i> รีเซ็ตและสุ่มใหม่
         </button>
       </div>
@@ -138,9 +150,10 @@
 
     <!-- Navigation Tabs -->
     <div class="bg-slate-900 border-b border-slate-800 px-4 flex gap-6 text-sm font-bold">
-      <button type="button" onclick="switchTab('trade')" id="tab-btn-trade" class="py-3 border-b-2 border-emerald-500 text-emerald-400">กระดานเทรดจำลอง</button>
-      <button type="button" onclick="switchTab('dashboard')" id="tab-btn-dash" class="py-3 border-b-2 border-transparent text-slate-400 hover:text-white">แดชบอร์ดสมาชิก & สรุปปันผล</button>
-      <button type="button" onclick="switchTab('admin-view')" id="tab-btn-admin" class="hidden py-3 border-b-2 border-transparent text-indigo-400 hover:text-white">ภาพรวมระบบ (Admin)</button>
+      <button type="button" onclick="switchTab('trade')" id="tab-btn-trade" class="py-3 border-b-2 border-emerald-500 text-emerald-400">1. กระดานเทรดจำลอง</button>
+      <button type="button" onclick="switchTab('holdings')" id="tab-btn-holdings" class="py-3 border-b-2 border-transparent text-slate-400 hover:text-white">2. สรุปพอร์ตการถือครอง</button>
+      <button type="button" onclick="switchTab('dashboard')" id="tab-btn-dash" class="py-3 border-b-2 border-transparent text-slate-400 hover:text-white">3. แดชบอร์ดสมาชิก & สรุปปันผล</button>
+      <button type="button" onclick="switchTab('admin-view')" id="tab-btn-admin" class="hidden py-3 border-b-2 border-transparent text-indigo-400 hover:text-white">4. ภาพรวมระบบ (Admin)</button>
     </div>
 
     <!-- Toast Notifications Container -->
@@ -161,7 +174,7 @@
         <div id="watchlist-list" class="flex-1 overflow-y-auto divide-y divide-slate-800/80 custom-scroll pr-1 mt-2"></div>
       </section>
 
-      <!-- Center: Chart & Positions -->
+      <!-- Center: Candlestick Chart -->
       <section class="lg:col-span-2 flex flex-col gap-4">
         <!-- Asset Header -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-wrap items-center justify-between gap-4">
@@ -184,34 +197,24 @@
           </div>
         </div>
 
-        <!-- Price Chart -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex-1 flex flex-col min-h-[380px]">
+        <!-- Candlestick Canvas Chart -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex-1 flex flex-col min-h-[440px]">
           <div class="flex justify-between items-center mb-2">
-            <span class="text-xs font-semibold text-slate-400">กราฟราคาย้อนหลังจำลอง</span>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-semibold text-slate-300">กราฟแท่งเทียนจำลอง (Candlestick)</span>
+              <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded font-bold">เขียว = ขึ้น</span>
+              <span class="text-[10px] bg-rose-500/20 text-rose-400 px-1.5 py-0.5 rounded font-bold">แดง = ลง</span>
+            </div>
             <span id="active-div-rate" class="text-xs text-amber-400 font-bold"></span>
           </div>
-          <div class="flex-1 relative w-full h-full min-h-[300px]">
-            <canvas id="tradeChart"></canvas>
+          <div class="flex-1 relative w-full h-full min-h-[350px]">
+            <canvas id="candleCanvas" class="w-full h-full block rounded-xl bg-slate-950/60"></canvas>
           </div>
-        </div>
-
-        <!-- Holdings Table -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
-          <h3 class="text-sm font-bold text-slate-300 mb-3">สรุปพอร์ตการถือครองของคุณ</h3>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs font-mono">
-              <thead class="bg-slate-800/80 text-slate-400">
-                <tr>
-                  <th class="p-2.5">สินทรัพย์</th>
-                  <th class="p-2.5">จำนวน</th>
-                  <th class="p-2.5">ต้นทุนเฉลี่ย</th>
-                  <th class="p-2.5">มูลค่าปัจจุบัน</th>
-                  <th class="p-2.5">กำไร/ขาดทุน</th>
-                  <th class="p-2.5 text-right">ดำเนินการ</th>
-                </tr>
-              </thead>
-              <tbody id="holdings-rows" class="divide-y divide-slate-800"></tbody>
-            </table>
+          <div id="candle-inspector" class="text-[11px] font-mono text-slate-400 mt-2 flex justify-between border-t border-slate-800/80 pt-2">
+            <span>Open: <b id="ins-open" class="text-white">-</b></span>
+            <span>High: <b id="ins-high" class="text-emerald-400">-</b></span>
+            <span>Low: <b id="ins-low" class="text-rose-400">-</b></span>
+            <span>Close: <b id="ins-close" class="text-white">-</b></span>
           </div>
         </div>
       </section>
@@ -258,7 +261,43 @@
       </section>
     </main>
 
-    <!-- 2. VIEW: MEMBER DASHBOARD -->
+    <!-- 2. VIEW: PORTFOLIO HOLDINGS (TAB #2) -->
+    <main id="view-holdings" class="hidden flex-1 p-4 max-w-7xl mx-auto w-full space-y-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+        <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="pie-chart" class="w-5 h-5 text-emerald-400"></i> สรุปพอร์ตการถือครองของคุณ (Holdings)
+            </h2>
+            <p class="text-xs text-slate-400 mt-0.5">รายการสินทรัพย์หุ้นและคริปโตทั้งหมดที่คุณกำลังถือครองอยู่</p>
+          </div>
+          <div class="text-right">
+            <span class="text-xs text-slate-400 block">มูลค่าพอร์ตรวมโดยประมาณ</span>
+            <span id="holdings-total-portfolio-val" class="text-xl font-bold font-mono text-emerald-400">฿0.00</span>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs font-mono">
+            <thead class="bg-slate-800/80 text-slate-400">
+              <tr>
+                <th class="p-3">สินทรัพย์</th>
+                <th class="p-3">ประเภท</th>
+                <th class="p-3">จำนวนที่ถือ</th>
+                <th class="p-3">ราคาต้นทุนเฉลี่ย</th>
+                <th class="p-3">ราคาตลาดปัจจุบัน</th>
+                <th class="p-3">มูลค่ารวมปัจจุบัน</th>
+                <th class="p-3">กำไร / ขาดทุน (P&L)</th>
+                <th class="p-3 text-right">ดำเนินการ</th>
+              </tr>
+            </thead>
+            <tbody id="holdings-rows" class="divide-y divide-slate-800"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <!-- 3. VIEW: MEMBER DASHBOARD -->
     <main id="view-dashboard" class="hidden flex-1 p-4 max-w-7xl mx-auto w-full space-y-5">
       <!-- Metric Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -299,15 +338,12 @@
 
       <!-- Tabbed History Card -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-        <!-- Sub-tabs switcher (flex container with flex-row) -->
+        <!-- Sub-tabs switcher -->
         <div class="flex items-center justify-between border-b border-slate-800 pb-3 flex-wrap gap-2">
           <div id="dash-subtabs-container" class="flex flex-wrap gap-2">
-            <!-- Normal Sub-tabs (แท็บอื่นๆ ที่เพิ่มเข้ามาในอนาคตจะอยู่ก่อนหน้าแท็บนี้) -->
             <button type="button" id="dash-btn-orders" onclick="activateSubTab('orders')" class="dash-subtab-btn px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white flex items-center gap-1.5 transition">
               <i data-lucide="list-ordered" class="w-4 h-4"></i> ประวัติการส่งคำสั่งซื้อ-ขาย
             </button>
-
-            <!-- แท็บนี้จะถูกตั้งค่า order-last เสมอ ไม่ว่าจะมีแท็บอื่นเพิ่มเข้ามาใหม่อีกกี่แท็บ -->
             <button type="button" id="dash-btn-history" onclick="activateSubTab('history')" class="dash-subtab-btn order-last px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:text-white flex items-center gap-1.5 transition border border-indigo-500/30">
               <i data-lucide="history" class="w-4 h-4 text-indigo-400"></i> สถิติรอบการเล่น (ย้อนหลัง 5 ครั้ง)
             </button>
@@ -317,7 +353,6 @@
 
         <!-- Sub-tab Content Area -->
         <div id="dash-subviews-container">
-          <!-- Content: Order Trades History -->
           <div id="dash-view-orders" class="dash-subview overflow-x-auto max-h-80 custom-scroll">
             <table class="w-full text-left text-xs font-mono">
               <thead class="bg-slate-800/80 text-slate-400 sticky top-0">
@@ -334,7 +369,6 @@
             </table>
           </div>
 
-          <!-- Content: Game Session History (Max 5 items) -->
           <div id="dash-view-history" class="dash-subview hidden overflow-x-auto">
             <table class="w-full text-left text-xs font-mono">
               <thead class="bg-slate-800/80 text-slate-400">
@@ -354,16 +388,64 @@
       </div>
     </main>
 
-    <!-- 3. VIEW: ADMIN OVERVIEW -->
-    <main id="view-admin" class="hidden flex-1 p-4 max-w-7xl mx-auto w-full space-y-4">
+    <!-- 4. VIEW: ADMIN OVERVIEW & MACROECONOMIC ERA -->
+    <main id="view-admin" class="hidden flex-1 p-4 max-w-7xl mx-auto w-full space-y-5">
+      <!-- Macro Era & Market Trend Overview -->
+      <div class="bg-gradient-to-r from-slate-900 to-indigo-950/60 border border-indigo-900/60 rounded-3xl p-6 shadow-xl space-y-4">
+        <div class="flex justify-between items-start flex-wrap gap-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white text-xs font-bold uppercase">Macroeconomic Regime</span>
+              <h2 id="admin-era-title" class="text-xl font-bold text-white">---</h2>
+            </div>
+            <p id="admin-era-years" class="text-xs text-indigo-300 font-semibold mt-1">ช่วงเวลาประวัติศาสตร์: ---</p>
+          </div>
+          <!-- Time Duration Comparison Card -->
+          <div class="bg-slate-900/90 border border-slate-700/80 px-4 py-2.5 rounded-2xl text-right font-mono text-xs space-y-1">
+            <div class="text-slate-400">เวลาจริงที่เปิดระบบ: <b id="real-elapsed-time" class="text-emerald-400">00:00:00</b></div>
+            <div class="text-slate-400">เวลาจำลองในระบบ: <b id="sim-elapsed-time" class="text-indigo-300">ปีที่ 1 สัปดาห์ที่ 1</b></div>
+          </div>
+        </div>
+
+        <!-- News Flash Summary -->
+        <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl">
+          <div class="flex items-center gap-2 text-amber-400 font-bold text-xs mb-1">
+            <i data-lucide="newspaper" class="w-4 h-4"></i> ข่าวสรุปสั้น & ปัจจัยชี้นำตลาดรอบนี้ (Catalyst Flash):
+          </div>
+          <p id="admin-era-news" class="text-xs text-slate-300 leading-relaxed"></p>
+        </div>
+
+        <!-- Asset Trends Breakdown (Bullish vs Bearish) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          <!-- Bullish -->
+          <div class="bg-emerald-950/30 border border-emerald-900/50 p-4 rounded-2xl">
+            <h3 class="text-xs font-bold text-emerald-400 flex items-center gap-1.5 mb-2.5">
+              <i data-lucide="trending-up" class="w-4 h-4"></i> สินทรัพย์แนวโน้มขาขึ้น (Bullish Bias 🟢)
+            </h3>
+            <div id="admin-bullish-list" class="space-y-1.5 text-xs font-mono"></div>
+          </div>
+
+          <!-- Bearish -->
+          <div class="bg-rose-950/30 border border-rose-900/50 p-4 rounded-2xl">
+            <h3 class="text-xs font-bold text-rose-400 flex items-center gap-1.5 mb-2.5">
+              <i data-lucide="trending-down" class="w-4 h-4"></i> สินทรัพย์แนวโน้มขาลง / เสี่ยงสูง (Bearish Bias 🔴)
+            </h3>
+            <div id="admin-bearish-list" class="space-y-1.5 text-xs font-mono"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Members Summary Table -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
-        <h3 class="text-sm font-bold text-indigo-400 mb-3">สรุปสมาชิกทั้งหมดในระบบ</h3>
+        <h3 class="text-sm font-bold text-indigo-400 mb-3 flex items-center gap-2">
+          <i data-lucide="users" class="w-4 h-4"></i> สรุปสมาชิกในระบบ (ไม่รวม Admin)
+        </h3>
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs font-mono">
             <thead class="bg-slate-800/80 text-slate-400">
               <tr>
                 <th class="p-2.5">ชื่อผู้ใช้งาน (Username)</th>
-                <th class="p-2.5">เงินคงเหลือ</th>
+                <th class="p-2.5">เงินสดคงเหลือ</th>
                 <th class="p-2.5">สินทรัพย์ในพอร์ต</th>
                 <th class="p-2.5">จำนวนไม้ที่เทรด</th>
               </tr>
@@ -383,7 +465,7 @@
         <h3 class="text-lg font-bold text-white">ยืนยันการรีเซ็ตการจำลอง?</h3>
       </div>
       <p class="text-sm text-slate-300 leading-relaxed">
-        ระบบจะหยุดรอบปัจจุบัน สุ่มสร้างหุ้นและคริปโตใหม่ 20 ตัว พร้อมสุ่มกรอบเวลาประวัติศาสตร์ใหม่อีกครั้ง
+        ระบบจะหยุดรอบปัจจุบัน สุ่มภาวะเศรษฐกิจประวัติศาสตร์ใหม่ สุ่มแนวโน้มหุ้น-คริปโต 20 ตัว และเริ่มนับเวลาใหม่
       </p>
       <div class="flex justify-end gap-3 pt-2">
         <button type="button" onclick="closeResetModal()" class="px-4 py-2 bg-slate-800 rounded-xl text-xs font-bold text-slate-300">ยกเลิก</button>
@@ -430,6 +512,7 @@
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzIesDWStmrzxzBlNefVftd1PRtKL3GIgfVYb4V_7zOKfGNujCwp_p-DjgVO5ZIYGy/exec";
 
     const USD_RATE = 35.0;
+    const TICK_INTERVAL_MS = 8500; // 8.5s ต่อการคำนวณราคา (60s ≈ 1 สัปดาห์)
     let currentCurrency = 'THB';
     let currentAuthTab = 'login';
     let currentUser = null;
@@ -437,9 +520,55 @@
     let currentFilter = 'all';
     let activeSymbol = null;
     let simInterval = null;
-    let tradeChart = null;
+    let countdownInterval = null;
+    let realTimeTimer = null;
+    let nextTickTimestamp = 0;
+    let realTimeElapsedSeconds = 0;
 
-    // Seed Data
+    // Macroeconomic Eras Database
+    const MACRO_ERAS = [
+      {
+        id: "dotcom_asia",
+        title: "วิกฤติต้มยำกุ้ง & ดอทคอมฟองสบู่แตก",
+        years: "1997 - 2002",
+        news: "ค่าเงินในเอเชียผันผวนรุนแรง ฟองสบู่หุ้นเทคโนโลยีในสหรัฐฯ แตก ส่งผลให้เงินทุนหนีออกจากสินทรัพย์เสี่ยงสูง มุ่งสู่สินทรัพย์ปลอดภัยที่มีกระแสเงินสดและปันผลมั่นคง",
+        bullishSectors: ["พลังงานสะอาด", "ขนส่งและโลจิสติกส์", "ค้าปลีกและอุปโภค"],
+        bearishSectors: ["AI & Cloud", "ชิปประมวลผล", "Layer-1 Blockchain", "DeFi Automated Market", "Meme Community"]
+      },
+      {
+        id: "brics_commodity",
+        title: "ยุคเฟื่องฟูกลุ่ม BRICs & วงจรสินค้าโภคภัณฑ์ขาขึ้น",
+        years: "2003 - 2007",
+        news: "เศรษฐกิจเกิดใหม่เติบโตแบบก้าวกระโดด ความต้องการพลังงาน อาหาร และการขนส่งพุ่งสูงทั่วโลก เงินเฟ้อเริ่มก่อตัว สินทรัพย์โครงสร้างพื้นฐานได้ประโยชน์สูงสุด",
+        bullishSectors: ["พลังงานสะอาด", "อาหารและฟาร์มแนวตั้ง", "ขนส่งและโลจิสติกส์", "Real World Asset"],
+        bearishSectors: ["ZK Privacy Token", "GameFi & Metaverse"]
+      },
+      {
+        id: "subprime_crisis",
+        title: "วิกฤติซับไพรม์ & วิกฤติการเงินโลก (Great Recession)",
+        years: "2008 - 2012",
+        news: "สถาบันการเงินยักษ์ใหญ่เผชิญปัญหาสภาพคล่อง ธนาคารกลางเริ่มใช้นโยบายพิมพ์เงิน QE ตลาดหุ้นร่วงหนักแต่สินทรัพย์ตั้งต้นอย่างคริปโตและทองคำเริ่มถูกจับตามอง",
+        bullishSectors: ["ขนส่งและโลจิสติกส์", "ค้าปลีกและอุปโภค", "ความปลอดภัยไซเบอร์"],
+        bearishSectors: ["การเงินดิจิทัล", "AI & Cloud", "DeFi Automated Market", "Cross-Chain Bridge"]
+      },
+      {
+        id: "tech_bull_qe",
+        title: "ยุคทองเทคโนโลยี ดอกเบี้ยต่ำพิเศษ & ยุคตื่นตัวคริปโต",
+        years: "2013 - 2021",
+        news: "ธนาคารกลางคงดอกเบี้ยต่ำ สภาพคล่องล้นระบบ หุ้นเทคโนโลยี AI คลาวด์ และสินทรัพย์ดิจิทัลคริปโตทะยานขึ้นอย่างไม่เคยปรากฏมาก่อน",
+        bullishSectors: ["AI & Cloud", "ชิปประมวลผล", "Smart Contract Hub", "Layer-1 Blockchain", "AI Computing Network", "Meme Community"],
+        bearishSectors: ["ค้าปลีกและอุปโภค", "ขนส่งและโลจิสติกส์"]
+      },
+      {
+        id: "inflation_ratehikes",
+        title: "เงินเฟ้อพุ่ง ดอกเบี้ยขาขึ้น & สงครามภูมิรัฐศาสตร์",
+        years: "2022 - ปัจจุบัน",
+        news: "สงครามและความตึงเครียดดันราคาน้ำมันและอาหารพุ่ง ธนาคารกลางเร่งขึ้นดอกเบี้ยเพื่อสกัดเงินเฟ้อ สินทรัพย์เก็งกำไรโดนเทขาย เน้นหุ้นปันผลและอุตสาหกรรมป้องกันประเทศ",
+        bullishSectors: ["อากาศยาน & อวกาศ", "พลังงานสะอาด", "ค้าปลีกและอุปโภค", "ความปลอดภัยไซเบอร์"],
+        bearishSectors: ["ชิปประมวลผล", "DeFi Automated Market", "GameFi & Metaverse", "Meme Community"]
+      }
+    ];
+
     const INITIAL_USERS = {
       admin: { password: '00', role: 'admin', balanceTHB: 1000000, holdings: {}, trades: [], dividends: {}, gameHistory: [] }
     };
@@ -474,23 +603,28 @@
       const res = {};
       stocks.forEach(s => {
         const p = Math.round((20 + Math.random() * 120) * 100) / 100;
-        res[s.sym] = { ...s, type: 'stock', priceUSD: p, history: generateHistory(p, 0.02 * s.r) };
+        res[s.sym] = { ...s, type: 'stock', priceUSD: p, candles: generateInitialCandles(p, 0.02 * s.r) };
       });
       cryptos.forEach(c => {
         const p = Math.round((5 + Math.random() * 500) * 100) / 100;
-        res[c.sym] = { ...c, type: 'crypto', priceUSD: p, history: generateHistory(p, 0.04 * (c.r - 5)) };
+        res[c.sym] = { ...c, type: 'crypto', priceUSD: p, candles: generateInitialCandles(p, 0.04 * (c.r - 5)) };
       });
       return res;
     }
 
-    function generateHistory(base, vol) {
-      const arr = [];
-      let p = base * 0.75;
-      for (let i = 0; i < 35; i++) {
-        p = Math.max(0.5, p * (1 + (Math.random() - 0.48) * vol));
-        arr.push(Math.round(p * 100) / 100);
+    function generateInitialCandles(basePrice, vol) {
+      const candles = [];
+      let cur = basePrice * 0.8;
+      for (let i = 0; i < 28; i++) {
+        const o = cur;
+        const change = (Math.random() - 0.48) * vol * o;
+        const c = Math.max(0.1, o + change);
+        const h = Math.max(o, c) + Math.random() * (vol * 0.6) * o;
+        const l = Math.max(0.05, Math.min(o, c) - Math.random() * (vol * 0.6) * o);
+        candles.push({ o: Math.round(o * 100) / 100, h: Math.round(h * 100) / 100, l: Math.round(l * 100) / 100, c: Math.round(c * 100) / 100 });
+        cur = c;
       }
-      return arr;
+      return candles;
     }
 
     function loadUsers() {
@@ -517,8 +651,19 @@
     }
     function saveAssets(a) { localStorage.setItem('fsgs_assets', JSON.stringify(a)); }
 
+    function loadCurrentEra() {
+      try {
+        const stored = localStorage.getItem('fsgs_macro_era');
+        return stored ? JSON.parse(stored) : MACRO_ERAS[0];
+      } catch(e) {
+        return MACRO_ERAS[0];
+      }
+    }
+    function saveCurrentEra(era) { localStorage.setItem('fsgs_macro_era', JSON.stringify(era)); }
+
     let users = loadUsers();
     let assets = loadAssets();
+    let currentEra = loadCurrentEra();
     let simWeek = parseInt(localStorage.getItem('fsgs_sim_week') || '1');
 
     function changeFontSize(size) {
@@ -592,7 +737,7 @@
           startSession();
           return;
         }
-        alertBox.innerText = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง (Admin: admin / 00)";
+        alertBox.innerText = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
         alertBox.className = "p-3 rounded-xl text-xs font-semibold bg-rose-500/20 text-rose-400 border border-rose-500/30";
         alertBox.classList.remove('hidden');
       } else {
@@ -639,19 +784,22 @@
       const syms = Object.keys(assets);
       activeSymbol = syms[0];
 
-      initChart();
       renderWatchlist();
       selectAsset(activeSymbol);
       updateUserBalances();
       renderHoldings();
       renderDashboard();
+      renderAdminEraInfo();
 
       if (window.lucide) {
         try { lucide.createIcons(); } catch(e){}
       }
 
+      // เริ่มจับเวลาจริง
+      startRealTimeClock();
+
       if (isAdmin && !simInterval) {
-        adminStartSim();
+        setLedStatus('stopped');
       }
     }
 
@@ -695,7 +843,9 @@
       container.innerHTML = '';
       Object.values(assets).forEach(a => {
         if (currentFilter !== 'all' && a.type !== currentFilter) return;
-        const change = ((a.history[a.history.length - 1] - a.history[a.history.length - 2]) / a.history[a.history.length - 2]) * 100;
+        const lastCandle = a.candles[a.candles.length - 1];
+        const prevCandle = a.candles[a.candles.length - 2] || lastCandle;
+        const change = ((lastCandle.c - prevCandle.c) / prevCandle.c) * 100;
         const isUp = change >= 0;
 
         const div = document.createElement('div');
@@ -711,7 +861,7 @@
               <div class="text-[11px] text-slate-400 truncate max-w-[130px]">${a.name}</div>
             </div>
             <div class="text-right">
-              <div class="font-bold font-mono text-sm ${isUp ? 'text-emerald-400' : 'text-rose-400'}">${formatMoney(a.priceUSD * (currentCurrency === 'USD' ? 1 : USD_RATE))}</div>
+              <div class="font-bold font-mono text-sm ${isUp ? 'text-emerald-400' : 'text-rose-400'}">${formatMoney(lastCandle.c * (currentCurrency === 'USD' ? 1 : USD_RATE))}</div>
               <div class="text-[11px] font-mono ${isUp ? 'text-emerald-500' : 'text-rose-500'} font-semibold">${isUp ? '+' : ''}${change.toFixed(2)}%</div>
             </div>
           </div>
@@ -742,60 +892,104 @@
       document.getElementById('active-risk-badge').innerHTML = getRiskBadge(a.r);
       document.getElementById('active-div-rate').innerText = a.d > 0 ? `💰 ผลตอบแทนปันผล/ปี: ${(a.d * 100).toFixed(1)}%` : 'ไม่มีนโยบายปันผล';
 
-      const change = ((a.history[a.history.length - 1] - a.history[a.history.length - 2]) / a.history[a.history.length - 2]) * 100;
+      const lastCandle = a.candles[a.candles.length - 1];
+      const prevCandle = a.candles[a.candles.length - 2] || lastCandle;
+      const change = ((lastCandle.c - prevCandle.c) / prevCandle.c) * 100;
       const isUp = change >= 0;
-      const priceText = formatMoney(a.priceUSD * (currentCurrency === 'USD' ? 1 : USD_RATE));
+      const priceText = formatMoney(lastCandle.c * (currentCurrency === 'USD' ? 1 : USD_RATE));
+
       document.getElementById('active-price').innerText = priceText;
       document.getElementById('active-change').innerText = `${isUp ? '+' : ''}${change.toFixed(2)}%`;
       document.getElementById('active-change').className = `text-xs font-mono font-semibold ${isUp ? 'text-emerald-500' : 'text-rose-500'}`;
 
       document.getElementById('order-unit-price').innerText = priceText;
       calcOrderTotal();
-      updateChart(a);
+      drawCandlestickChart(a);
       renderWatchlist();
     }
 
-    function initChart() {
-      const canvas = document.getElementById('tradeChart');
+    /* =========================================================================
+       HTML5 Canvas Candlestick Chart Renderer (เขียว / แดง ชัดเจน)
+       ========================================================================= */
+    function drawCandlestickChart(asset) {
+      const canvas = document.getElementById('candleCanvas');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
-      if (tradeChart) {
-        tradeChart.destroy();
-      }
-      tradeChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: Array.from({ length: 35 }, (_, i) => `W${i + 1}`),
-          datasets: [{
-            data: [],
-            borderColor: '#10b981',
-            backgroundColor: 'rgba(16, 185, 129, 0.08)',
-            borderWidth: 2.5,
-            fill: true,
-            tension: 0.25,
-            pointRadius: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            x: { grid: { color: 'rgba(51, 65, 85, 0.2)' }, ticks: { color: '#64748b' } },
-            y: { grid: { color: 'rgba(51, 65, 85, 0.2)' }, ticks: { color: '#64748b' } }
-          }
-        }
-      });
-    }
 
-    function updateChart(a) {
-      if (!tradeChart) return;
+      // ปรับความคมชัด Retina/HiDPI
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+
+      const w = rect.width;
+      const h = rect.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const candles = asset.candles || [];
+      if (candles.length === 0) return;
+
       const mult = currentCurrency === 'USD' ? 1 : USD_RATE;
-      tradeChart.data.datasets[0].data = a.history.map(p => Math.round(p * mult * 100) / 100);
-      const isUp = a.history[a.history.length - 1] >= a.history[a.history.length - 2];
-      tradeChart.data.datasets[0].borderColor = isUp ? '#10b981' : '#f43f5e';
-      tradeChart.data.datasets[0].backgroundColor = isUp ? 'rgba(16, 185, 129, 0.08)' : 'rgba(244, 63, 94, 0.08)';
-      tradeChart.update();
+      let minP = Math.min(...candles.map(c => c.l * mult));
+      let maxP = Math.max(...candles.map(c => c.h * mult));
+      const pad = (maxP - minP) * 0.1 || 1;
+      minP -= pad;
+      maxP += pad;
+
+      const getY = (val) => h - ((val - minP) / (maxP - minP)) * (h - 40) - 20;
+
+      // Draw Grid Lines
+      ctx.strokeStyle = 'rgba(51, 65, 85, 0.3)';
+      ctx.lineWidth = 1;
+      for (let i = 1; i <= 4; i++) {
+        const yLine = (h / 5) * i;
+        ctx.beginPath();
+        ctx.moveTo(0, yLine);
+        ctx.lineTo(w, yLine);
+        ctx.stroke();
+
+        const pVal = maxP - (i / 5) * (maxP - minP);
+        ctx.fillStyle = '#64748b';
+        ctx.font = '10px monospace';
+        ctx.fillText(formatMoney(pVal * (currentCurrency === 'USD' ? USD_RATE : 1)), 8, yLine - 4);
+      }
+
+      // Draw Candlesticks
+      const candleWidth = Math.max(4, Math.floor((w - 40) / candles.length) - 4);
+      const stepX = (w - 20) / candles.length;
+
+      candles.forEach((c, i) => {
+        const x = 15 + i * stepX;
+        const openY = getY(c.o * mult);
+        const closeY = getY(c.c * mult);
+        const highY = getY(c.h * mult);
+        const lowY = getY(c.l * mult);
+        const isBull = c.c >= c.o;
+
+        const color = isBull ? '#10b981' : '#f43f5e';
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+
+        // ไส้เทียน (Wick)
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(x + candleWidth / 2, highY);
+        ctx.lineTo(x + candleWidth / 2, lowY);
+        ctx.stroke();
+
+        // ตัวเทียน (Candle Body)
+        const top = Math.min(openY, closeY);
+        const bodyHeight = Math.max(2, Math.abs(closeY - openY));
+        ctx.fillRect(x, top, candleWidth, bodyHeight);
+      });
+
+      // อัปเดตข้อมูลกล่อง Inspector
+      const last = candles[candles.length - 1];
+      document.getElementById('ins-open').innerText = formatMoney(last.o * mult);
+      document.getElementById('ins-high').innerText = formatMoney(last.h * mult);
+      document.getElementById('ins-low').innerText = formatMoney(last.l * mult);
+      document.getElementById('ins-close').innerText = formatMoney(last.c * mult);
     }
 
     function setSide(s) {
@@ -818,13 +1012,14 @@
     function calcOrderTotal() {
       const a = assets[activeSymbol];
       if (!a) return;
+      const lastPrice = a.candles[a.candles.length - 1].c;
       const qty = parseFloat(document.getElementById('input-qty').value) || 0;
-      document.getElementById('order-total-price').innerText = formatMoney(qty * a.priceUSD * USD_RATE);
+      document.getElementById('order-total-price').innerText = formatMoney(qty * lastPrice * USD_RATE);
 
       const holdingQty = (currentUser && currentUser.holdings && currentUser.holdings[activeSymbol]) ? currentUser.holdings[activeSymbol].qty : 0;
       if (currentSide === 'buy') {
         const bal = currentUser ? currentUser.balanceTHB : 0;
-        const maxBuy = Math.floor(bal / (a.priceUSD * USD_RATE));
+        const maxBuy = Math.floor(bal / (lastPrice * USD_RATE));
         document.getElementById('label-max-order').innerText = `ซื้อได้สูงสุด: ${maxBuy}`;
       } else {
         document.getElementById('label-max-order').innerText = `มีให้ขาย: ${holdingQty}`;
@@ -836,7 +1031,8 @@
       const qty = parseFloat(document.getElementById('input-qty').value);
       if (!qty || qty <= 0) { alert("กรุณาระบุจำนวนให้ถูกต้อง"); return; }
 
-      const totalCostTHB = qty * a.priceUSD * USD_RATE;
+      const lastPrice = a.candles[a.candles.length - 1].c;
+      const totalCostTHB = qty * lastPrice * USD_RATE;
 
       if (currentSide === 'buy') {
         if (currentUser.balanceTHB < totalCostTHB) {
@@ -865,7 +1061,7 @@
         week: `สัปดาห์ที่ ${simWeek}`,
         side: currentSide,
         sym: activeSymbol,
-        priceTHB: a.priceUSD * USD_RATE,
+        priceTHB: lastPrice * USD_RATE,
         qty: qty,
         totalTHB: totalCostTHB
       });
@@ -887,41 +1083,51 @@
       document.getElementById('user-balance-display').innerText = formatMoney(currentUser.balanceTHB);
     }
 
+    /* Holdings Tab (#2) */
     function renderHoldings() {
       const tbody = document.getElementById('holdings-rows');
       if (!tbody) return;
       tbody.innerHTML = '';
       const hEntries = Object.entries(currentUser.holdings || {});
+      let totalPortfolioValTHB = currentUser.balanceTHB;
+
       if (hEntries.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500">ยังไม่มีสินทรัพย์ในพอร์ต</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-500">ขณะนี้คุณยังไม่มีสินทรัพย์ในพอร์ตการลงทุน (สามารถเลือกซื้อได้จากหน้ากระดานเทรด)</td></tr>`;
+        document.getElementById('holdings-total-portfolio-val').innerText = formatMoney(totalPortfolioValTHB);
         return;
       }
 
       hEntries.forEach(([sym, h]) => {
         const a = assets[sym];
         if (!a) return;
-        const curPriceTHB = a.priceUSD * USD_RATE;
+        const curPriceTHB = a.candles[a.candles.length - 1].c * USD_RATE;
         const curValTHB = h.qty * curPriceTHB;
+        totalPortfolioValTHB += curValTHB;
         const pnlTHB = curValTHB - (h.qty * h.costTHB);
         const pnlPct = ((curPriceTHB - h.costTHB) / h.costTHB) * 100;
         const isUp = pnlTHB >= 0;
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td class="p-2.5 font-bold text-white">${sym}</td>
-          <td class="p-2.5">${h.qty}</td>
-          <td class="p-2.5">${formatMoney(h.costTHB)}</td>
-          <td class="p-2.5">${formatMoney(curValTHB)}</td>
-          <td class="p-2.5 ${isUp ? 'text-emerald-400' : 'text-rose-400'} font-semibold">${isUp ? '+' : ''}${formatMoney(pnlTHB)} (${pnlPct.toFixed(2)}%)</td>
-          <td class="p-2.5 text-right">
-            <button type="button" onclick="sellAllHolding('${sym}')" class="px-2.5 py-1 bg-rose-600/30 hover:bg-rose-600 text-rose-300 hover:text-white rounded text-[11px] font-bold">ขายทั้งหมด</button>
+          <td class="p-3 font-bold text-white">${sym} <span class="text-xs text-slate-400 block">${a.name}</span></td>
+          <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] bg-slate-800 uppercase font-semibold text-slate-300">${a.type}</span></td>
+          <td class="p-3 font-bold text-slate-200">${h.qty}</td>
+          <td class="p-3">${formatMoney(h.costTHB)}</td>
+          <td class="p-3 text-white font-bold">${formatMoney(curPriceTHB)}</td>
+          <td class="p-3 font-bold text-slate-100">${formatMoney(curValTHB)}</td>
+          <td class="p-3 ${isUp ? 'text-emerald-400' : 'text-rose-400'} font-bold">${isUp ? '+' : ''}${formatMoney(pnlTHB)} (${pnlPct.toFixed(2)}%)</td>
+          <td class="p-3 text-right">
+            <button type="button" onclick="sellAllHolding('${sym}')" class="px-3 py-1.5 bg-rose-600/30 hover:bg-rose-600 text-rose-300 hover:text-white rounded-lg text-xs font-bold transition">ขายทั้งหมด</button>
           </td>
         `;
         tbody.appendChild(tr);
       });
+
+      document.getElementById('holdings-total-portfolio-val').innerText = formatMoney(totalPortfolioValTHB);
     }
 
     function sellAllHolding(sym) {
+      switchTab('trade');
       selectAsset(sym);
       setSide('sell');
       document.getElementById('input-qty').value = currentUser.holdings[sym].qty;
@@ -929,35 +1135,175 @@
       submitTradeOrder();
     }
 
+    /* =========================================================================
+       Simulation Engine & LED State Controller
+       ========================================================================= */
+    function setLedStatus(state) {
+      const led = document.getElementById('status-led');
+      const text = document.getElementById('status-text');
+      const btnStart = document.getElementById('btn-start');
+
+      if (state === 'running') {
+        led.className = "w-3 h-3 rounded-full bg-emerald-500 inline-block animate-ping shadow-[0_0_8px_#10b981]";
+        text.innerText = "กำลังจำลองราคา";
+        text.className = "text-[11px] font-bold text-emerald-400";
+        // ปุ่มเริ่มเปลี่ยนเป็นสีเทาและกดไม่ได้
+        btnStart.className = "bg-slate-700 text-slate-400 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 cursor-not-allowed";
+        btnStart.disabled = true;
+      } else if (state === 'paused') {
+        led.className = "w-3 h-3 rounded-full bg-amber-500 inline-block shadow-[0_0_8px_#f59e0b]";
+        text.innerText = "พักการจำลอง";
+        text.className = "text-[11px] font-bold text-amber-400";
+        btnStart.className = "bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 transition";
+        btnStart.disabled = false;
+      } else {
+        led.className = "w-3 h-3 rounded-full bg-rose-500 inline-block shadow-[0_0_8px_#f43f5e]";
+        text.innerText = "หยุด / รีเซ็ต";
+        text.className = "text-[11px] font-bold text-rose-400";
+        btnStart.className = "bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 transition";
+        btnStart.disabled = false;
+      }
+    }
+
     function adminStartSim() {
       if (simInterval) return;
+      setLedStatus('running');
+      nextTickTimestamp = Date.now() + TICK_INTERVAL_MS;
+
+      // เริ่มการนับถอยหลังตัวเลข
+      startCountdownTimer();
+
       simInterval = setInterval(() => {
-        simWeek++;
-        localStorage.setItem('fsgs_sim_week', simWeek.toString());
-
-        Object.values(assets).forEach(a => {
-          const vol = a.type === 'crypto' ? 0.05 * (a.r - 4) : 0.02 * a.r;
-          const drift = (Math.random() - 0.49) * vol;
-          a.priceUSD = Math.max(0.1, a.priceUSD * (1 + drift));
-          a.history.push(Math.round(a.priceUSD * 100) / 100);
-          if (a.history.length > 50) a.history.shift();
-        });
-        saveAssets(assets);
-
-        if (simWeek % 12 === 0) {
-          distributeDividends();
-        }
-
-        renderWatchlist();
-        selectAsset(activeSymbol);
-        renderHoldings();
-        renderDashboard();
-      }, 8500);
+        executeSimulationTick();
+        nextTickTimestamp = Date.now() + TICK_INTERVAL_MS;
+      }, TICK_INTERVAL_MS);
     }
 
     function adminPauseSim() {
       clearInterval(simInterval);
+      clearInterval(countdownInterval);
       simInterval = null;
+      countdownInterval = null;
+      setLedStatus('paused');
+      document.getElementById('tick-countdown').innerText = "พัก";
+    }
+
+    function startCountdownTimer() {
+      clearInterval(countdownInterval);
+      countdownInterval = setInterval(() => {
+        if (!simInterval) return;
+        const remaining = Math.max(0, nextTickTimestamp - Date.now());
+        document.getElementById('tick-countdown').innerText = (remaining / 1000).toFixed(1) + 's';
+      }, 100);
+    }
+
+    function executeSimulationTick() {
+      simWeek++;
+      localStorage.setItem('fsgs_sim_week', simWeek.toString());
+
+      // คำนวณราคา Candlestick ใหม่ตาม Macro Regime
+      Object.values(assets).forEach(a => {
+        const last = a.candles[a.candles.length - 1];
+        const openPrice = last.c;
+        const isBullishSector = currentEra.bullishSectors.includes(a.sec);
+        const isBearishSector = currentEra.bearishSectors.includes(a.sec);
+
+        let biasDrift = 0;
+        if (isBullishSector) biasDrift = 0.015;
+        if (isBearishSector) biasDrift = -0.015;
+
+        const vol = a.type === 'crypto' ? 0.05 * (a.r - 4) : 0.02 * a.r;
+        const pctChange = ((Math.random() - 0.48) * vol) + biasDrift;
+        const closePrice = Math.max(0.1, openPrice * (1 + pctChange));
+
+        const highPrice = Math.max(openPrice, closePrice) + (Math.random() * vol * 0.5 * openPrice);
+        const lowPrice = Math.max(0.05, Math.min(openPrice, closePrice) - (Math.random() * vol * 0.5 * openPrice));
+
+        a.candles.push({
+          o: Math.round(openPrice * 100) / 100,
+          h: Math.round(highPrice * 100) / 100,
+          l: Math.round(lowPrice * 100) / 100,
+          c: Math.round(closePrice * 100) / 100
+        });
+
+        if (a.candles.length > 35) a.candles.shift();
+      });
+
+      saveAssets(assets);
+
+      if (simWeek % 12 === 0) {
+        distributeDividends();
+      }
+
+      renderWatchlist();
+      selectAsset(activeSymbol);
+      renderHoldings();
+      renderDashboard();
+      updateSimTimeDisplay();
+    }
+
+    /* Live Real Time & Sim Time Tracker */
+    function startRealTimeClock() {
+      if (realTimeTimer) clearInterval(realTimeTimer);
+      realTimeTimer = setInterval(() => {
+        realTimeElapsedSeconds++;
+        const hrs = String(Math.floor(realTimeElapsedSeconds / 3600)).padStart(2, '0');
+        const mins = String(Math.floor((realTimeElapsedSeconds % 3600) / 60)).padStart(2, '0');
+        const secs = String(realTimeElapsedSeconds % 60).padStart(2, '0');
+        const el = document.getElementById('real-elapsed-time');
+        if (el) el.innerText = `${hrs}:${mins}:${secs}`;
+      }, 1000);
+    }
+
+    function updateSimTimeDisplay() {
+      const year = Math.floor((simWeek - 1) / 48) + 1;
+      const weekInYear = ((simWeek - 1) % 48) + 1;
+      const el = document.getElementById('sim-elapsed-time');
+      if (el) el.innerText = `ปีที่ ${year} สัปดาห์ที่ ${weekInYear} (รวม ${simWeek} สัปดาห์)`;
+    }
+
+    /* Admin Macro Era & Trend Analysis Renderer */
+    function renderAdminEraInfo() {
+      document.getElementById('admin-era-title').innerText = currentEra.title;
+      document.getElementById('admin-era-years').innerText = `ช่วงเวลาประวัติศาสตร์: ${currentEra.years}`;
+      document.getElementById('admin-era-news').innerText = currentEra.news;
+
+      const bullishList = document.getElementById('admin-bullish-list');
+      const bearishList = document.getElementById('admin-bearish-list');
+      bullishList.innerHTML = '';
+      bearishList.innerHTML = '';
+
+      Object.values(assets).forEach(a => {
+        const isBull = currentEra.bullishSectors.includes(a.sec);
+        const isBear = currentEra.bearishSectors.includes(a.sec);
+
+        if (isBull) {
+          const row = document.createElement('div');
+          row.className = "flex justify-between items-center bg-slate-900/60 p-2 rounded-xl border border-emerald-900/40";
+          row.innerHTML = `
+            <div>
+              <b class="text-white">${a.sym}</b> <span class="text-slate-400 text-[11px]">${a.name}</span>
+              <span class="text-[10px] text-emerald-400 block">หมวดหมู่: ${a.sec}</span>
+            </div>
+            <span class="text-[11px] font-bold text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded">Bullish 🟢</span>
+          `;
+          bullishList.appendChild(row);
+        } else if (isBear) {
+          const row = document.createElement('div');
+          row.className = "flex justify-between items-center bg-slate-900/60 p-2 rounded-xl border border-rose-900/40";
+          row.innerHTML = `
+            <div>
+              <b class="text-white">${a.sym}</b> <span class="text-slate-400 text-[11px]">${a.name}</span>
+              <span class="text-[10px] text-rose-400 block">หมวดหมู่: ${a.sec}</span>
+            </div>
+            <span class="text-[11px] font-bold text-rose-400 bg-rose-500/20 px-2 py-0.5 rounded">Bearish 🔴</span>
+          `;
+          bearishList.appendChild(row);
+        }
+      });
+
+      if (bullishList.children.length === 0) bullishList.innerHTML = '<span class="text-slate-500 text-xs">ไม่มีสินทรัพย์ที่ได้ประโยชน์เด่นชัด</span>';
+      if (bearishList.children.length === 0) bearishList.innerHTML = '<span class="text-slate-500 text-xs">ไม่มีสินทรัพย์ที่รับแรงกดดันรุนแรง</span>';
     }
 
     function openResetModal() { document.getElementById('modal-reset').classList.remove('hidden'); }
@@ -965,18 +1311,28 @@
 
     function confirmResetSim() {
       adminPauseSim();
+      setLedStatus('stopped');
+
+      // ขายคืนเป็นเงินสดให้ผู้เล่นทุกคน
       Object.keys(users).forEach(u => {
         const usr = users[u];
         Object.entries(usr.holdings || {}).forEach(([sym, h]) => {
-          if (assets[sym]) usr.balanceTHB += h.qty * assets[sym].priceUSD * USD_RATE;
+          if (assets[sym]) usr.balanceTHB += h.qty * assets[sym].candles[assets[sym].candles.length - 1].c * USD_RATE;
         });
         usr.holdings = {};
       });
 
+      // สุ่ม Macro Era และสินทรัพย์ใหม่
+      const randomIndex = Math.floor(Math.random() * MACRO_ERAS.length);
+      currentEra = MACRO_ERAS[randomIndex];
+      saveCurrentEra(currentEra);
+
       assets = generate20Assets();
       saveAssets(assets);
       saveUsers(users);
+
       simWeek = 1;
+      realTimeElapsedSeconds = 0;
       localStorage.setItem('fsgs_sim_week', '1');
 
       closeResetModal();
@@ -984,7 +1340,9 @@
       renderWatchlist();
       renderHoldings();
       renderDashboard();
-      alert("รีเซ็ตระบบและสุ่มสร้าง 20 สินทรัพย์ใหม่เรียบร้อยแล้ว!");
+      renderAdminEraInfo();
+      updateSimTimeDisplay();
+      alert(`รีเซ็ตระบบสำเร็จ! สุ่มได้ยุคประวัติศาสตร์: "${currentEra.title}" พร้อมอัปเดตแนวโน้มและข่าวด่วนเรียบร้อย`);
     }
 
     function distributeDividends() {
@@ -993,7 +1351,8 @@
         Object.entries(usr.holdings || {}).forEach(([sym, h]) => {
           const a = assets[sym];
           if (a && a.d > 0 && h.qty > 0) {
-            const divAmount = (h.qty * a.priceUSD * USD_RATE) * (a.d / 4);
+            const lastPrice = a.candles[a.candles.length - 1].c;
+            const divAmount = (h.qty * lastPrice * USD_RATE) * (a.d / 4);
             usr.balanceTHB += divAmount;
             if (!usr.dividends[sym]) usr.dividends[sym] = { count: 0, totalTHB: 0, lastWeek: '' };
             usr.dividends[sym].count += 1;
@@ -1026,11 +1385,7 @@
       setTimeout(() => toast.remove(), 6000);
     }
 
-    // =========================================================================
-    // Dynamic Sub-tab Controller: แท็บ "สถิติรอบการเล่น (ย้อนหลัง 5 ครั้ง)" อยู่ท้ายสุดเสมอ
-    // =========================================================================
     function activateSubTab(selectedId) {
-      // 1. จัดการปุ่มทั้งหมด
       const allButtons = document.querySelectorAll('.dash-subtab-btn');
       allButtons.forEach(btn => {
         btn.classList.remove('bg-emerald-600', 'text-white');
@@ -1043,16 +1398,12 @@
         activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
       }
 
-      // 2. จัดการส่วนแสดงผลทั้งหมด
       const allViews = document.querySelectorAll('.dash-subview');
       allViews.forEach(v => v.classList.add('hidden'));
 
       const activeView = document.getElementById(`dash-view-${selectedId}`);
-      if (activeView) {
-        activeView.classList.remove('hidden');
-      }
+      if (activeView) activeView.classList.remove('hidden');
 
-      // 3. กฎเหล็ก: ล็อกให้ปุ่มประวัติย้อนหลัง 5 ครั้งอยู่ท้ายสุดเสมอ แม้มีแท็บใหม่แทรกเข้ามา
       ensureHistoryTabIsLast();
     }
 
@@ -1072,7 +1423,8 @@
       let unrealized = 0;
       Object.entries(currentUser.holdings || {}).forEach(([sym, h]) => {
         if (assets[sym]) {
-          unrealized += (h.qty * assets[sym].priceUSD * USD_RATE) - (h.qty * h.costTHB);
+          const lastPrice = assets[sym].candles[assets[sym].candles.length - 1].c;
+          unrealized += (h.qty * lastPrice * USD_RATE) - (h.qty * h.costTHB);
         }
       });
 
@@ -1081,7 +1433,7 @@
       document.getElementById('dash-unrealized').className = `text-2xl font-bold font-mono mt-1 ${unrealized >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
       document.getElementById('dash-dividend').innerText = formatMoney(totalDiv);
 
-      // 1. Dividend Rows
+      // Dividend Rows
       const divBody = document.getElementById('dividend-rows');
       if (divBody) {
         divBody.innerHTML = '';
@@ -1104,7 +1456,7 @@
         }
       }
 
-      // 2. Game Sessions History (5 records)
+      // Game Sessions History
       const gameHistoryBody = document.getElementById('game-history-rows');
       if (gameHistoryBody) {
         gameHistoryBody.innerHTML = '';
@@ -1128,7 +1480,7 @@
         }
       }
 
-      // 3. Trade Orders History
+      // Trade Orders History
       const hBody = document.getElementById('trade-history-rows');
       if (hBody) {
         hBody.innerHTML = '';
@@ -1151,7 +1503,7 @@
         }
       }
 
-      // 4. Admin Members Overview Table
+      // Admin Members Overview Table
       const adminBody = document.getElementById('admin-members-rows');
       if (adminBody) {
         adminBody.innerHTML = '';
@@ -1172,10 +1524,12 @@
 
     function switchTab(t) {
       document.getElementById('view-trade').classList.toggle('hidden', t !== 'trade');
+      document.getElementById('view-holdings').classList.toggle('hidden', t !== 'holdings');
       document.getElementById('view-dashboard').classList.toggle('hidden', t !== 'dashboard');
       document.getElementById('view-admin').classList.toggle('hidden', t !== 'admin-view');
 
       document.getElementById('tab-btn-trade').className = t === 'trade' ? "py-3 border-b-2 border-emerald-500 text-emerald-400" : "py-3 border-b-2 border-transparent text-slate-400 hover:text-white";
+      document.getElementById('tab-btn-holdings').className = t === 'holdings' ? "py-3 border-b-2 border-emerald-500 text-emerald-400" : "py-3 border-b-2 border-transparent text-slate-400 hover:text-white";
       document.getElementById('tab-btn-dash').className = t === 'dashboard' ? "py-3 border-b-2 border-emerald-500 text-emerald-400" : "py-3 border-b-2 border-transparent text-slate-400 hover:text-white";
       document.getElementById('tab-btn-admin').className = t === 'admin-view' ? "py-3 border-b-2 border-indigo-500 text-indigo-400" : "py-3 border-b-2 border-transparent text-indigo-400 hover:text-white";
     }
@@ -1193,7 +1547,6 @@
     }
     function closeDescModal() { document.getElementById('modal-desc').classList.add('hidden'); }
 
-    // ฟังก์ชันซิงค์ข้อมูลสถิติเข้า Google Drive (โฟลเดอร์ FSGS) เก็บ 5 ครั้งล่าสุด
     function syncStatsToGoogleDrive(showAlert = false) {
       if (!currentUser) return;
       let totalDiv = 0;
@@ -1244,7 +1597,6 @@
       });
     }
 
-    // Auto Run on Window Load
     window.onload = function() {
       if (window.lucide) {
         try { lucide.createIcons(); } catch(e){}
