@@ -22,7 +22,7 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between custom-scroll">
 
-  <!-- ================= AUTH VIEW (LOGIN / REGISTER) ================= -->
+  <!-- ================= AUTH VIEW ================= -->
   <div id="auth-screen" class="min-h-screen flex items-center justify-center p-4 bg-slate-950">
     <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
       <div class="text-center space-y-2">
@@ -133,7 +133,7 @@
     <div id="admin-bar" class="hidden bg-indigo-950/60 border-b border-indigo-900/50 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
       <div class="flex items-center gap-2">
         <span class="bg-indigo-600 text-white px-2 py-0.5 rounded font-bold">โหมดผู้ดูแลระบบ (Admin)</span>
-        <span class="text-slate-300">อัตราเวลา: 60 วินาทีจริง = 1 สัปดาห์จำลอง</span>
+        <span class="text-slate-300">อัตราเวลา: 60 วินาทีจริง = 1 สัปดาห์จำลอง (เวลาเดินต่อเนื่องอัตโนมัติ)</span>
       </div>
       <div class="flex items-center gap-2">
         <button type="button" onclick="adminStartSim()" id="btn-start" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 transition">
@@ -176,7 +176,6 @@
 
       <!-- Center: Candlestick Chart -->
       <section class="lg:col-span-2 flex flex-col gap-4">
-        <!-- Asset Header -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-wrap items-center justify-between gap-4">
           <div>
             <div class="flex items-center gap-2 flex-wrap">
@@ -197,7 +196,6 @@
           </div>
         </div>
 
-        <!-- Candlestick Canvas Chart -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex-1 flex flex-col min-h-[440px]">
           <div class="flex justify-between items-center mb-2">
             <div class="flex items-center gap-2">
@@ -235,7 +233,6 @@
             <input type="number" id="input-qty" oninput="calcOrderTotal()" step="any" min="0.001" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-3 text-lg font-bold text-white font-mono" />
           </div>
 
-          <!-- Stepper Buttons for 50+ -->
           <div class="grid grid-cols-4 gap-2">
             <button type="button" onclick="stepQty(-10)" class="bg-slate-800 hover:bg-slate-700 py-2 rounded-lg text-xs font-bold text-slate-300">-10</button>
             <button type="button" onclick="stepQty(-1)" class="bg-slate-800 hover:bg-slate-700 py-2 rounded-lg text-xs font-bold text-slate-300">-1</button>
@@ -299,7 +296,6 @@
 
     <!-- 3. VIEW: MEMBER DASHBOARD -->
     <main id="view-dashboard" class="hidden flex-1 p-4 max-w-7xl mx-auto w-full space-y-5">
-      <!-- Metric Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
           <div class="text-xs text-slate-400">กำไร/ขาดทุนสะสมที่ขายแล้ว (Realized P&L)</div>
@@ -315,7 +311,6 @@
         </div>
       </div>
 
-      <!-- Dividend Table -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
         <h3 class="text-sm font-bold text-amber-400 mb-3 flex items-center gap-2">
           <i data-lucide="coins" class="w-5 h-5"></i> สรุปการรับเงินปันผลรายสินทรัพย์
@@ -336,9 +331,7 @@
         </div>
       </div>
 
-      <!-- Tabbed History Card -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-        <!-- Sub-tabs switcher -->
         <div class="flex items-center justify-between border-b border-slate-800 pb-3 flex-wrap gap-2">
           <div id="dash-subtabs-container" class="flex flex-wrap gap-2">
             <button type="button" id="dash-btn-orders" onclick="activateSubTab('orders')" class="dash-subtab-btn px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white flex items-center gap-1.5 transition">
@@ -351,7 +344,6 @@
           <span class="text-[11px] text-slate-400">บันทึกล่าสุด 5 รายการตามเงื่อนไขโฟลเดอร์ FSGS</span>
         </div>
 
-        <!-- Sub-tab Content Area -->
         <div id="dash-subviews-container">
           <div id="dash-view-orders" class="dash-subview overflow-x-auto max-h-80 custom-scroll">
             <table class="w-full text-left text-xs font-mono">
@@ -388,8 +380,9 @@
       </div>
     </main>
 
-    <!-- 4. VIEW: ADMIN OVERVIEW & MACROECONOMIC ERA -->
+    <!-- 4. VIEW: ADMIN OVERVIEW & MEMBER MANAGEMENT -->
     <main id="view-admin" class="hidden flex-1 p-4 max-w-7xl mx-auto w-full space-y-5">
+      <!-- Macro Era Card -->
       <div class="bg-gradient-to-r from-slate-900 to-indigo-950/60 border border-indigo-900/60 rounded-3xl p-6 shadow-xl space-y-4">
         <div class="flex justify-between items-start flex-wrap gap-3">
           <div>
@@ -429,10 +422,16 @@
         </div>
       </div>
 
+      <!-- Member Management Table -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
-        <h3 class="text-sm font-bold text-indigo-400 mb-3 flex items-center gap-2">
-          <i data-lucide="users" class="w-4 h-4"></i> สรุปสมาชิกในระบบ (ไม่รวม Admin)
-        </h3>
+        <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+          <div>
+            <h3 class="text-sm font-bold text-indigo-400 flex items-center gap-2">
+              <i data-lucide="users" class="w-4 h-4"></i> จัดการข้อมูลสมาชิกในระบบ
+            </h3>
+            <p class="text-[11px] text-slate-400">แอดมินสามารถปรับเพิ่ม/ลดยอดเงินสดคงเหลือ หรือลบบัญชีสมาชิกที่ไม่ต้องการออกได้</p>
+          </div>
+        </div>
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs font-mono">
             <thead class="bg-slate-800/80 text-slate-400">
@@ -441,6 +440,7 @@
                 <th class="p-2.5">เงินสดคงเหลือ</th>
                 <th class="p-2.5">สินทรัพย์ในพอร์ต</th>
                 <th class="p-2.5">จำนวนไม้ที่เทรด</th>
+                <th class="p-2.5 text-right">ดำเนินการ (Admin Action)</th>
               </tr>
             </thead>
             <tbody id="admin-members-rows" class="divide-y divide-slate-800"></tbody>
@@ -516,7 +516,6 @@
     let countdownInterval = null;
     let realTimeTimer = null;
     let nextTickTimestamp = 0;
-    let realTimeElapsedSeconds = 0;
 
     const MACRO_ERAS = [
       {
@@ -633,7 +632,6 @@
     }
     function saveUsers(u) { localStorage.setItem('fsgs_users', JSON.stringify(u)); }
 
-    // ฟังก์ชัน loadAssets พร้อมระบบ Auto-Repair ตรวจสอบความถูกต้องของ candles
     function loadAssets() {
       try {
         const stored = localStorage.getItem('fsgs_assets');
@@ -642,7 +640,6 @@
         if (!parsed || typeof parsed !== 'object') return generate20Assets();
 
         const keys = Object.keys(parsed);
-        // หากไม่มีข้อมูล หรือมีไม่ครบ 20 ตัว หรือข้อมูลเดิมไม่มี candles ให้สร้างใหม่ทันที
         if (keys.length < 20 || !parsed[keys[0]].candles || !Array.isArray(parsed[keys[0]].candles)) {
           const fresh = generate20Assets();
           saveAssets(fresh);
@@ -787,7 +784,6 @@
       document.getElementById('role-badge').innerText = isAdmin ? "ผู้ดูแลระบบ (Admin)" : "สมาชิกทั่วไป";
       document.getElementById('user-display-name').innerText = currentUser.username;
 
-      // ตรวจสอบและรีเฟรช assets ให้พร้อม
       assets = loadAssets();
       const syms = Object.keys(assets);
       activeSymbol = syms[0];
@@ -803,11 +799,8 @@
         try { lucide.createIcons(); } catch(e){}
       }
 
-      startRealTimeClock();
-
-      if (isAdmin && !simInterval) {
-        setLedStatus('stopped');
-      }
+      // เริ่มการทำงานของลูปนาฬิกาจำลองต่อเนื่อง
+      initPersistentSimulationLoop();
     }
 
     function handleLogout() {
@@ -954,7 +947,6 @@
 
       const getY = (val) => h - ((val - minP) / (maxP - minP)) * (h - 40) - 20;
 
-      // Draw Grid Lines
       ctx.strokeStyle = 'rgba(51, 65, 85, 0.3)';
       ctx.lineWidth = 1;
       for (let i = 1; i <= 4; i++) {
@@ -970,7 +962,6 @@
         ctx.fillText(formatMoney(pVal * (currentCurrency === 'USD' ? USD_RATE : 1)), 8, yLine - 4);
       }
 
-      // Draw Candlesticks
       const candleWidth = Math.max(4, Math.floor((w - 40) / candles.length) - 4);
       const stepX = (w - 20) / candles.length;
 
@@ -986,14 +977,12 @@
         ctx.strokeStyle = color;
         ctx.fillStyle = color;
 
-        // ไส้เทียน
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.moveTo(x + candleWidth / 2, highY);
         ctx.lineTo(x + candleWidth / 2, lowY);
         ctx.stroke();
 
-        // ตัวเทียน
         const top = Math.min(openY, closeY);
         const bodyHeight = Math.max(2, Math.abs(closeY - openY));
         ctx.fillRect(x, top, candleWidth, bodyHeight);
@@ -1151,6 +1140,9 @@
       submitTradeOrder();
     }
 
+    /* =========================================================================
+       ระบบ Persistent Simulation & Time Engine (เดินต่อเนื่องแม้ Log out)
+       ========================================================================= */
     function setLedStatus(state) {
       const led = document.getElementById('status-led');
       const text = document.getElementById('status-text');
@@ -1160,37 +1152,85 @@
         led.className = "w-3 h-3 rounded-full bg-emerald-500 inline-block animate-ping shadow-[0_0_8px_#10b981]";
         text.innerText = "กำลังจำลองราคา";
         text.className = "text-[11px] font-bold text-emerald-400";
-        btnStart.className = "bg-slate-700 text-slate-400 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 cursor-not-allowed";
-        btnStart.disabled = true;
+        if (btnStart) {
+          btnStart.className = "bg-slate-700 text-slate-400 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 cursor-not-allowed";
+          btnStart.disabled = true;
+        }
       } else if (state === 'paused') {
         led.className = "w-3 h-3 rounded-full bg-amber-500 inline-block shadow-[0_0_8px_#f59e0b]";
         text.innerText = "พักการจำลอง";
         text.className = "text-[11px] font-bold text-amber-400";
-        btnStart.className = "bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 transition";
-        btnStart.disabled = false;
+        if (btnStart) {
+          btnStart.className = "bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 transition";
+          btnStart.disabled = false;
+        }
       } else {
         led.className = "w-3 h-3 rounded-full bg-rose-500 inline-block shadow-[0_0_8px_#f43f5e]";
         text.innerText = "หยุด / รีเซ็ต";
         text.className = "text-[11px] font-bold text-rose-400";
-        btnStart.className = "bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 transition";
-        btnStart.disabled = false;
+        if (btnStart) {
+          btnStart.className = "bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 transition";
+          btnStart.disabled = false;
+        }
       }
     }
 
-    function adminStartSim() {
-      if (simInterval) return;
-      setLedStatus('running');
-      nextTickTimestamp = Date.now() + TICK_INTERVAL_MS;
+    function initPersistentSimulationLoop() {
+      const savedState = localStorage.getItem('fsgs_sim_state') || 'stopped';
+      const lastTickTime = parseInt(localStorage.getItem('fsgs_last_tick_time') || '0');
+      const now = Date.now();
 
+      // หากก่อนหน้านี้แอดมินเริ่มเกมไว้ ให้คำนวณรอบที่ผ่านไปขณะปิดจอ/Log out
+      if (savedState === 'running' && lastTickTime > 0) {
+        const missedTicks = Math.floor((now - lastTickTime) / TICK_INTERVAL_MS);
+        if (missedTicks > 0) {
+          // ทบเวลาและจำลองรอบที่ผ่านไป
+          const ticksToRun = Math.min(missedTicks, 120); // ป้องกันค้างถ้าห่างไปหลายวัน
+          for (let i = 0; i < ticksToRun; i++) {
+            executeSimulationTick(false);
+          }
+          localStorage.setItem('fsgs_last_tick_time', now.toString());
+        }
+        setLedStatus('running');
+        startContinuousSimulation();
+      } else if (savedState === 'paused') {
+        setLedStatus('paused');
+        document.getElementById('tick-countdown').innerText = "พัก";
+      } else {
+        setLedStatus('stopped');
+        document.getElementById('tick-countdown').innerText = "หยุด";
+      }
+
+      startRealTimeClock();
+      updateSimTimeDisplay();
+    }
+
+    function startContinuousSimulation() {
+      clearInterval(simInterval);
+      clearInterval(countdownInterval);
+
+      nextTickTimestamp = Date.now() + TICK_INTERVAL_MS;
       startCountdownTimer();
 
       simInterval = setInterval(() => {
-        executeSimulationTick();
+        executeSimulationTick(true);
         nextTickTimestamp = Date.now() + TICK_INTERVAL_MS;
+        localStorage.setItem('fsgs_last_tick_time', Date.now().toString());
       }, TICK_INTERVAL_MS);
     }
 
+    function adminStartSim() {
+      localStorage.setItem('fsgs_sim_state', 'running');
+      localStorage.setItem('fsgs_last_tick_time', Date.now().toString());
+      if (!localStorage.getItem('fsgs_game_start_time')) {
+        localStorage.setItem('fsgs_game_start_time', Date.now().toString());
+      }
+      setLedStatus('running');
+      startContinuousSimulation();
+    }
+
     function adminPauseSim() {
+      localStorage.setItem('fsgs_sim_state', 'paused');
       clearInterval(simInterval);
       clearInterval(countdownInterval);
       simInterval = null;
@@ -1208,7 +1248,7 @@
       }, 100);
     }
 
-    function executeSimulationTick() {
+    function executeSimulationTick(shouldRender = true) {
       simWeek++;
       localStorage.setItem('fsgs_sim_week', simWeek.toString());
 
@@ -1245,22 +1285,30 @@
         distributeDividends();
       }
 
-      renderWatchlist();
-      selectAsset(activeSymbol);
-      renderHoldings();
-      renderDashboard();
-      updateSimTimeDisplay();
+      if (shouldRender) {
+        renderWatchlist();
+        selectAsset(activeSymbol);
+        renderHoldings();
+        renderDashboard();
+        updateSimTimeDisplay();
+      }
     }
 
     function startRealTimeClock() {
       if (realTimeTimer) clearInterval(realTimeTimer);
       realTimeTimer = setInterval(() => {
-        realTimeElapsedSeconds++;
-        const hrs = String(Math.floor(realTimeElapsedSeconds / 3600)).padStart(2, '0');
-        const mins = String(Math.floor((realTimeElapsedSeconds % 3600) / 60)).padStart(2, '0');
-        const secs = String(realTimeElapsedSeconds % 60).padStart(2, '0');
-        const el = document.getElementById('real-elapsed-time');
-        if (el) el.innerText = `${hrs}:${mins}:${secs}`;
+        const startTime = parseInt(localStorage.getItem('fsgs_game_start_time') || '0');
+        if (startTime > 0) {
+          const elapsedSecs = Math.floor((Date.now() - startTime) / 1000);
+          const hrs = String(Math.floor(elapsedSecs / 3600)).padStart(2, '0');
+          const mins = String(Math.floor((elapsedSecs % 3600) / 60)).padStart(2, '0');
+          const secs = String(elapsedSecs % 60).padStart(2, '0');
+          const el = document.getElementById('real-elapsed-time');
+          if (el) el.innerText = `${hrs}:${mins}:${secs}`;
+        } else {
+          const el = document.getElementById('real-elapsed-time');
+          if (el) el.innerText = "00:00:00";
+        }
       }, 1000);
     }
 
@@ -1314,11 +1362,65 @@
       if (bearishList.children.length === 0) bearishList.innerHTML = '<span class="text-slate-500 text-xs">ไม่มีสินทรัพย์ที่รับแรงกดดันรุนแรง</span>';
     }
 
+    /* =========================================================================
+       Admin Member Management Functions (แก้ไขยอดเงิน / ลบสมาชิก)
+       ========================================================================= */
+    function adminEditMemberBalance(username) {
+      users = loadUsers();
+      const member = users[username];
+      if (!member) {
+        alert("ไม่พบข้อมูลสมาชิกนี้");
+        return;
+      }
+
+      const input = prompt(`แก้ไขยอดเงินสดคงเหลือของ [${username}]\nยอดปัจจุบัน: ฿${member.balanceTHB.toLocaleString()}`, member.balanceTHB);
+      if (input === null) return;
+
+      const newBal = parseFloat(input);
+      if (isNaN(newBal) || newBal < 0) {
+        alert("กรุณากรอกตัวเลขจำนวนเงินที่ถูกต้อง (ต้องไม่ติดลบ)");
+        return;
+      }
+
+      member.balanceTHB = newBal;
+      users[username] = member;
+      saveUsers(users);
+
+      // ถ้าแก้ไขบัญชีตัวเองที่กำลังใช้อยู่
+      if (currentUser && currentUser.username === username) {
+        currentUser.balanceTHB = newBal;
+        updateUserBalances();
+      }
+
+      renderDashboard();
+      alert(`อัปเดตยอดเงินของ [${username}] เป็น ฿${newBal.toLocaleString()} เรียบร้อยแล้ว`);
+    }
+
+    function adminDeleteMember(username) {
+      if (username === 'admin') {
+        alert("ไม่สามารถลบบัญชีผู้ดูแลระบบหลัก (Admin) ได้");
+        return;
+      }
+
+      const confirmDel = confirm(`⚠️ คุณแน่ใจหรือไม่ว่าต้องการลบบัญชี [${username}]?\nข้อมูลพอร์ตการถือครองและประวัติทั้งหมดจะถูกลบถาวร`);
+      if (!confirmDel) return;
+
+      users = loadUsers();
+      delete users[username];
+      saveUsers(users);
+
+      renderDashboard();
+      alert(`ลบบัญชีสมาชิก [${username}] ออกจากระบบเรียบร้อยแล้ว`);
+    }
+
     function openResetModal() { document.getElementById('modal-reset').classList.remove('hidden'); }
     function closeResetModal() { document.getElementById('modal-reset').classList.add('hidden'); }
 
     function confirmResetSim() {
       adminPauseSim();
+      localStorage.setItem('fsgs_sim_state', 'stopped');
+      localStorage.removeItem('fsgs_game_start_time');
+      localStorage.removeItem('fsgs_last_tick_time');
       setLedStatus('stopped');
 
       Object.keys(users).forEach(u => {
@@ -1338,7 +1440,6 @@
       saveUsers(users);
 
       simWeek = 1;
-      realTimeElapsedSeconds = 0;
       localStorage.setItem('fsgs_sim_week', '1');
 
       closeResetModal();
@@ -1348,7 +1449,7 @@
       renderDashboard();
       renderAdminEraInfo();
       updateSimTimeDisplay();
-      alert(`รีเซ็ตระบบสำเร็จ! สุ่มได้ยุคประวัติศาสตร์: "${currentEra.title}" พร้อมอัปเดตแนวโน้มและข่าวด่วนเรียบร้อย`);
+      alert(`รีเซ็ตระบบสำเร็จ! สุ่มได้ยุคประวัติศาสตร์: "${currentEra.title}" พร้อมเริ่มนับเวลาใหม่`);
     }
 
     function distributeDividends() {
@@ -1506,19 +1607,29 @@
         }
       }
 
+      // Member Management Table (with Edit & Delete buttons)
       const adminBody = document.getElementById('admin-members-rows');
       if (adminBody) {
         adminBody.innerHTML = '';
-        Object.values(users).filter(u => u.role !== 'admin').forEach(u => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td class="p-2.5 font-bold text-white">${u.username}</td>
-            <td class="p-2.5 font-bold text-emerald-400">${formatMoney(u.balanceTHB)}</td>
-            <td class="p-2.5">${Object.keys(u.holdings || {}).length} รายการ</td>
-            <td class="p-2.5">${(u.trades || []).length} ครั้ง</td>
-          `;
-          adminBody.appendChild(tr);
-        });
+        const memberList = Object.values(users).filter(u => u.role !== 'admin');
+        if (memberList.length === 0) {
+          adminBody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">ยังไม่มีสมาชิกทั่วไปลงทะเบียนในระบบ</td></tr>`;
+        } else {
+          memberList.forEach(u => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td class="p-2.5 font-bold text-white">${u.username}</td>
+              <td class="p-2.5 font-bold text-emerald-400">${formatMoney(u.balanceTHB)}</td>
+              <td class="p-2.5">${Object.keys(u.holdings || {}).length} รายการ</td>
+              <td class="p-2.5">${(u.trades || []).length} ครั้ง</td>
+              <td class="p-2.5 text-right space-x-1.5">
+                <button type="button" onclick="adminEditMemberBalance('${u.username}')" class="px-2.5 py-1 bg-amber-600/30 hover:bg-amber-600 text-amber-300 hover:text-white rounded text-[11px] font-bold transition">✏️ แก้ไขเงิน</button>
+                <button type="button" onclick="adminDeleteMember('${u.username}')" class="px-2.5 py-1 bg-rose-600/30 hover:bg-rose-600 text-rose-300 hover:text-white rounded text-[11px] font-bold transition">🗑️ ลบสมาชิก</button>
+              </td>
+            `;
+            adminBody.appendChild(tr);
+          });
+        }
       }
 
       ensureHistoryTabIsLast();
