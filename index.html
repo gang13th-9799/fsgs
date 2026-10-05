@@ -47,6 +47,20 @@
           <label class="block text-xs font-medium text-slate-300 mb-1">ชื่อผู้ใช้งาน (Username)</label>
           <input type="text" id="auth-username" autocomplete="off" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-base text-white focus:outline-none focus:border-emerald-500" />
         </div>
+        <div id="register-extra-fields" class="hidden space-y-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">ชื่อ-นามสกุลจริง</label>
+            <input type="text" id="auth-fullname" placeholder="เช่น สมชาย ใจดี" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">เบอร์โทรศัพท์</label>
+            <input type="tel" id="auth-phone" placeholder="เช่น 0812345678" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">อีเมล (Email)</label>
+            <input type="email" id="auth-email" placeholder="เช่น example@email.com" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500" />
+          </div>
+        </div>
         <div>
           <label class="block text-xs font-medium text-slate-300 mb-1">รหัสผ่าน (Password)</label>
           <input type="password" id="auth-password" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-base text-white focus:outline-none focus:border-emerald-500" />
@@ -149,11 +163,12 @@
     </div>
 
     <!-- Navigation Tabs -->
-    <div class="bg-slate-900 border-b border-slate-800 px-4 flex gap-6 text-sm font-bold">
-      <button type="button" onclick="switchTab('trade')" id="tab-btn-trade" class="py-3 border-b-2 border-emerald-500 text-emerald-400">1. กระดานเทรดจำลอง</button>
-      <button type="button" onclick="switchTab('holdings')" id="tab-btn-holdings" class="py-3 border-b-2 border-transparent text-slate-400 hover:text-white">2. สรุปพอร์ตการถือครอง</button>
-      <button type="button" onclick="switchTab('dashboard')" id="tab-btn-dash" class="py-3 border-b-2 border-transparent text-slate-400 hover:text-white">3. แดชบอร์ดสมาชิก & สรุปปันผล</button>
-      <button type="button" onclick="switchTab('admin-view')" id="tab-btn-admin" class="hidden py-3 border-b-2 border-transparent text-indigo-400 hover:text-white">4. ภาพรวมระบบ (Admin)</button>
+    <div class="bg-slate-900 border-b border-slate-800 px-4 flex gap-6 text-sm font-bold overflow-x-auto">
+      <button type="button" onclick="switchTab('trade')" id="tab-btn-trade" class="py-3 border-b-2 border-emerald-500 text-emerald-400 whitespace-nowrap">1. กระดานเทรดจำลอง</button>
+      <button type="button" onclick="switchTab('holdings')" id="tab-btn-holdings" class="py-3 border-b-2 border-transparent text-slate-400 hover:text-white whitespace-nowrap">2. สรุปพอร์ตการถือครอง</button>
+      <button type="button" onclick="switchTab('dashboard')" id="tab-btn-dash" class="py-3 border-b-2 border-transparent text-slate-400 hover:text-white whitespace-nowrap">3. แดชบอร์ดสมาชิก & สรุปปันผล</button>
+      <button type="button" onclick="switchTab('admin-view')" id="tab-btn-admin" class="hidden py-3 border-b-2 border-transparent text-indigo-400 hover:text-white whitespace-nowrap">4. ภาพรวมระบบ (Admin)</button>
+      <button type="button" onclick="switchTab('admin-members')" id="tab-btn-admin-members" class="hidden py-3 border-b-2 border-transparent text-rose-400 hover:text-white whitespace-nowrap">5. จัดการสมาชิก (เฉพาะ Admin)</button>
     </div>
 
     <!-- Toast Notifications Container -->
@@ -380,9 +395,8 @@
       </div>
     </main>
 
-    <!-- 4. VIEW: ADMIN OVERVIEW & MEMBER MANAGEMENT -->
+    <!-- 4. VIEW: ADMIN OVERVIEW -->
     <main id="view-admin" class="hidden flex-1 p-4 max-w-7xl mx-auto w-full space-y-5">
-      <!-- Macro Era Card -->
       <div class="bg-gradient-to-r from-slate-900 to-indigo-950/60 border border-indigo-900/60 rounded-3xl p-6 shadow-xl space-y-4">
         <div class="flex justify-between items-start flex-wrap gap-3">
           <div>
@@ -421,33 +435,82 @@
           </div>
         </div>
       </div>
+    </main>
 
-      <!-- Member Management Table -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
-        <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+    <!-- 5. VIEW: TAB จัดการสมาชิก (เฉพาะ ADMIN) -->
+    <main id="view-admin-members" class="hidden flex-1 p-4 max-w-7xl mx-auto w-full space-y-5">
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-5">
+        <div class="flex justify-between items-center flex-wrap gap-4 border-b border-slate-800 pb-4">
           <div>
-            <h3 class="text-sm font-bold text-indigo-400 flex items-center gap-2">
-              <i data-lucide="users" class="w-4 h-4"></i> จัดการข้อมูลสมาชิกในระบบ
-            </h3>
-            <p class="text-[11px] text-slate-400">แอดมินสามารถปรับเพิ่ม/ลดยอดเงินสดคงเหลือ หรือลบบัญชีสมาชิกที่ไม่ต้องการออกได้</p>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="user-cog" class="w-5 h-5 text-rose-400"></i> ศูนย์จัดการข้อมูลสมาชิก (Admin Only)
+            </h2>
+            <p class="text-xs text-slate-400 mt-0.5">สามารถแก้ไขข้อมูลส่วนตัว ชื่อ เบอร์โทร อีเมล ยอดเงิน หรือลบสมาชิกรายบุคคลและล้างระบบ</p>
           </div>
+
+          <!-- Master Reset Button -->
+          <button type="button" onclick="adminMasterResetAllMembers()" class="px-4 py-2.5 bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white border border-rose-600/40 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-lg">
+            <i data-lucide="trash-2" class="w-4 h-4"></i> ลบสมาชิกและประวัติการเล่นทั้งหมด
+          </button>
         </div>
+
+        <!-- Members Management Table -->
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs font-mono">
             <thead class="bg-slate-800/80 text-slate-400">
               <tr>
-                <th class="p-2.5">ชื่อผู้ใช้งาน (Username)</th>
-                <th class="p-2.5">เงินสดคงเหลือ</th>
-                <th class="p-2.5">สินทรัพย์ในพอร์ต</th>
-                <th class="p-2.5">จำนวนไม้ที่เทรด</th>
-                <th class="p-2.5 text-right">ดำเนินการ (Admin Action)</th>
+                <th class="p-3">Username</th>
+                <th class="p-3">ชื่อ-นามสกุล</th>
+                <th class="p-3">เบอร์โทรศัพท์</th>
+                <th class="p-3">อีเมล</th>
+                <th class="p-3">เงินสดคงเหลือ</th>
+                <th class="p-3">พอร์ตหุ้น</th>
+                <th class="p-3 text-right">ดำเนินการ (Action)</th>
               </tr>
             </thead>
-            <tbody id="admin-members-rows" class="divide-y divide-slate-800"></tbody>
+            <tbody id="admin-full-members-rows" class="divide-y divide-slate-800">
+              <!-- Dynamically populated rows -->
+            </tbody>
           </table>
         </div>
       </div>
     </main>
+  </div>
+
+  <!-- Modal: Edit Member Info -->
+  <div id="modal-edit-member" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i data-lucide="edit" class="w-5 h-5 text-emerald-400"></i> แก้ไขข้อมูลสมาชิก: <span id="modal-edit-target-user" class="text-indigo-400 font-mono"></span>
+        </h3>
+        <button type="button" onclick="closeEditMemberModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">ชื่อ-นามสกุล (Display Name)</label>
+          <input type="text" id="edit-member-fullname" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500" />
+        </div>
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">เบอร์โทรศัพท์</label>
+          <input type="tel" id="edit-member-phone" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500" />
+        </div>
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">อีเมล (Email)</label>
+          <input type="email" id="edit-member-email" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500" />
+        </div>
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">เงินสดคงเหลือ (THB)</label>
+          <input type="number" id="edit-member-balance" step="any" min="0" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm font-bold text-emerald-400 font-mono focus:outline-none focus:border-emerald-500" />
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
+        <button type="button" onclick="closeEditMemberModal()" class="px-4 py-2 bg-slate-800 rounded-xl text-xs font-bold text-slate-300 hover:text-white">ยกเลิก</button>
+        <button type="button" onclick="saveEditedMemberInfo()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold">บันทึกข้อมูล</button>
+      </div>
+    </div>
   </div>
 
   <!-- Reset Confirmation Modal -->
@@ -516,6 +579,7 @@
     let countdownInterval = null;
     let realTimeTimer = null;
     let nextTickTimestamp = 0;
+    let editingTargetUsername = null;
 
     const MACRO_ERAS = [
       {
@@ -561,7 +625,7 @@
     ];
 
     const INITIAL_USERS = {
-      admin: { password: '00', role: 'admin', balanceTHB: 1000000, holdings: {}, trades: [], dividends: {}, gameHistory: [] }
+      admin: { password: '00', role: 'admin', balanceTHB: 1000000, fullname: 'Admin ผู้ดูแลระบบ', phone: '-', email: 'admin@family.local', holdings: {}, trades: [], dividends: {}, gameHistory: [] }
     };
 
     function generate20Assets() {
@@ -697,16 +761,19 @@
       const tabReg = document.getElementById('tab-register');
       const btnLabel = document.getElementById('auth-btn-label');
       const alertBox = document.getElementById('auth-alert');
+      const extraFields = document.getElementById('register-extra-fields');
       if (alertBox) alertBox.classList.add('hidden');
 
       if (t === 'login') {
         tabLogin.className = "flex-1 pb-2 border-b-2 border-emerald-500 text-emerald-400";
         tabReg.className = "flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-white";
         btnLabel.innerText = "เข้าสู่ระบบ";
+        extraFields.classList.add('hidden');
       } else {
         tabReg.className = "flex-1 pb-2 border-b-2 border-emerald-500 text-emerald-400";
         tabLogin.className = "flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-white";
         btnLabel.innerText = "ลงทะเบียนและรับทุนฟรี ฿30,000";
+        extraFields.classList.remove('hidden');
       }
     }
 
@@ -750,7 +817,25 @@
           alertBox.classList.remove('hidden');
           return;
         }
-        users[u] = { username: u, password: p, role: 'member', balanceTHB: 30000, holdings: {}, trades: [], dividends: {}, gameHistory: [] };
+
+        const fullname = document.getElementById('auth-fullname').value.trim() || u;
+        const phone = document.getElementById('auth-phone').value.trim() || '-';
+        const email = document.getElementById('auth-email').value.trim() || '-';
+
+        users[u] = {
+          username: u,
+          password: p,
+          role: 'member',
+          fullname: fullname,
+          phone: phone,
+          email: email,
+          balanceTHB: 30000,
+          holdings: {},
+          trades: [],
+          dividends: {},
+          gameHistory: []
+        };
+
         saveUsers(users);
         currentUser = users[u];
         alert("ลงทะเบียนสำเร็จ! ได้รับเงินจำลองเริ่มต้น ฿30,000");
@@ -766,7 +851,19 @@
       }
       users = loadUsers();
       if (!users[email]) {
-        users[email] = { username: email, password: 'gmail_user', role: 'member', balanceTHB: 30000, holdings: {}, trades: [], dividends: {}, gameHistory: [] };
+        users[email] = {
+          username: email,
+          password: 'gmail_user',
+          role: 'member',
+          fullname: email.split('@')[0],
+          phone: '-',
+          email: email,
+          balanceTHB: 30000,
+          holdings: {},
+          trades: [],
+          dividends: {},
+          gameHistory: []
+        };
         saveUsers(users);
       }
       currentUser = users[email];
@@ -781,8 +878,9 @@
       const isAdmin = currentUser.role === 'admin';
       document.getElementById('admin-bar').classList.toggle('hidden', !isAdmin);
       document.getElementById('tab-btn-admin').classList.toggle('hidden', !isAdmin);
+      document.getElementById('tab-btn-admin-members').classList.toggle('hidden', !isAdmin);
       document.getElementById('role-badge').innerText = isAdmin ? "ผู้ดูแลระบบ (Admin)" : "สมาชิกทั่วไป";
-      document.getElementById('user-display-name').innerText = currentUser.username;
+      document.getElementById('user-display-name').innerText = currentUser.fullname || currentUser.username;
 
       assets = loadAssets();
       const syms = Object.keys(assets);
@@ -794,12 +892,12 @@
       renderHoldings();
       renderDashboard();
       renderAdminEraInfo();
+      renderAdminMembersManagementTable();
 
       if (window.lucide) {
         try { lucide.createIcons(); } catch(e){}
       }
 
-      // เริ่มการทำงานของลูปนาฬิกาจำลองต่อเนื่อง
       initPersistentSimulationLoop();
     }
 
@@ -818,6 +916,7 @@
       selectAsset(activeSymbol);
       renderHoldings();
       renderDashboard();
+      renderAdminMembersManagementTable();
     }
 
     function formatMoney(valTHB) {
@@ -1078,6 +1177,7 @@
       updateUserBalances();
       renderHoldings();
       renderDashboard();
+      renderAdminMembersManagementTable();
       calcOrderTotal();
 
       syncStatsToGoogleDrive(false);
@@ -1140,9 +1240,6 @@
       submitTradeOrder();
     }
 
-    /* =========================================================================
-       ระบบ Persistent Simulation & Time Engine (เดินต่อเนื่องแม้ Log out)
-       ========================================================================= */
     function setLedStatus(state) {
       const led = document.getElementById('status-led');
       const text = document.getElementById('status-text');
@@ -1180,12 +1277,10 @@
       const lastTickTime = parseInt(localStorage.getItem('fsgs_last_tick_time') || '0');
       const now = Date.now();
 
-      // หากก่อนหน้านี้แอดมินเริ่มเกมไว้ ให้คำนวณรอบที่ผ่านไปขณะปิดจอ/Log out
       if (savedState === 'running' && lastTickTime > 0) {
         const missedTicks = Math.floor((now - lastTickTime) / TICK_INTERVAL_MS);
         if (missedTicks > 0) {
-          // ทบเวลาและจำลองรอบที่ผ่านไป
-          const ticksToRun = Math.min(missedTicks, 120); // ป้องกันค้างถ้าห่างไปหลายวัน
+          const ticksToRun = Math.min(missedTicks, 120);
           for (let i = 0; i < ticksToRun; i++) {
             executeSimulationTick(false);
           }
@@ -1290,6 +1385,7 @@
         selectAsset(activeSymbol);
         renderHoldings();
         renderDashboard();
+        renderAdminMembersManagementTable();
         updateSimTimeDisplay();
       }
     }
@@ -1363,9 +1459,41 @@
     }
 
     /* =========================================================================
-       Admin Member Management Functions (แก้ไขยอดเงิน / ลบสมาชิก)
+       ฟังก์ชันแท็บที่ 5: จัดการสมาชิก (เฉพาะ Admin)
        ========================================================================= */
-    function adminEditMemberBalance(username) {
+    function renderAdminMembersManagementTable() {
+      const tbody = document.getElementById('admin-full-members-rows');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      users = loadUsers();
+      const memberList = Object.values(users).filter(u => u.role !== 'admin');
+
+      if (memberList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-500">ยังไม่มีสมาชิกทั่วไปลงทะเบียนในระบบ</td></tr>`;
+        return;
+      }
+
+      memberList.forEach(u => {
+        const holdingsCount = Object.keys(u.holdings || {}).length;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="p-3 font-bold text-white">${u.username}</td>
+          <td class="p-3 text-slate-300">${u.fullname || '-'}</td>
+          <td class="p-3 text-slate-400">${u.phone || '-'}</td>
+          <td class="p-3 text-slate-400">${u.email || '-'}</td>
+          <td class="p-3 font-bold text-emerald-400">${formatMoney(u.balanceTHB)}</td>
+          <td class="p-3 text-slate-300">${holdingsCount > 0 ? `${holdingsCount} รายการ` : 'เงินสด 100%'}</td>
+          <td class="p-3 text-right space-x-2">
+            <button type="button" onclick="openEditMemberModal('${u.username}')" class="px-3 py-1.5 bg-amber-600/20 hover:bg-amber-600 text-amber-300 hover:text-white border border-amber-600/30 rounded-lg text-xs font-bold transition">✏️ แก้ไขข้อมูล</button>
+            <button type="button" onclick="adminDeleteMemberSingle('${u.username}')" class="px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-600/30 rounded-lg text-xs font-bold transition">🗑️ ลบสมาชิก</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openEditMemberModal(username) {
       users = loadUsers();
       const member = users[username];
       if (!member) {
@@ -1373,36 +1501,58 @@
         return;
       }
 
-      const input = prompt(`แก้ไขยอดเงินสดคงเหลือของ [${username}]\nยอดปัจจุบัน: ฿${member.balanceTHB.toLocaleString()}`, member.balanceTHB);
-      if (input === null) return;
+      editingTargetUsername = username;
+      document.getElementById('modal-edit-target-user').innerText = username;
+      document.getElementById('edit-member-fullname').value = member.fullname || member.username;
+      document.getElementById('edit-member-phone').value = member.phone !== '-' ? member.phone : '';
+      document.getElementById('edit-member-email').value = member.email !== '-' ? member.email : '';
+      document.getElementById('edit-member-balance').value = member.balanceTHB;
 
-      const newBal = parseFloat(input);
-      if (isNaN(newBal) || newBal < 0) {
-        alert("กรุณากรอกตัวเลขจำนวนเงินที่ถูกต้อง (ต้องไม่ติดลบ)");
-        return;
-      }
-
-      member.balanceTHB = newBal;
-      users[username] = member;
-      saveUsers(users);
-
-      // ถ้าแก้ไขบัญชีตัวเองที่กำลังใช้อยู่
-      if (currentUser && currentUser.username === username) {
-        currentUser.balanceTHB = newBal;
-        updateUserBalances();
-      }
-
-      renderDashboard();
-      alert(`อัปเดตยอดเงินของ [${username}] เป็น ฿${newBal.toLocaleString()} เรียบร้อยแล้ว`);
+      document.getElementById('modal-edit-member').classList.remove('hidden');
     }
 
-    function adminDeleteMember(username) {
-      if (username === 'admin') {
-        alert("ไม่สามารถลบบัญชีผู้ดูแลระบบหลัก (Admin) ได้");
+    function closeEditMemberModal() {
+      document.getElementById('modal-edit-member').classList.add('hidden');
+      editingTargetUsername = null;
+    }
+
+    function saveEditedMemberInfo() {
+      if (!editingTargetUsername) return;
+      users = loadUsers();
+      const member = users[editingTargetUsername];
+      if (!member) return;
+
+      const newFullname = document.getElementById('edit-member-fullname').value.trim();
+      const newPhone = document.getElementById('edit-member-phone').value.trim() || '-';
+      const newEmail = document.getElementById('edit-member-email').value.trim() || '-';
+      const newBalance = parseFloat(document.getElementById('edit-member-balance').value);
+
+      if (isNaN(newBalance) || newBalance < 0) {
+        alert("กรุณาระบุจำนวนเงินที่ถูกต้อง (ต้องไม่ติดลบ)");
         return;
       }
 
-      const confirmDel = confirm(`⚠️ คุณแน่ใจหรือไม่ว่าต้องการลบบัญชี [${username}]?\nข้อมูลพอร์ตการถือครองและประวัติทั้งหมดจะถูกลบถาวร`);
+      member.fullname = newFullname || member.username;
+      member.phone = newPhone;
+      member.email = newEmail;
+      member.balanceTHB = newBalance;
+
+      users[editingTargetUsername] = member;
+      saveUsers(users);
+
+      closeEditMemberModal();
+      renderDashboard();
+      renderAdminMembersManagementTable();
+      alert(`บันทึกการแก้ไขข้อมูลของสมาชิก [${editingTargetUsername}] สำเร็จ!`);
+    }
+
+    function adminDeleteMemberSingle(username) {
+      if (username === 'admin') {
+        alert("ไม่สามารถลบบัญชีผู้ดูแลระบบ (Admin) ได้");
+        return;
+      }
+
+      const confirmDel = confirm(`⚠️ ยืนยันการลบบัญชี [${username}] ออกจากระบบ?\nข้อมูลพอร์ตการถือครองและประวัติการเทรดของสมาชิกคนนี้จะถูกลบถาวร`);
       if (!confirmDel) return;
 
       users = loadUsers();
@@ -1410,7 +1560,46 @@
       saveUsers(users);
 
       renderDashboard();
-      alert(`ลบบัญชีสมาชิก [${username}] ออกจากระบบเรียบร้อยแล้ว`);
+      renderAdminMembersManagementTable();
+      alert(`ลบบัญชีสมาชิก [${username}] สำเร็จ!`);
+    }
+
+    // ฟังก์ชันลบสมาชิกและล้างประวัติการเล่นทั้งหมด (Master Reset)
+    function adminMasterResetAllMembers() {
+      const confirmText = prompt("⚠️ คำเตือนขั้นสูง: การกระทำนี้จะลบสมาชิกทั่วไปทั้งหมด และลบประวัติการเทรดย้อนหลังทั้งหมดทิ้งถาวร!\n\nหากต้องการดำเนินการ ให้พิมพ์คำว่า \"DELETE\" ลงในช่องด้านล่าง:");
+      if (confirmText !== "DELETE") {
+        if (confirmText !== null) alert("ยกเลิกการล้างระบบ (พิมพ์คำยืนยันไม่ถูกต้อง)");
+        return;
+      }
+
+      // รีเซ็ตผู้ใช้งานให้เหลือเฉพาะ Admin คนเดียว
+      users = {
+        admin: {
+          password: '00',
+          role: 'admin',
+          fullname: 'Admin ผู้ดูแลระบบ',
+          phone: '-',
+          email: 'admin@family.local',
+          balanceTHB: 1000000,
+          holdings: {},
+          trades: [],
+          dividends: {},
+          gameHistory: []
+        }
+      };
+      saveUsers(users);
+
+      // รีเซ็ตเกมและสถิติ
+      simWeek = 1;
+      localStorage.setItem('fsgs_sim_week', '1');
+      localStorage.setItem('fsgs_sim_state', 'stopped');
+      localStorage.removeItem('fsgs_game_start_time');
+      localStorage.removeItem('fsgs_last_tick_time');
+      setLedStatus('stopped');
+
+      renderDashboard();
+      renderAdminMembersManagementTable();
+      alert("ลบสมาชิกและล้างประวัติการเล่นทั้งหมดในระบบเรียบร้อยแล้ว!");
     }
 
     function openResetModal() { document.getElementById('modal-reset').classList.remove('hidden'); }
@@ -1448,6 +1637,7 @@
       renderHoldings();
       renderDashboard();
       renderAdminEraInfo();
+      renderAdminMembersManagementTable();
       updateSimTimeDisplay();
       alert(`รีเซ็ตระบบสำเร็จ! สุ่มได้ยุคประวัติศาสตร์: "${currentEra.title}" พร้อมเริ่มนับเวลาใหม่`);
     }
@@ -1607,31 +1797,6 @@
         }
       }
 
-      // Member Management Table (with Edit & Delete buttons)
-      const adminBody = document.getElementById('admin-members-rows');
-      if (adminBody) {
-        adminBody.innerHTML = '';
-        const memberList = Object.values(users).filter(u => u.role !== 'admin');
-        if (memberList.length === 0) {
-          adminBody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">ยังไม่มีสมาชิกทั่วไปลงทะเบียนในระบบ</td></tr>`;
-        } else {
-          memberList.forEach(u => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-              <td class="p-2.5 font-bold text-white">${u.username}</td>
-              <td class="p-2.5 font-bold text-emerald-400">${formatMoney(u.balanceTHB)}</td>
-              <td class="p-2.5">${Object.keys(u.holdings || {}).length} รายการ</td>
-              <td class="p-2.5">${(u.trades || []).length} ครั้ง</td>
-              <td class="p-2.5 text-right space-x-1.5">
-                <button type="button" onclick="adminEditMemberBalance('${u.username}')" class="px-2.5 py-1 bg-amber-600/30 hover:bg-amber-600 text-amber-300 hover:text-white rounded text-[11px] font-bold transition">✏️ แก้ไขเงิน</button>
-                <button type="button" onclick="adminDeleteMember('${u.username}')" class="px-2.5 py-1 bg-rose-600/30 hover:bg-rose-600 text-rose-300 hover:text-white rounded text-[11px] font-bold transition">🗑️ ลบสมาชิก</button>
-              </td>
-            `;
-            adminBody.appendChild(tr);
-          });
-        }
-      }
-
       ensureHistoryTabIsLast();
     }
 
@@ -1640,11 +1805,13 @@
       document.getElementById('view-holdings').classList.toggle('hidden', t !== 'holdings');
       document.getElementById('view-dashboard').classList.toggle('hidden', t !== 'dashboard');
       document.getElementById('view-admin').classList.toggle('hidden', t !== 'admin-view');
+      document.getElementById('view-admin-members').classList.toggle('hidden', t !== 'admin-members');
 
-      document.getElementById('tab-btn-trade').className = t === 'trade' ? "py-3 border-b-2 border-emerald-500 text-emerald-400" : "py-3 border-b-2 border-transparent text-slate-400 hover:text-white";
-      document.getElementById('tab-btn-holdings').className = t === 'holdings' ? "py-3 border-b-2 border-emerald-500 text-emerald-400" : "py-3 border-b-2 border-transparent text-slate-400 hover:text-white";
-      document.getElementById('tab-btn-dash').className = t === 'dashboard' ? "py-3 border-b-2 border-emerald-500 text-emerald-400" : "py-3 border-b-2 border-transparent text-slate-400 hover:text-white";
-      document.getElementById('tab-btn-admin').className = t === 'admin-view' ? "py-3 border-b-2 border-indigo-500 text-indigo-400" : "py-3 border-b-2 border-transparent text-indigo-400 hover:text-white";
+      document.getElementById('tab-btn-trade').className = t === 'trade' ? "py-3 border-b-2 border-emerald-500 text-emerald-400 whitespace-nowrap" : "py-3 border-b-2 border-transparent text-slate-400 hover:text-white whitespace-nowrap";
+      document.getElementById('tab-btn-holdings').className = t === 'holdings' ? "py-3 border-b-2 border-emerald-500 text-emerald-400 whitespace-nowrap" : "py-3 border-b-2 border-transparent text-slate-400 hover:text-white whitespace-nowrap";
+      document.getElementById('tab-btn-dash').className = t === 'dashboard' ? "py-3 border-b-2 border-emerald-500 text-emerald-400 whitespace-nowrap" : "py-3 border-b-2 border-transparent text-slate-400 hover:text-white whitespace-nowrap";
+      document.getElementById('tab-btn-admin').className = t === 'admin-view' ? "py-3 border-b-2 border-indigo-500 text-indigo-400 whitespace-nowrap" : "py-3 border-b-2 border-transparent text-indigo-400 hover:text-white whitespace-nowrap";
+      document.getElementById('tab-btn-admin-members').className = t === 'admin-members' ? "py-3 border-b-2 border-rose-500 text-rose-400 whitespace-nowrap" : "py-3 border-b-2 border-transparent text-slate-400 hover:text-white whitespace-nowrap";
     }
 
     function openDescModal() {
