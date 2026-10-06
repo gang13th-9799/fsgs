@@ -6,8 +6,6 @@
   <title>Family Stock Game Simulation (FSGS)</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
@@ -30,7 +28,7 @@
           <i data-lucide="trending-up" class="w-8 h-8 text-white"></i>
         </div>
         <h1 class="text-2xl font-bold text-white tracking-wide">Family Stock Game Simulation</h1>
-        <p class="text-sm text-slate-400">ระบบจำลองการลงทุนสำหรับครอบครัว (FSGS)</p>
+        <p class="text-sm text-slate-400">ระบบจำลองการลงทุนสำหรับครอบครัว (FSGS Cloud)</p>
       </div>
 
       <!-- Auth Switcher -->
@@ -93,7 +91,12 @@
         <div class="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center font-bold text-white text-lg">FSGS</div>
         <div>
           <h1 class="font-bold text-base leading-tight">Family Stock Game Simulation</h1>
-          <span id="role-badge" class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-400">สมาชิกทั่วไป</span>
+          <div class="flex items-center gap-1.5 mt-0.5">
+            <span id="role-badge" class="text-xs px-2 py-0.2 rounded bg-slate-800 text-slate-400">สมาชิกทั่วไป</span>
+            <span id="cloud-sync-status" class="text-[10px] text-emerald-400 flex items-center gap-1 font-mono">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Cloud ซิงค์อยู่
+            </span>
+          </div>
         </div>
       </div>
 
@@ -131,7 +134,7 @@
           <i data-lucide="cloud-upload" class="w-4 h-4"></i> ซิงค์ Drive
         </button>
 
-        <!-- User Profile & Balance Display (คลิกเพื่อแก้ไขข้อมูลตัวเองได้) -->
+        <!-- User Profile & Balance Display -->
         <button type="button" onclick="openSelfProfileModal()" title="คลิกเพื่อแก้ไขข้อมูลส่วนตัวของคุณ" class="group bg-slate-800/80 hover:bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700/60 hover:border-emerald-500/80 text-right transition flex items-center gap-2">
           <div>
             <div class="flex items-center justify-end gap-1 text-xs text-slate-300 font-medium group-hover:text-emerald-300">
@@ -151,8 +154,8 @@
     <!-- Admin Only Bar -->
     <div id="admin-bar" class="hidden bg-indigo-950/60 border-b border-indigo-900/50 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
       <div class="flex items-center gap-2">
-        <span class="bg-indigo-600 text-white px-2 py-0.5 rounded font-bold">โหมดผู้ดูแลระบบ (Admin)</span>
-        <span class="text-slate-300">อัตราเวลา: 60 วินาทีจริง = 1 สัปดาห์จำลอง (เวลาเดินต่อเนื่องอัตโนมัติ)</span>
+        <span class="bg-indigo-600 text-white px-2 py-0.5 rounded font-bold">โหมดผู้ดูแลระบบ (Admin Cloud Master)</span>
+        <span class="text-slate-300">สมาชิกทุกคนทั่วโลกจะเห็นราคาเดียวกันตามห้องนี้</span>
       </div>
       <div class="flex items-center gap-2">
         <button type="button" onclick="adminStartSim()" id="btn-start" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 transition">
@@ -194,9 +197,8 @@
         <div id="watchlist-list" class="flex-1 overflow-y-auto divide-y divide-slate-800/80 custom-scroll pr-1 mt-2"></div>
       </section>
 
-      <!-- Center: Compact Candlestick Chart (ลดขนาดลง 50% พร้อมปุ่มขยาย) -->
+      <!-- Center: Compact Candlestick Chart -->
       <section class="lg:col-span-2 flex flex-col gap-4">
-        <!-- Asset Header -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4">
           <div>
             <div class="flex items-center gap-2 flex-wrap">
@@ -217,7 +219,6 @@
           </div>
         </div>
 
-        <!-- Compact Candlestick Chart Card (~50% height with Toggle Expand Button) -->
         <div id="chart-card-container" class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 flex flex-col transition-all duration-300">
           <div class="flex justify-between items-center mb-2 flex-wrap gap-2">
             <div class="flex items-center gap-2">
@@ -227,7 +228,6 @@
             </div>
             <div class="flex items-center gap-2">
               <span id="active-div-rate" class="text-xs text-amber-400 font-bold hidden sm:inline"></span>
-              <!-- ปุ่มสลับย่อ/ขยายกราฟ -->
               <button type="button" onclick="toggleChartSize()" id="btn-toggle-chart-size" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-xs font-bold flex items-center gap-1.5 transition shadow">
                 <i data-lucide="maximize-2" id="icon-toggle-chart" class="w-3.5 h-3.5 text-emerald-400"></i>
                 <span id="label-toggle-chart">ขยายกราฟ</span>
@@ -235,12 +235,10 @@
             </div>
           </div>
 
-          <!-- Canvas Container (ความสูงเริ่มต้นปรับลดลง 50% เหลือ 190px - 210px) -->
           <div id="candle-canvas-wrapper" class="relative w-full h-[190px] transition-all duration-300">
             <canvas id="candleCanvas" class="w-full h-full block rounded-xl bg-slate-950/60"></canvas>
           </div>
 
-          <!-- Inspector Bar -->
           <div id="candle-inspector" class="text-[11px] font-mono text-slate-400 mt-2 flex justify-between border-t border-slate-800/80 pt-1.5">
             <span>O: <b id="ins-open" class="text-white">-</b></span>
             <span>H: <b id="ins-high" class="text-emerald-400">-</b></span>
@@ -491,7 +489,7 @@
     </main>
   </div>
 
-  <!-- Modal: Edit Self Profile (สำหรับสมาชิกทั่วไปกดแก้ไขตัวเอง) -->
+  <!-- Modal: Edit Self Profile -->
   <div id="modal-self-profile" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -503,7 +501,7 @@
 
       <div class="space-y-3 text-xs">
         <div>
-          <label class="block text-slate-400 font-medium mb-1">ชื่อผู้ใช้งาน (Username - ไม่สามารถแก้ไขได้)</label>
+          <label class="block text-slate-400 font-medium mb-1">ชื่อผู้ใช้งาน (Username - แก้ไขไม่ได้)</label>
           <input type="text" id="self-profile-username" disabled class="w-full bg-slate-800/50 border border-slate-700/60 rounded-xl px-3 py-2 text-sm text-slate-400 font-mono cursor-not-allowed" />
         </div>
         <div>
@@ -519,7 +517,7 @@
           <input type="email" id="self-profile-email" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500" />
         </div>
         <div>
-          <label class="block text-slate-300 font-medium mb-1">เปลี่ยนรหัสผ่านใหม่ (เว้นว่างไว้หากไม่ต้องการเปลี่ยน)</label>
+          <label class="block text-slate-300 font-medium mb-1">เปลี่ยนรหัสผ่านใหม่ (เว้นว่างไว้หากไม่เปลี่ยน)</label>
           <input type="password" id="self-profile-password" placeholder="ระบุรหัสผ่านใหม่" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500" />
         </div>
       </div>
@@ -531,7 +529,7 @@
     </div>
   </div>
 
-  <!-- Modal: Edit Member Info (สำหรับ Admin แก้ไขสมาชิก) -->
+  <!-- Modal: Edit Member Info (Admin) -->
   <div id="modal-edit-member" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -575,7 +573,7 @@
         <h3 class="text-lg font-bold text-white">ยืนยันการรีเซ็ตการจำลอง?</h3>
       </div>
       <p class="text-sm text-slate-300 leading-relaxed">
-        ระบบจะหยุดรอบปัจจุบัน สุ่มภาวะเศรษฐกิจประวัติศาสตร์ใหม่ สุ่มแนวโน้มหุ้น-คริปโต 20 ตัว และเริ่มนับเวลาใหม่
+        ระบบจะหยุดรอบปัจจุบันบน Cloud สุ่มภาวะเศรษฐกิจใหม่ สุ่มราคาและเริ่มนับเวลาห้องใหม่ให้ทุกคนพร้อมกัน
       </p>
       <div class="flex justify-end gap-3 pt-2">
         <button type="button" onclick="closeResetModal()" class="px-4 py-2 bg-slate-800 rounded-xl text-xs font-bold text-slate-300">ยกเลิก</button>
@@ -622,7 +620,7 @@
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzIesDWStmrzxzBlNefVftd1PRtKL3GIgfVYb4V_7zOKfGNujCwp_p-DjgVO5ZIYGy/exec";
 
     const USD_RATE = 35.0;
-    const TICK_INTERVAL_MS = 8500;
+    const TICK_INTERVAL_MS = 8500; // 8.5s ต่อ 1 tick (60s ≈ 1 สัปดาห์)
     let currentCurrency = 'THB';
     let currentAuthTab = 'login';
     let currentUser = null;
@@ -632,9 +630,19 @@
     let simInterval = null;
     let countdownInterval = null;
     let realTimeTimer = null;
+    let cloudPollingInterval = null;
     let nextTickTimestamp = 0;
     let editingTargetUsername = null;
-    let isChartExpanded = false; // ตัวแปรจัดการขยาย/ย่อกราฟ
+    let isChartExpanded = false;
+
+    // สถานะตลาดกลางที่ซิงค์กับ Cloud (Single Source of Truth)
+    let globalMarketState = {
+      simState: 'stopped',
+      gameStartTime: 0,
+      pauseOffsetSec: 0,
+      eraIndex: 0,
+      marketSeed: 12345
+    };
 
     const MACRO_ERAS = [
       {
@@ -683,58 +691,82 @@
       admin: { password: '00', role: 'admin', balanceTHB: 1000000, fullname: 'Admin ผู้ดูแลระบบ', phone: '-', email: 'admin@family.local', holdings: {}, trades: [], dividends: {}, gameHistory: [] }
     };
 
-    function generate20Assets() {
+    // ตัวกำเนิดตัวเลขสุ่มแบบคงที่ตาม Seed (Deterministic PRNG)
+    function pseudoRandom(seed) {
+      const x = Math.sin(seed) * 10000;
+      return x - Math.floor(x);
+    }
+
+    function generate20AssetsDeterministic(seed, eraIndex, totalTicks = 0) {
+      const era = MACRO_ERAS[eraIndex % MACRO_ERAS.length];
       const stocks = [
-        { sym: "NVTC", name: "NovaTech Solutions", sec: "AI & Cloud", r: 3, d: 0.025, ov: "ผู้นำด้านการประมวลผล Cloud และ AI ขนาดใหญ่สำหรับธุรกิจองค์กร", dr: "รายได้จากศูนย์ข้อมูลระดับองค์กรและสัญญาคลาวด์ระยะยาว", rk: "การแข่งขันจากต่างชาติและความเร็วในการอัปเกรดชิป" },
-        { sym: "SREN", name: "Siam Renewable Energy", sec: "พลังงานสะอาด", r: 2, d: 0.05, ov: "ผลิตและจำหน่ายกระแสไฟฟ้าจากพลังงานแสงอาทิตย์และลม", dr: "สัญญาซื้อขายไฟฟ้าระยะยาวกับภาครัฐและเอกชน", rk: "ต้นทุนอุปกรณ์และการซ่อมบำรุงตามสภาพอากาศ" },
-        { sym: "AVGD", name: "AeroVanguard Defence", sec: "อากาศยาน & อวกาศ", r: 4, d: 0.02, ov: "วิจัยและผลิตโดรนสำรวจ อากาศยานไร้คนขับ และดาวเทียมสื่อสาร", dr: "งบประมาณด้านความมั่นคงและเทคโนโลยีการบินขั้นสูง", rk: "ข้อจำกัดการถ่ายทอดเทคโนโลยีระหว่างประเทศ" },
-        { sym: "VTLS", name: "Vitalis BioPharma", sec: "เทคโนโลยีชีวภาพ", r: 5, d: 0.015, ov: "พัฒนายีนบำบัดรักษาโรคเฉพาะทางและยาต้านเซลล์มะเร็ง", dr: "ความคืบหน้าการทดลองทางคลินิกและการจดสิทธิบัตรยา", rk: "ความเสี่ยงการไม่ผ่านอนุมัติจากสำนักงานคณะกรรมการอาหารและยา" },
-        { sym: "MTRL", name: "MetroRail Logistics", sec: "ขนส่งและโลจิสติกส์", r: 1, d: 0.06, ov: "เครือข่ายรถไฟความเร็วสูงและคลังสินค้าควบคุมอุณหภูมิอัตโนมัติ", dr: "ปริมาณขนส่งสินค้า e-Commerce และการขยายเส้นทางรถไฟ", rk: "ต้นทุนราคาน้ำมันและค่าบำรุงรักษาโครงข่ายราง" },
-        { sym: "QCHW", name: "Quantum Chipworks", sec: "ชิปประมวลผล", r: 4, d: 0.01, ov: "ออกแบบและผลิตชิปประมวลผลควอนตัมความเร็วสูง", dr: "ความต้องการชิปความเร็วสูงสำหรับ AI และศูนย์ข้อมูล", rk: "ปัญหาห่วงโซ่อุปทานและข้อจำกัดด้านแร่หายาก" },
-        { sym: "TAGR", name: "TerraAgri FoodTech", sec: "อาหารและฟาร์มแนวตั้ง", r: 2, d: 0.04, ov: "ฟาร์มอัจฉริยะในเมืองและโปรตีนทางเลือกจากพืช", dr: "ความต้องการอาหารยั่งยืนและเทรนด์สุขภาพโลก", rk: "ต้นทุนค่าไฟฟ้าหลอดไฟปลูกและกำลังซื้อผู้บริโภค" },
-        { sym: "APXF", name: "Apex FinSecure", sec: "การเงินดิจิทัล", r: 3, d: 0.035, ov: "แพลตฟอร์มรับชำระเงินข้ามพรมแดนและระบบความปลอดภัยการเงิน", dr: "ปริมาณธุรกรรมดิจิทัลที่เติบโตต่อเนื่อง", rk: "การกำกับดูแลของแบงก์ชาติและการแข่งขันด้านค่าธรรมเนียม" },
-        { sym: "ZRTG", name: "Zenith Retail Group", sec: "ค้าปลีกและอุปโภค", r: 2, d: 0.045, ov: "เครือข่ายร้านสะดวกซื้อและห้างสรรพสินค้าทั่วประเทศ", dr: "การบริโภคในประเทศและการฟื้นตัวของการท่องเที่ยว", rk: "ภาวะเงินเฟ้อชะลอการจับจ่ายใช้สอย" },
-        { sym: "CYBS", name: "CyberShield Security", sec: "ความปลอดภัยไซเบอร์", r: 3, d: 0.02, ov: "ซอฟต์แวร์ป้องกันข้อมูลรั่วไหลและตรวจจับมัลแวร์ระดับองค์กร", dr: "ภัยคุกคามทางไซเบอร์ที่เพิ่มขึ้นทั่วโลก", rk: "ความเสี่ยงข้อผิดพลาดหรือช่องโหว่ของระบบตนเอง" }
+        { sym: "NVTC", name: "NovaTech Solutions", sec: "AI & Cloud", r: 3, d: 0.025, base: 45, ov: "ผู้นำด้านการประมวลผล Cloud และ AI ขนาดใหญ่", dr: "รายได้จากศูนย์ข้อมูลระดับองค์กร", rk: "การแข่งขันจากต่างชาติ" },
+        { sym: "SREN", name: "Siam Renewable Energy", sec: "พลังงานสะอาด", r: 2, d: 0.05, base: 32, ov: "ผลิตและจำหน่ายกระแสไฟฟ้าจากพลังงานแสงอาทิตย์และลม", dr: "สัญญาซื้อขายไฟฟ้าระยะยาว", rk: "ต้นทุนอุปกรณ์และการซ่อมบำรุง" },
+        { sym: "AVGD", name: "AeroVanguard Defence", sec: "อากาศยาน & อวกาศ", r: 4, d: 0.02, base: 78, ov: "วิจัยและผลิตโดรนสำรวจและดาวเทียมสื่อสาร", dr: "งบประมาณด้านความมั่นคง", rk: "ข้อจำกัดการถ่ายทอดเทคโนโลยี" },
+        { sym: "VTLS", name: "Vitalis BioPharma", sec: "เทคโนโลยีชีวภาพ", r: 5, d: 0.015, base: 26, ov: "พัฒนายีนบำบัดรักษาโรคเฉพาะทาง", dr: "ความคืบหน้าการทดลองทางคลินิก", rk: "ความเสี่ยงการไม่ผ่านอนุมัติยา" },
+        { sym: "MTRL", name: "MetroRail Logistics", sec: "ขนส่งและโลจิสติกส์", r: 1, d: 0.06, base: 55, ov: "เครือข่ายรถไฟความเร็วสูงและคลังสินค้าอัตโนมัติ", dr: "ปริมาณขนส่งสินค้า e-Commerce", rk: "ต้นทุนราคาน้ำมัน" },
+        { sym: "QCHW", name: "Quantum Chipworks", sec: "ชิปประมวลผล", r: 4, d: 0.01, base: 92, ov: "ออกแบบและผลิตชิปควอนตัมความเร็วสูง", dr: "ความต้องการชิปสำหรับ AI", rk: "ปัญหาห่วงโซ่อุปทาน" },
+        { sym: "TAGR", name: "TerraAgri FoodTech", sec: "อาหารและฟาร์มแนวตั้ง", r: 2, d: 0.04, base: 38, ov: "ฟาร์มอัจฉริยะในเมืองและโปรตีนทางเลือก", dr: "ความต้องการอาหารยั่งยืน", rk: "ต้นทุนค่าไฟฟ้าหลอดไฟปลูก" },
+        { sym: "APXF", name: "Apex FinSecure", sec: "การเงินดิจิทัล", r: 3, d: 0.035, base: 64, ov: "แพลตฟอร์มชำระเงินข้ามพรมแดน", dr: "ปริมาณธุรกรรมดิจิทัลที่เติบโต", rk: "การกำกับดูแลของแบงก์ชาติ" },
+        { sym: "ZRTG", name: "Zenith Retail Group", sec: "ค้าปลีกและอุปโภค", r: 2, d: 0.045, base: 42, ov: "เครือข่ายร้านสะดวกซื้อทั่วประเทศ", dr: "การบริโภคในประเทศ", rk: "ภาวะเงินเฟ้อชะลอการจับจ่าย" },
+        { sym: "CYBS", name: "CyberShield Security", sec: "ความปลอดภัยไซเบอร์", r: 3, d: 0.02, base: 70, ov: "ซอฟต์แวร์ป้องกันข้อมูลรั่วไหลระดับองค์กร", dr: "ภัยคุกคามทางไซเบอร์ที่เพิ่มขึ้น", rk: "ความเสี่ยงช่องโหว่ของระบบ" }
       ];
 
       const cryptos = [
-        { sym: "CRON", name: "ChronoChain", sec: "Layer-1 Blockchain", r: 8, d: 0.07, ov: "บล็อกเชนความเร็วสูง 200k TPS รองรับธุรกรรมการเงินระดับโลก", dr: "จำนวนผู้ใช้งาน dApps และธุรกรรมบนเครือข่าย", rk: "โอกาสเกิดข้อผิดพลาดของเครือข่ายและการแข่งขันจากเชนอื่น" },
-        { sym: "ETHU", name: "Etherium Ultra", sec: "Smart Contract Hub", r: 7, d: 0.06, ov: "ระบบสัญญาอัจฉริยะแบบกระจายศูนย์ที่เชื่อมโยงแอปรุ่นใหม่", dr: "ค่าธรรมเนียม Gas และการ Staking ของนักลงทุน", rk: "คู่แข่งบล็อกเชนรุ่นใหม่ที่ค่าธรรมเนียมถูกกว่า" },
-        { sym: "SPEC", name: "Spectre Privacy", sec: "ZK Privacy Token", r: 9, d: 0, ov: "โอนเงินปกปิดข้อมูลด้วยเทคโนโลยี Zero-Knowledge ขั้นสูง", dr: "ความต้องการธุรกรรมที่ไม่เปิดเผยตัวตน", rk: "การถูกเพ่งเล็งจากหน่วยงานกำกับดูแลด้านกฎหมายฟอกเงิน" },
-        { sym: "VORX", name: "Liquidity Vortex", sec: "DeFi Automated Market", r: 9, d: 0.12, ov: "ฟาร์มสภาพคล่องและกู้ยืมอัตโนมัติบนโลกไร้ตัวกลาง", dr: "มูลค่าสินทรัพย์ค้ำประกัน (Total Value Locked - TVL)", rk: "ความเสี่ยงช่องโหว่ Smart Contract โดน Exploit" },
-        { sym: "SYNP", name: "Synapse DePIN", sec: "AI Computing Network", r: 8, d: 0.08, ov: "เครือข่ายแชร์พลัง GPU กระจายศูนย์สำหรับประมวลผลโมเดล AI", dr: "ดีมานด์การเทรนโมเดล AI ของนักพัฒนาทั่วโลก", rk: "เสถียรภาพและคุณภาพของผู้ปล่อยสัญญาณ Node" },
-        { sym: "CLNK", name: "ChronoLink Oracle", sec: "Oracle Data Feed", r: 7, d: 0.065, ov: "เชื่อมต่อข้อมูลราคาโลกจริงเข้าสู่โลกบล็อกเชนแบบเรียลไทม์", dr: "การใช้งานของโปรเจกต์ DeFi และอนุพันธ์ดิจิทัล", rk: "ความแม่นยำของฟีดราคาในสภาวะตลาดผันผวนจัด" },
-        { sym: "TERA", name: "Terrastone RWA", sec: "Real World Asset", r: 6, d: 0.065, ov: "แปลงอสังหาริมทรัพย์และพันธบัตรรัฐบาลเป็นเหรียญดิจิทัล", dr: "เงินทุนสถาบันดั้งเดิมไหลเข้าสู่ระบบโทเคน", rk: "สิทธิ์ทางกฎหมายและการบังคับใช้ของทรัพย์สินจริง" },
-        { sym: "OMBI", name: "OmniBridge Protocol", sec: "Cross-Chain Bridge", r: 9, d: 0.09, ov: "สะพานเชื่อมโอนเหรียญและสินทรัพย์ข้ามบล็อกเชนต่างระบบ", dr: "ปริมาณวอลุ่มการโอนเงินข้ามเชน", rk: "ความเสี่ยงแฮกเกอร์โจมตี Smart Contract ของ Bridge" },
-        { sym: "MRLM", name: "MetaRealm Game", sec: "GameFi & Metaverse", r: 10, d: 0, ov: "เหรียญเศรษฐกิจในเกมโลกเสมือนจริง 3 มิติและไอเทม NFT", dr: "จำนวนผู้เล่นเกมประจำวันและการซื้อขายไอเทม", rk: "กระแสเกมเสื่อมความนิยมอย่างรวดเร็ว" },
-        { sym: "SHBG", name: "ShibaGalaxy Meme", sec: "Meme Community", r: 10, d: 0, ov: "เหรียญชุมชนเน้นพลังไวรัลโซเชียลและการรวมกลุ่มของคอมมูนิตี้", dr: "กระแสไวรัลบนสื่อสังคมออนไลน์และการเก็งกำไร", rk: "ไม่มีปัจจัยพื้นฐานรองรับ ความผันผวนสูงที่สุดในตลาด" }
+        { sym: "CRON", name: "ChronoChain", sec: "Layer-1 Blockchain", r: 8, d: 0.07, base: 120, ov: "บล็อกเชนความเร็วสูง 200k TPS", dr: "จำนวนธุรกรรมและผู้ใช้ dApps", rk: "การแข่งขันจากเชนอื่น" },
+        { sym: "ETHU", name: "Etherium Ultra", sec: "Smart Contract Hub", r: 7, d: 0.06, base: 280, ov: "ระบบสัญญาอัจฉริยะแบบกระจายศูนย์", dr: "ค่าธรรมเนียม Gas และการ Staking", rk: "คู่แข่งบล็อกเชนรุ่นใหม่" },
+        { sym: "SPEC", name: "Spectre Privacy", sec: "ZK Privacy Token", r: 9, d: 0, base: 48, ov: "โอนเงินปกปิดข้อมูลด้วยเทคโนโลยี ZK", dr: "ความต้องการธุรกรรมนิรนาม", rk: "การถูกเพ่งเล็งจากกฎหมายฟอกเงิน" },
+        { sym: "VORX", name: "Liquidity Vortex", sec: "DeFi Automated Market", r: 9, d: 0.12, base: 85, ov: "ฟาร์มสภาพคล่องและกู้ยืมอัตโนมัติ", dr: "มูลค่าสินทรัพย์ค้ำประกัน (TVL)", rk: "ความเสี่ยงช่องโหว่ Smart Contract" },
+        { sym: "SYNP", name: "Synapse DePIN", sec: "AI Computing Network", r: 8, d: 0.08, base: 62, ov: "เครือข่ายแชร์พลัง GPU สำหรับ AI", dr: "ดีมานด์การเทรนโมเดล AI", rk: "เสถียรภาพของ Node เครือข่าย" },
+        { sym: "CLNK", name: "ChronoLink Oracle", sec: "Oracle Data Feed", r: 7, d: 0.065, base: 34, ov: "เชื่อมต่อข้อมูลราคาโลกจริงสู่บล็อกเชน", dr: "การใช้งานของโปรเจกต์ DeFi", rk: "ความแม่นยำของฟีดราคา" },
+        { sym: "TERA", name: "Terrastone RWA", sec: "Real World Asset", r: 6, d: 0.065, base: 15, ov: "แปลงอสังหาฯ และพันธบัตรเป็นโทเคน", dr: "เงินทุนสถาบันไหลเข้าสู่ระบบ", rk: "สิทธิ์ทางกฎหมายของทรัพย์สินจริง" },
+        { sym: "OMBI", name: "OmniBridge Protocol", sec: "Cross-Chain Bridge", r: 9, d: 0.09, base: 22, ov: "สะพานเชื่อมโอนเหรียญข้ามบล็อกเชน", dr: "ปริมาณวอลุ่มการโอนเงินข้ามเชน", rk: "ความเสี่ยงถูกแฮก Smart Contract" },
+        { sym: "MRLM", name: "MetaRealm Game", sec: "GameFi & Metaverse", r: 10, d: 0, base: 8.5, ov: "เหรียญเศรษฐกิจในเกมโลกเสมือนจริง", dr: "จำนวนผู้เล่นเกมประจำวัน", rk: "กระแสเกมเสื่อมความนิยมเร็ว" },
+        { sym: "SHBG", name: "ShibaGalaxy Meme", sec: "Meme Community", r: 10, d: 0, base: 1.2, ov: "เหรียญชุมชนเน้นพลังไวรัลโซเชียล", dr: "กระแสไวรัลและการเก็งกำไร", rk: "ไม่มีปัจจัยพื้นฐานรองรับ ผันผวนสูงสุด" }
       ];
 
       const res = {};
-      stocks.forEach(s => {
-        const p = Math.round((20 + Math.random() * 120) * 100) / 100;
-        res[s.sym] = { ...s, type: 'stock', priceUSD: p, candles: generateInitialCandles(p, 0.02 * s.r) };
-      });
-      cryptos.forEach(c => {
-        const p = Math.round((5 + Math.random() * 500) * 100) / 100;
-        res[c.sym] = { ...c, type: 'crypto', priceUSD: p, candles: generateInitialCandles(p, 0.04 * (c.r - 5)) };
-      });
-      return res;
-    }
+      const allRaw = [...stocks.map(s => ({...s, type: 'stock'})), ...cryptos.map(c => ({...c, type: 'crypto'}))];
 
-    function generateInitialCandles(basePrice, vol) {
-      const candles = [];
-      let cur = basePrice * 0.8;
-      for (let i = 0; i < 28; i++) {
-        const o = cur;
-        const change = (Math.random() - 0.48) * vol * o;
-        const c = Math.max(0.1, o + change);
-        const h = Math.max(o, c) + Math.random() * (vol * 0.6) * o;
-        const l = Math.max(0.05, Math.min(o, c) - Math.random() * (vol * 0.6) * o);
-        candles.push({ o: Math.round(o * 100) / 100, h: Math.round(h * 100) / 100, l: Math.round(l * 100) / 100, c: Math.round(c * 100) / 100 });
-        cur = c;
-      }
-      return candles;
+      allRaw.forEach((asset, aIdx) => {
+        let cur = asset.base;
+        const candles = [];
+        const isBull = era.bullishSectors.includes(asset.sec);
+        const isBear = era.bearishSectors.includes(asset.sec);
+        const bias = isBull ? 0.012 : (isBear ? -0.012 : 0);
+        const vol = asset.type === 'crypto' ? 0.04 * (asset.r - 4) : 0.018 * asset.r;
+
+        // สร้างแท่งเทียน 24 แท่งเริ่มต้น + ticks ที่ผ่านไปตามเวลาจริง
+        const numCandles = Math.min(24 + totalTicks, 35);
+        for (let i = 0; i < numCandles; i++) {
+          const stepSeed = seed + (aIdx * 1000) + i;
+          const r1 = pseudoRandom(stepSeed);
+          const r2 = pseudoRandom(stepSeed + 1);
+          const r3 = pseudoRandom(stepSeed + 2);
+
+          const o = cur;
+          const change = ((r1 - 0.48) * vol + bias) * o;
+          const c = Math.max(0.1, o + change);
+          const h = Math.max(o, c) + (r2 * vol * 0.5 * o);
+          const l = Math.max(0.05, Math.min(o, c) - (r3 * vol * 0.5 * o));
+
+          candles.push({
+            o: Math.round(o * 100) / 100,
+            h: Math.round(h * 100) / 100,
+            l: Math.round(l * 100) / 100,
+            c: Math.round(c * 100) / 100
+          });
+          cur = c;
+        }
+
+        res[asset.sym] = {
+          ...asset,
+          priceUSD: candles[candles.length - 1].c,
+          candles: candles
+        };
+      });
+
+      return res;
     }
 
     function loadUsers() {
@@ -745,71 +777,192 @@
         if (!parsed || typeof parsed !== 'object') return INITIAL_USERS;
         if (!parsed.admin) parsed.admin = INITIAL_USERS.admin;
         return parsed;
-      } catch(e) {
-        return INITIAL_USERS;
-      }
+      } catch(e) { return INITIAL_USERS; }
     }
     function saveUsers(u) { localStorage.setItem('fsgs_users', JSON.stringify(u)); }
 
-    function loadAssets() {
-      try {
-        const stored = localStorage.getItem('fsgs_assets');
-        if (!stored) return generate20Assets();
-        const parsed = JSON.parse(stored);
-        if (!parsed || typeof parsed !== 'object') return generate20Assets();
-
-        const keys = Object.keys(parsed);
-        if (keys.length < 20 || !parsed[keys[0]].candles || !Array.isArray(parsed[keys[0]].candles)) {
-          const fresh = generate20Assets();
-          saveAssets(fresh);
-          return fresh;
-        }
-        return parsed;
-      } catch(e) {
-        const fresh = generate20Assets();
-        saveAssets(fresh);
-        return fresh;
-      }
-    }
-    function saveAssets(a) { localStorage.setItem('fsgs_assets', JSON.stringify(a)); }
-
-    function loadCurrentEra() {
-      try {
-        const stored = localStorage.getItem('fsgs_macro_era');
-        return stored ? JSON.parse(stored) : MACRO_ERAS[0];
-      } catch(e) {
-        return MACRO_ERAS[0];
-      }
-    }
-    function saveCurrentEra(era) { localStorage.setItem('fsgs_macro_era', JSON.stringify(era)); }
-
     let users = loadUsers();
-    let assets = loadAssets();
-    let currentEra = loadCurrentEra();
-    let simWeek = parseInt(localStorage.getItem('fsgs_sim_week') || '1');
+    let currentEra = MACRO_ERAS[0];
+    let assets = generate20AssetsDeterministic(12345, 0, 0);
+    let simWeek = 1;
 
-    function changeFontSize(size) {
-      const root = document.documentElement;
-      const bNormal = document.getElementById('fs-normal');
-      const bLarge = document.getElementById('fs-large');
-      const bXl = document.getElementById('fs-xl');
-      if (bNormal) bNormal.className = "px-2 py-1 text-slate-300 rounded font-bold";
-      if (bLarge) bLarge.className = "px-2 py-1 text-slate-300 rounded font-bold";
-      if (bXl) bXl.className = "px-2 py-1 text-slate-300 rounded font-bold";
+    /* =========================================================================
+       ระบบซิงค์ Cloud กลาง (Central Cloud State Polling)
+       ========================================================================= */
+    function syncGlobalMarketFromCloud(forceFetch = false) {
+      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("วาง_URL")) return;
 
-      if (size === 'normal') {
-        root.style.fontSize = "16px";
-        if (bNormal) bNormal.className = "px-2 py-1 bg-slate-700 text-white rounded font-bold";
-      } else if (size === 'large') {
-        root.style.fontSize = "18px";
-        if (bLarge) bLarge.className = "px-2 py-1 bg-slate-700 text-white rounded font-bold";
-      } else if (size === 'xl') {
-        root.style.fontSize = "20px";
-        if (bXl) bXl.className = "px-2 py-1 bg-slate-700 text-white rounded font-bold";
-      }
-      localStorage.setItem('fsgs_font_size', size);
+      fetch(GOOGLE_SCRIPT_URL + "?action=get_state")
+        .then(res => res.json())
+        .then(res => {
+          if (res && res.status === "success" && res.state) {
+            applyCloudMarketState(res.state);
+          }
+        })
+        .catch(err => {
+          console.warn("Cloud sync warning (ออฟไลน์ชั่วคราว ใช้สถานะในเครื่อง):", err);
+        });
     }
 
+    function applyCloudMarketState(cloudState) {
+      globalMarketState = cloudState;
+      currentEra = MACRO_ERAS[(cloudState.eraIndex || 0) % MACRO_ERAS.length];
+
+      // คำนวณจำนวนรอบ (Ticks) และสัปดาห์จากเวลาที่เริ่มเกมบน Cloud
+      let elapsedTicks = 0;
+      let totalElapsedSec = 0;
+
+      if (cloudState.simState === 'running' && cloudState.gameStartTime > 0) {
+        const elapsedMs = Math.max(0, Date.now() - cloudState.gameStartTime);
+        totalElapsedSec = Math.floor(elapsedMs / 1000);
+        elapsedTicks = Math.floor(elapsedMs / TICK_INTERVAL_MS);
+      } else if (cloudState.simState === 'paused') {
+        totalElapsedSec = cloudState.pauseOffsetSec || 0;
+        elapsedTicks = Math.floor((totalElapsedSec * 1000) / TICK_INTERVAL_MS);
+      }
+
+      simWeek = Math.floor(totalElapsedSec / 60) + 1; // 60s จริง = 1 สัปดาห์
+      assets = generate20AssetsDeterministic(cloudState.marketSeed || 12345, cloudState.eraIndex || 0, elapsedTicks);
+
+      setLedStatus(cloudState.simState);
+
+      // อัปเดตการแสดงผล
+      renderWatchlist();
+      if (!activeSymbol) activeSymbol = Object.keys(assets)[0];
+      selectAsset(activeSymbol);
+      renderHoldings();
+      renderDashboard();
+      if (currentUser && currentUser.role === 'admin') {
+        renderAdminEraInfo();
+        renderAdminMembersManagementTable();
+      }
+      updateTimeDisplays(totalElapsedSec);
+    }
+
+    function pushAdminStateToCloud(newState) {
+      globalMarketState = { ...globalMarketState, ...newState };
+      applyCloudMarketState(globalMarketState);
+
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "update_sim_state", state: globalMarketState })
+      }).catch(err => console.warn("Push cloud state error:", err));
+    }
+
+    function adminStartSim() {
+      const now = Date.now();
+      const startTime = globalMarketState.gameStartTime > 0 ? (now - (globalMarketState.pauseOffsetSec * 1000)) : now;
+      pushAdminStateToCloud({
+        simState: "running",
+        gameStartTime: startTime,
+        pauseOffsetSec: 0
+      });
+    }
+
+    function adminPauseSim() {
+      const elapsedSec = globalMarketState.gameStartTime > 0 ? Math.floor((Date.now() - globalMarketState.gameStartTime) / 1000) : 0;
+      pushAdminStateToCloud({
+        simState: "paused",
+        pauseOffsetSec: elapsedSec
+      });
+      document.getElementById('tick-countdown').innerText = "พัก";
+    }
+
+    function confirmResetSim() {
+      closeResetModal();
+      const newEraIdx = Math.floor(Math.random() * MACRO_ERAS.length);
+      const newSeed = Math.floor(Math.random() * 900000) + 10000;
+
+      // คืนเงินสดให้สมาชิกทุกคนตามมูลค่าตลาดล่าสุด
+      users = loadUsers();
+      Object.keys(users).forEach(u => {
+        const usr = users[u];
+        Object.entries(usr.holdings || {}).forEach(([sym, h]) => {
+          if (assets[sym]) usr.balanceTHB += h.qty * assets[sym].priceUSD * USD_RATE;
+        });
+        usr.holdings = {};
+      });
+      saveUsers(users);
+
+      pushAdminStateToCloud({
+        simState: "stopped",
+        gameStartTime: 0,
+        pauseOffsetSec: 0,
+        eraIndex: newEraIdx,
+        marketSeed: newSeed
+      });
+
+      alert(`รีเซ็ตตลาดกลางบน Cloud สำเร็จ!\nสุ่มได้ยุค: "${MACRO_ERAS[newEraIdx].title}" พร้อมอัปเดตให้สมาชิกทุกคนพร้อมกัน`);
+    }
+
+    function updateTimeDisplays(elapsedSec) {
+      const hrs = String(Math.floor(elapsedSec / 3600)).padStart(2, '0');
+      const mins = String(Math.floor((elapsedSec % 3600) / 60)).padStart(2, '0');
+      const secs = String(elapsedSec % 60).padStart(2, '0');
+      const elReal = document.getElementById('real-elapsed-time');
+      if (elReal) elReal.innerText = `${hrs}:${mins}:${secs}`;
+
+      const year = Math.floor((simWeek - 1) / 48) + 1;
+      const weekInYear = ((simWeek - 1) % 48) + 1;
+      const elSim = document.getElementById('sim-elapsed-time');
+      if (elSim) elSim.innerText = `ปีที่ ${year} สัปดาห์ที่ ${weekInYear} (รวม ${simWeek} สัปดาห์)`;
+    }
+
+    function startLocalTickTimers() {
+      if (countdownInterval) clearInterval(countdownInterval);
+      countdownInterval = setInterval(() => {
+        if (globalMarketState.simState !== 'running' || !globalMarketState.gameStartTime) return;
+        const now = Date.now();
+        const elapsedSinceStart = now - globalMarketState.gameStartTime;
+        const currentTickRemaining = TICK_INTERVAL_MS - (elapsedSinceStart % TICK_INTERVAL_MS);
+        document.getElementById('tick-countdown').innerText = (currentTickRemaining / 1000).toFixed(1) + 's';
+
+        // ทุกครั้งที่ครบ tick ให้ขยับเวลาสด
+        updateTimeDisplays(Math.floor(elapsedSinceStart / 1000));
+      }, 100);
+
+      // ดึงสถานะ Cloud ทุก 6 วินาที (Polling) เพื่ออัปเดตสมาชิกทุกคนพร้อมกัน
+      if (cloudPollingInterval) clearInterval(cloudPollingInterval);
+      cloudPollingInterval = setInterval(() => {
+        syncGlobalMarketFromCloud();
+      }, 6000);
+    }
+
+    function setLedStatus(state) {
+      const led = document.getElementById('status-led');
+      const text = document.getElementById('status-text');
+      const btnStart = document.getElementById('btn-start');
+
+      if (state === 'running') {
+        led.className = "w-3 h-3 rounded-full bg-emerald-500 inline-block animate-ping shadow-[0_0_8px_#10b981]";
+        text.innerText = "กำลังจำลองราคา";
+        text.className = "text-[11px] font-bold text-emerald-400";
+        if (btnStart) {
+          btnStart.className = "bg-slate-700 text-slate-400 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 cursor-not-allowed";
+          btnStart.disabled = true;
+        }
+      } else if (state === 'paused') {
+        led.className = "w-3 h-3 rounded-full bg-amber-500 inline-block shadow-[0_0_8px_#f59e0b]";
+        text.innerText = "พักการจำลอง";
+        text.className = "text-[11px] font-bold text-amber-400";
+        if (btnStart) {
+          btnStart.className = "bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 transition";
+          btnStart.disabled = false;
+        }
+      } else {
+        led.className = "w-3 h-3 rounded-full bg-rose-500 inline-block shadow-[0_0_8px_#f43f5e]";
+        text.innerText = "หยุด / รีเซ็ต";
+        text.className = "text-[11px] font-bold text-rose-400";
+        if (btnStart) {
+          btnStart.className = "bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 transition";
+          btnStart.disabled = false;
+        }
+      }
+    }
+
+    /* Auth & Roles */
     function switchAuthTab(t) {
       currentAuthTab = t;
       const tabLogin = document.getElementById('tab-login');
@@ -932,7 +1085,7 @@
 
       const isAdmin = currentUser.role === 'admin';
       
-      // Role Isolation: ซ่อน Admin Bar และ Tab 4 กับ Tab 5 ทันทีถ้าเป็นสมาชิกทั่วไป
+      // Role Isolation: ซ่อน Tab 4 และ Tab 5 จากสมาชิกทั่วไป
       document.getElementById('admin-bar').classList.toggle('hidden', !isAdmin);
       document.getElementById('tab-btn-admin').classList.toggle('hidden', !isAdmin);
       document.getElementById('tab-btn-admin-members').classList.toggle('hidden', !isAdmin);
@@ -940,25 +1093,11 @@
       document.getElementById('role-badge').innerText = isAdmin ? "ผู้ดูแลระบบ (Admin)" : "สมาชิกทั่วไป";
       document.getElementById('user-display-name').innerText = currentUser.fullname || currentUser.username;
 
-      assets = loadAssets();
-      const syms = Object.keys(assets);
-      activeSymbol = syms[0];
-
-      renderWatchlist();
-      selectAsset(activeSymbol);
       updateUserBalances();
-      renderHoldings();
-      renderDashboard();
-      if (isAdmin) {
-        renderAdminEraInfo();
-        renderAdminMembersManagementTable();
-      }
+      startLocalTickTimers();
+      syncGlobalMarketFromCloud(true);
 
-      if (window.lucide) {
-        try { lucide.createIcons(); } catch(e){}
-      }
-
-      initPersistentSimulationLoop();
+      if (window.lucide) lucide.createIcons();
     }
 
     function handleLogout() {
@@ -976,9 +1115,6 @@
       selectAsset(activeSymbol);
       renderHoldings();
       renderDashboard();
-      if (currentUser && currentUser.role === 'admin') {
-        renderAdminMembersManagementTable();
-      }
     }
 
     function formatMoney(valTHB) {
@@ -1003,13 +1139,7 @@
       if (!container) return;
       container.innerHTML = '';
       
-      const assetList = Object.values(assets);
-      if (assetList.length === 0) {
-        container.innerHTML = '<div class="p-4 text-center text-slate-500 text-xs">กำลังสร้างข้อมูลสินทรัพย์...</div>';
-        return;
-      }
-
-      assetList.forEach(a => {
+      Object.values(assets).forEach(a => {
         if (currentFilter !== 'all' && a.type !== currentFilter) return;
         const candles = a.candles || [];
         const lastCandle = candles[candles.length - 1] || { c: a.priceUSD, o: a.priceUSD };
@@ -1060,7 +1190,7 @@
       document.getElementById('active-name').innerText = a.name;
       document.getElementById('active-sector').innerText = `หมวดหมู่: ${a.sec} | ${a.type === 'stock' ? 'หุ้นจำลอง' : 'คริปโตจำลอง'}`;
       document.getElementById('active-risk-badge').innerHTML = getRiskBadge(a.r);
-      document.getElementById('active-div-rate').innerText = a.d > 0 ? `💰 ผลตอบแทนปันผล/ปี: ${(a.d * 100).toFixed(1)}%` : 'ไม่มีนโยบายปันผล';
+      document.getElementById('active-div-rate').innerText = a.d > 0 ? `💰 ปันผล/ปี: ${(a.d * 100).toFixed(1)}%` : 'ไม่มีนโยบายปันผล';
 
       const candles = a.candles || [];
       const lastCandle = candles[candles.length - 1] || { c: a.priceUSD, o: a.priceUSD };
@@ -1079,9 +1209,6 @@
       renderWatchlist();
     }
 
-    /* =========================================================================
-       ฟังก์ชันสลับย่อ-ขยายกราฟ (Toggle Chart Size)
-       ========================================================================= */
     function toggleChartSize() {
       isChartExpanded = !isChartExpanded;
       const wrapper = document.getElementById('candle-canvas-wrapper');
@@ -1089,19 +1216,16 @@
       const icon = document.getElementById('icon-toggle-chart');
 
       if (isChartExpanded) {
-        // ขยายใหญ่เต็มอิ่ม (Expanded Mode ~480px)
         wrapper.className = "relative w-full h-[480px] transition-all duration-300";
         label.innerText = "ย่อกราฟ";
         icon.setAttribute('data-lucide', 'minimize-2');
       } else {
-        // ย่อลง 50% กะทัดรัด (Compact Mode ~190px)
         wrapper.className = "relative w-full h-[190px] transition-all duration-300";
         label.innerText = "ขยายกราฟ";
         icon.setAttribute('data-lucide', 'maximize-2');
       }
 
       if (window.lucide) lucide.createIcons();
-      // หน่วงเวลาเล็กน้อยเพื่อให้ DOM ปรับขนาดแล้ววาดกราฟซ้ำ
       setTimeout(() => {
         if (assets[activeSymbol]) drawCandlestickChart(assets[activeSymbol]);
       }, 150);
@@ -1267,9 +1391,6 @@
       updateUserBalances();
       renderHoldings();
       renderDashboard();
-      if (currentUser.role === 'admin') {
-        renderAdminMembersManagementTable();
-      }
       calcOrderTotal();
 
       syncStatsToGoogleDrive(false);
@@ -1332,183 +1453,7 @@
       submitTradeOrder();
     }
 
-    function setLedStatus(state) {
-      const led = document.getElementById('status-led');
-      const text = document.getElementById('status-text');
-      const btnStart = document.getElementById('btn-start');
-
-      if (state === 'running') {
-        led.className = "w-3 h-3 rounded-full bg-emerald-500 inline-block animate-ping shadow-[0_0_8px_#10b981]";
-        text.innerText = "กำลังจำลองราคา";
-        text.className = "text-[11px] font-bold text-emerald-400";
-        if (btnStart) {
-          btnStart.className = "bg-slate-700 text-slate-400 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 cursor-not-allowed";
-          btnStart.disabled = true;
-        }
-      } else if (state === 'paused') {
-        led.className = "w-3 h-3 rounded-full bg-amber-500 inline-block shadow-[0_0_8px_#f59e0b]";
-        text.innerText = "พักการจำลอง";
-        text.className = "text-[11px] font-bold text-amber-400";
-        if (btnStart) {
-          btnStart.className = "bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 transition";
-          btnStart.disabled = false;
-        }
-      } else {
-        led.className = "w-3 h-3 rounded-full bg-rose-500 inline-block shadow-[0_0_8px_#f43f5e]";
-        text.innerText = "หยุด / รีเซ็ต";
-        text.className = "text-[11px] font-bold text-rose-400";
-        if (btnStart) {
-          btnStart.className = "bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 transition";
-          btnStart.disabled = false;
-        }
-      }
-    }
-
-    function initPersistentSimulationLoop() {
-      const savedState = localStorage.getItem('fsgs_sim_state') || 'stopped';
-      const lastTickTime = parseInt(localStorage.getItem('fsgs_last_tick_time') || '0');
-      const now = Date.now();
-
-      if (savedState === 'running' && lastTickTime > 0) {
-        const missedTicks = Math.floor((now - lastTickTime) / TICK_INTERVAL_MS);
-        if (missedTicks > 0) {
-          const ticksToRun = Math.min(missedTicks, 120);
-          for (let i = 0; i < ticksToRun; i++) {
-            executeSimulationTick(false);
-          }
-          localStorage.setItem('fsgs_last_tick_time', now.toString());
-        }
-        setLedStatus('running');
-        startContinuousSimulation();
-      } else if (savedState === 'paused') {
-        setLedStatus('paused');
-        document.getElementById('tick-countdown').innerText = "พัก";
-      } else {
-        setLedStatus('stopped');
-        document.getElementById('tick-countdown').innerText = "หยุด";
-      }
-
-      startRealTimeClock();
-      updateSimTimeDisplay();
-    }
-
-    function startContinuousSimulation() {
-      clearInterval(simInterval);
-      clearInterval(countdownInterval);
-
-      nextTickTimestamp = Date.now() + TICK_INTERVAL_MS;
-      startCountdownTimer();
-
-      simInterval = setInterval(() => {
-        executeSimulationTick(true);
-        nextTickTimestamp = Date.now() + TICK_INTERVAL_MS;
-        localStorage.setItem('fsgs_last_tick_time', Date.now().toString());
-      }, TICK_INTERVAL_MS);
-    }
-
-    function adminStartSim() {
-      localStorage.setItem('fsgs_sim_state', 'running');
-      localStorage.setItem('fsgs_last_tick_time', Date.now().toString());
-      if (!localStorage.getItem('fsgs_game_start_time')) {
-        localStorage.setItem('fsgs_game_start_time', Date.now().toString());
-      }
-      setLedStatus('running');
-      startContinuousSimulation();
-    }
-
-    function adminPauseSim() {
-      localStorage.setItem('fsgs_sim_state', 'paused');
-      clearInterval(simInterval);
-      clearInterval(countdownInterval);
-      simInterval = null;
-      countdownInterval = null;
-      setLedStatus('paused');
-      document.getElementById('tick-countdown').innerText = "พัก";
-    }
-
-    function startCountdownTimer() {
-      clearInterval(countdownInterval);
-      countdownInterval = setInterval(() => {
-        if (!simInterval) return;
-        const remaining = Math.max(0, nextTickTimestamp - Date.now());
-        document.getElementById('tick-countdown').innerText = (remaining / 1000).toFixed(1) + 's';
-      }, 100);
-    }
-
-    function executeSimulationTick(shouldRender = true) {
-      simWeek++;
-      localStorage.setItem('fsgs_sim_week', simWeek.toString());
-
-      Object.values(assets).forEach(a => {
-        const last = a.candles[a.candles.length - 1];
-        const openPrice = last.c;
-        const isBullishSector = currentEra.bullishSectors.includes(a.sec);
-        const isBearishSector = currentEra.bearishSectors.includes(a.sec);
-
-        let biasDrift = 0;
-        if (isBullishSector) biasDrift = 0.015;
-        if (isBearishSector) biasDrift = -0.015;
-
-        const vol = a.type === 'crypto' ? 0.05 * (a.r - 4) : 0.02 * a.r;
-        const pctChange = ((Math.random() - 0.48) * vol) + biasDrift;
-        const closePrice = Math.max(0.1, openPrice * (1 + pctChange));
-
-        const highPrice = Math.max(openPrice, closePrice) + (Math.random() * vol * 0.5 * openPrice);
-        const lowPrice = Math.max(0.05, Math.min(openPrice, closePrice) - (Math.random() * vol * 0.5 * openPrice));
-
-        a.candles.push({
-          o: Math.round(openPrice * 100) / 100,
-          h: Math.round(highPrice * 100) / 100,
-          l: Math.round(lowPrice * 100) / 100,
-          c: Math.round(closePrice * 100) / 100
-        });
-
-        if (a.candles.length > 35) a.candles.shift();
-      });
-
-      saveAssets(assets);
-
-      if (simWeek % 12 === 0) {
-        distributeDividends();
-      }
-
-      if (shouldRender) {
-        renderWatchlist();
-        selectAsset(activeSymbol);
-        renderHoldings();
-        renderDashboard();
-        if (currentUser && currentUser.role === 'admin') {
-          renderAdminMembersManagementTable();
-        }
-        updateSimTimeDisplay();
-      }
-    }
-
-    function startRealTimeClock() {
-      if (realTimeTimer) clearInterval(realTimeTimer);
-      realTimeTimer = setInterval(() => {
-        const startTime = parseInt(localStorage.getItem('fsgs_game_start_time') || '0');
-        if (startTime > 0) {
-          const elapsedSecs = Math.floor((Date.now() - startTime) / 1000);
-          const hrs = String(Math.floor(elapsedSecs / 3600)).padStart(2, '0');
-          const mins = String(Math.floor((elapsedSecs % 3600) / 60)).padStart(2, '0');
-          const secs = String(elapsedSecs % 60).padStart(2, '0');
-          const el = document.getElementById('real-elapsed-time');
-          if (el) el.innerText = `${hrs}:${mins}:${secs}`;
-        } else {
-          const el = document.getElementById('real-elapsed-time');
-          if (el) el.innerText = "00:00:00";
-        }
-      }, 1000);
-    }
-
-    function updateSimTimeDisplay() {
-      const year = Math.floor((simWeek - 1) / 48) + 1;
-      const weekInYear = ((simWeek - 1) % 48) + 1;
-      const el = document.getElementById('sim-elapsed-time');
-      if (el) el.innerText = `ปีที่ ${year} สัปดาห์ที่ ${weekInYear} (รวม ${simWeek} สัปดาห์)`;
-    }
-
+    /* Admin Management & Profile Functions */
     function renderAdminEraInfo() {
       document.getElementById('admin-era-title').innerText = currentEra.title;
       document.getElementById('admin-era-years').innerText = `ช่วงเวลาประวัติศาสตร์: ${currentEra.years}`;
@@ -1547,9 +1492,6 @@
           bearishList.appendChild(row);
         }
       });
-
-      if (bullishList.children.length === 0) bullishList.innerHTML = '<span class="text-slate-500 text-xs">ไม่มีสินทรัพย์ที่ได้ประโยชน์เด่นชัด</span>';
-      if (bearishList.children.length === 0) bearishList.innerHTML = '<span class="text-slate-500 text-xs">ไม่มีสินทรัพย์ที่รับแรงกดดันรุนแรง</span>';
     }
 
     function renderAdminMembersManagementTable() {
@@ -1587,10 +1529,7 @@
     function openEditMemberModal(username) {
       users = loadUsers();
       const member = users[username];
-      if (!member) {
-        alert("ไม่พบข้อมูลสมาชิกนี้");
-        return;
-      }
+      if (!member) return;
 
       editingTargetUsername = username;
       document.getElementById('modal-edit-target-user').innerText = username;
@@ -1598,7 +1537,6 @@
       document.getElementById('edit-member-phone').value = member.phone !== '-' ? member.phone : '';
       document.getElementById('edit-member-email').value = member.email !== '-' ? member.email : '';
       document.getElementById('edit-member-balance').value = member.balanceTHB;
-
       document.getElementById('modal-edit-member').classList.remove('hidden');
     }
 
@@ -1619,7 +1557,7 @@
       const newBalance = parseFloat(document.getElementById('edit-member-balance').value);
 
       if (isNaN(newBalance) || newBalance < 0) {
-        alert("กรุณาระบุจำนวนเงินที่ถูกต้อง (ต้องไม่ติดลบ)");
+        alert("กรุณาระบุจำนวนเงินที่ถูกต้อง");
         return;
       }
 
@@ -1634,17 +1572,12 @@
       closeEditMemberModal();
       renderDashboard();
       renderAdminMembersManagementTable();
-      alert(`บันทึกการแก้ไขข้อมูลของสมาชิก [${editingTargetUsername}] สำเร็จ!`);
+      alert(`บันทึกข้อมูลสมาชิก [${editingTargetUsername}] สำเร็จ!`);
     }
 
     function adminDeleteMemberSingle(username) {
-      if (username === 'admin') {
-        alert("ไม่สามารถลบบัญชีผู้ดูแลระบบ (Admin) ได้");
-        return;
-      }
-
-      const confirmDel = confirm(`⚠️ ยืนยันการลบบัญชี [${username}] ออกจากระบบ?\nข้อมูลพอร์ตการถือครองและประวัติการเทรดของสมาชิกคนนี้จะถูกลบถาวร`);
-      if (!confirmDel) return;
+      if (username === 'admin') return;
+      if (!confirm(`⚠️ ยืนยันการลบบัญชี [${username}] ออกจากระบบ?`)) return;
 
       users = loadUsers();
       delete users[username];
@@ -1652,39 +1585,15 @@
 
       renderDashboard();
       renderAdminMembersManagementTable();
-      alert(`ลบบัญชีสมาชิก [${username}] สำเร็จ!`);
+      alert(`ลบบัญชีสมาชิก [${username}] เรียบร้อยแล้ว`);
     }
 
     function adminMasterResetAllMembers() {
-      const confirmText = prompt("⚠️ คำเตือนขั้นสูง: การกระทำนี้จะลบสมาชิกทั่วไปทั้งหมด และลบประวัติการเทรดย้อนหลังทั้งหมดทิ้งถาวร!\n\nหากต้องการดำเนินการ ให้พิมพ์คำว่า \"DELETE\" ลงในช่องด้านล่าง:");
-      if (confirmText !== "DELETE") {
-        if (confirmText !== null) alert("ยกเลิกการล้างระบบ (พิมพ์คำยืนยันไม่ถูกต้อง)");
-        return;
-      }
+      const confirmText = prompt("⚠️ คำเตือน: พิมพ์ \"DELETE\" เพื่อลบสมาชิกและประวัติการเล่นทั้งหมด:");
+      if (confirmText !== "DELETE") return;
 
-      users = {
-        admin: {
-          password: '00',
-          role: 'admin',
-          fullname: 'Admin ผู้ดูแลระบบ',
-          phone: '-',
-          email: 'admin@family.local',
-          balanceTHB: 1000000,
-          holdings: {},
-          trades: [],
-          dividends: {},
-          gameHistory: []
-        }
-      };
+      users = { admin: INITIAL_USERS.admin };
       saveUsers(users);
-
-      simWeek = 1;
-      localStorage.setItem('fsgs_sim_week', '1');
-      localStorage.setItem('fsgs_sim_state', 'stopped');
-      localStorage.removeItem('fsgs_game_start_time');
-      localStorage.removeItem('fsgs_last_tick_time');
-      setLedStatus('stopped');
-
       renderDashboard();
       renderAdminMembersManagementTable();
       alert("ลบสมาชิกและล้างประวัติการเล่นทั้งหมดในระบบเรียบร้อยแล้ว!");
@@ -1700,7 +1609,6 @@
       document.getElementById('self-profile-phone').value = user.phone !== '-' ? user.phone : '';
       document.getElementById('self-profile-email').value = user.email !== '-' ? user.email : '';
       document.getElementById('self-profile-password').value = '';
-
       document.getElementById('modal-self-profile').classList.remove('hidden');
     }
 
@@ -1722,103 +1630,20 @@
       user.fullname = newFullname || user.username;
       user.phone = newPhone;
       user.email = newEmail;
-      if (newPassword) {
-        user.password = newPassword;
-      }
+      if (newPassword) user.password = newPassword;
 
       users[currentUser.username] = user;
       currentUser = user;
       saveUsers(users);
 
       document.getElementById('user-display-name').innerText = user.fullname || user.username;
-
       closeSelfProfileModal();
       renderDashboard();
-      if (currentUser.role === 'admin') {
-        renderAdminMembersManagementTable();
-      }
       alert("บันทึกการแก้ไขข้อมูลส่วนตัวของคุณเรียบร้อยแล้ว!");
     }
 
     function openResetModal() { document.getElementById('modal-reset').classList.remove('hidden'); }
     function closeResetModal() { document.getElementById('modal-reset').classList.add('hidden'); }
-
-    function confirmResetSim() {
-      adminPauseSim();
-      localStorage.setItem('fsgs_sim_state', 'stopped');
-      localStorage.removeItem('fsgs_game_start_time');
-      localStorage.removeItem('fsgs_last_tick_time');
-      setLedStatus('stopped');
-
-      Object.keys(users).forEach(u => {
-        const usr = users[u];
-        Object.entries(usr.holdings || {}).forEach(([sym, h]) => {
-          if (assets[sym]) usr.balanceTHB += h.qty * assets[sym].candles[assets[sym].candles.length - 1].c * USD_RATE;
-        });
-        usr.holdings = {};
-      });
-
-      const randomIndex = Math.floor(Math.random() * MACRO_ERAS.length);
-      currentEra = MACRO_ERAS[randomIndex];
-      saveCurrentEra(currentEra);
-
-      assets = generate20Assets();
-      saveAssets(assets);
-      saveUsers(users);
-
-      simWeek = 1;
-      localStorage.setItem('fsgs_sim_week', '1');
-
-      closeResetModal();
-      selectAsset(Object.keys(assets)[0]);
-      renderWatchlist();
-      renderHoldings();
-      renderDashboard();
-      renderAdminEraInfo();
-      renderAdminMembersManagementTable();
-      updateSimTimeDisplay();
-      alert(`รีเซ็ตระบบสำเร็จ! สุ่มได้ยุคประวัติศาสตร์: "${currentEra.title}" พร้อมเริ่มนับเวลาใหม่`);
-    }
-
-    function distributeDividends() {
-      Object.keys(users).forEach(u => {
-        const usr = users[u];
-        Object.entries(usr.holdings || {}).forEach(([sym, h]) => {
-          const a = assets[sym];
-          if (a && a.d > 0 && h.qty > 0) {
-            const lastPrice = a.candles[a.candles.length - 1].c;
-            const divAmount = (h.qty * lastPrice * USD_RATE) * (a.d / 4);
-            usr.balanceTHB += divAmount;
-            if (!usr.dividends[sym]) usr.dividends[sym] = { count: 0, totalTHB: 0, lastWeek: '' };
-            usr.dividends[sym].count += 1;
-            usr.dividends[sym].totalTHB += divAmount;
-            usr.dividends[sym].lastWeek = `สัปดาห์ที่ ${simWeek}`;
-
-            if (currentUser && usr.username === currentUser.username) {
-              showDividendToast(sym, a.name, divAmount);
-            }
-          }
-        });
-      });
-      saveUsers(users);
-      updateUserBalances();
-    }
-
-    function showDividendToast(sym, name, amount) {
-      const container = document.getElementById('toast-container');
-      if (!container) return;
-      const toast = document.createElement('div');
-      toast.className = "p-4 bg-gradient-to-r from-amber-500 to-yellow-600 text-slate-950 font-bold rounded-2xl shadow-2xl flex items-center gap-3";
-      toast.innerHTML = `
-        <div class="p-2 bg-white/20 rounded-xl">💰</div>
-        <div>
-          <div class="text-xs uppercase tracking-wide">ได้รับเงินปันผล!</div>
-          <div class="text-sm font-extrabold">${sym} +${formatMoney(amount)}</div>
-        </div>
-      `;
-      container.appendChild(toast);
-      setTimeout(() => toast.remove(), 6000);
-    }
 
     function activateSubTab(selectedId) {
       const allButtons = document.querySelectorAll('.dash-subtab-btn');
@@ -1839,10 +1664,6 @@
       const activeView = document.getElementById(`dash-view-${selectedId}`);
       if (activeView) activeView.classList.remove('hidden');
 
-      ensureHistoryTabIsLast();
-    }
-
-    function ensureHistoryTabIsLast() {
       const historyBtn = document.getElementById('dash-btn-history');
       const container = document.getElementById('dash-subtabs-container');
       if (historyBtn && container && container.lastElementChild !== historyBtn) {
@@ -1858,7 +1679,7 @@
       let unrealized = 0;
       Object.entries(currentUser.holdings || {}).forEach(([sym, h]) => {
         if (assets[sym]) {
-          const lastPrice = assets[sym].candles[assets[sym].candles.length - 1].c;
+          const lastPrice = assets[sym].priceUSD;
           unrealized += (h.qty * lastPrice * USD_RATE) - (h.qty * h.costTHB);
         }
       });
@@ -1868,6 +1689,7 @@
       document.getElementById('dash-unrealized').className = `text-2xl font-bold font-mono mt-1 ${unrealized >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
       document.getElementById('dash-dividend').innerText = formatMoney(totalDiv);
 
+      // Dividend Rows
       const divBody = document.getElementById('dividend-rows');
       if (divBody) {
         divBody.innerHTML = '';
@@ -1890,6 +1712,7 @@
         }
       }
 
+      // Game History Rows
       const gameHistoryBody = document.getElementById('game-history-rows');
       if (gameHistoryBody) {
         gameHistoryBody.innerHTML = '';
@@ -1913,6 +1736,7 @@
         }
       }
 
+      // Trade History Rows
       const hBody = document.getElementById('trade-history-rows');
       if (hBody) {
         hBody.innerHTML = '';
@@ -1934,13 +1758,10 @@
           });
         }
       }
-
-      ensureHistoryTabIsLast();
     }
 
-    /* Tab Switcher พร้อมระบบป้องกัน Route Guard */
     function switchTab(t) {
-      // Role Guard: หากสมาชิกทั่วไปพยายามเข้าถึง Tab 4 หรือ Tab 5 ให้บังคับกลับ Tab 1
+      // Role Guard: ป้องกันสมาชิกเข้า Tab 4 และ Tab 5
       if ((t === 'admin-view' || t === 'admin-members') && (!currentUser || currentUser.role !== 'admin')) {
         t = 'trade';
       }
@@ -1994,9 +1815,7 @@
 
       if (!currentUser.gameHistory) currentUser.gameHistory = [];
       currentUser.gameHistory.unshift(recordNow);
-      if (currentUser.gameHistory.length > 5) {
-        currentUser.gameHistory = currentUser.gameHistory.slice(0, 5);
-      }
+      if (currentUser.gameHistory.length > 5) currentUser.gameHistory = currentUser.gameHistory.slice(0, 5);
       users[currentUser.username] = currentUser;
       saveUsers(users);
       renderDashboard();
@@ -2017,18 +1836,14 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       }).then(() => {
-        console.log("บันทึกสถิติไปยัง Google Drive (FSGS) เรียบร้อย");
         if (showAlert) alert("บันทึกรอบการเล่นลงตารางประวัติ และซิงค์เข้า Google Drive (โฟลเดอร์ FSGS) เรียบร้อย!");
       }).catch(e => {
-        console.warn("Sync stats failed:", e);
         if (showAlert) alert("บันทึกลงเครื่องสำเร็จ แต่การเชื่อมต่อ Google Drive ขัดข้อง");
       });
     }
 
     window.onload = function() {
-      if (window.lucide) {
-        try { lucide.createIcons(); } catch(e){}
-      }
+      if (window.lucide) lucide.createIcons();
       const savedFontSize = localStorage.getItem('fsgs_font_size') || 'normal';
       changeFontSize(savedFontSize);
 
