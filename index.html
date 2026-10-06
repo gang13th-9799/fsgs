@@ -131,11 +131,16 @@
           <i data-lucide="cloud-upload" class="w-4 h-4"></i> ซิงค์ Drive
         </button>
 
-        <!-- Balance -->
-        <div class="bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700/60 text-right">
-          <div id="user-display-name" class="text-xs text-slate-300 font-medium">---</div>
-          <div id="user-balance-display" class="text-sm font-bold text-emerald-400 font-mono">฿0</div>
-        </div>
+        <!-- User Profile & Balance Display (คลิกเพื่อแก้ไขข้อมูลตัวเองได้) -->
+        <button type="button" onclick="openSelfProfileModal()" title="คลิกเพื่อแก้ไขข้อมูลส่วนตัวของคุณ" class="group bg-slate-800/80 hover:bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700/60 hover:border-emerald-500/80 text-right transition flex items-center gap-2">
+          <div>
+            <div class="flex items-center justify-end gap-1 text-xs text-slate-300 font-medium group-hover:text-emerald-300">
+              <span id="user-display-name">---</span>
+              <i data-lucide="pencil" class="w-3 h-3 text-slate-400 group-hover:text-emerald-400"></i>
+            </div>
+            <div id="user-balance-display" class="text-sm font-bold text-emerald-400 font-mono">฿0</div>
+          </div>
+        </button>
 
         <button type="button" onclick="handleLogout()" title="ออกจากระบบ" class="p-2 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 rounded-xl transition">
           <i data-lucide="log-out" class="w-5 h-5"></i>
@@ -162,7 +167,7 @@
       </div>
     </div>
 
-    <!-- Navigation Tabs -->
+    <!-- Navigation Tabs (Role Isolation: Tab 4 & 5 ซ่อนจากสมาชิกทั่วไป) -->
     <div class="bg-slate-900 border-b border-slate-800 px-4 flex gap-6 text-sm font-bold overflow-x-auto">
       <button type="button" onclick="switchTab('trade')" id="tab-btn-trade" class="py-3 border-b-2 border-emerald-500 text-emerald-400 whitespace-nowrap">1. กระดานเทรดจำลอง</button>
       <button type="button" onclick="switchTab('holdings')" id="tab-btn-holdings" class="py-3 border-b-2 border-transparent text-slate-400 hover:text-white whitespace-nowrap">2. สรุปพอร์ตการถือครอง</button>
@@ -189,9 +194,10 @@
         <div id="watchlist-list" class="flex-1 overflow-y-auto divide-y divide-slate-800/80 custom-scroll pr-1 mt-2"></div>
       </section>
 
-      <!-- Center: Candlestick Chart -->
+      <!-- Center: Compact Candlestick Chart (ลดขนาดลง 50% พร้อมปุ่มขยาย) -->
       <section class="lg:col-span-2 flex flex-col gap-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-wrap items-center justify-between gap-4">
+        <!-- Asset Header -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4">
           <div>
             <div class="flex items-center gap-2 flex-wrap">
               <span id="active-sym" class="text-2xl font-bold text-white">---</span>
@@ -211,23 +217,35 @@
           </div>
         </div>
 
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex-1 flex flex-col min-h-[440px]">
-          <div class="flex justify-between items-center mb-2">
+        <!-- Compact Candlestick Chart Card (~50% height with Toggle Expand Button) -->
+        <div id="chart-card-container" class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 flex flex-col transition-all duration-300">
+          <div class="flex justify-between items-center mb-2 flex-wrap gap-2">
             <div class="flex items-center gap-2">
               <span class="text-xs font-semibold text-slate-300">กราฟแท่งเทียนจำลอง (Candlestick)</span>
               <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded font-bold">เขียว = ขึ้น</span>
               <span class="text-[10px] bg-rose-500/20 text-rose-400 px-1.5 py-0.5 rounded font-bold">แดง = ลง</span>
             </div>
-            <span id="active-div-rate" class="text-xs text-amber-400 font-bold"></span>
+            <div class="flex items-center gap-2">
+              <span id="active-div-rate" class="text-xs text-amber-400 font-bold hidden sm:inline"></span>
+              <!-- ปุ่มสลับย่อ/ขยายกราฟ -->
+              <button type="button" onclick="toggleChartSize()" id="btn-toggle-chart-size" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-xs font-bold flex items-center gap-1.5 transition shadow">
+                <i data-lucide="maximize-2" id="icon-toggle-chart" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span id="label-toggle-chart">ขยายกราฟ</span>
+              </button>
+            </div>
           </div>
-          <div class="flex-1 relative w-full h-full min-h-[350px]">
+
+          <!-- Canvas Container (ความสูงเริ่มต้นปรับลดลง 50% เหลือ 190px - 210px) -->
+          <div id="candle-canvas-wrapper" class="relative w-full h-[190px] transition-all duration-300">
             <canvas id="candleCanvas" class="w-full h-full block rounded-xl bg-slate-950/60"></canvas>
           </div>
-          <div id="candle-inspector" class="text-[11px] font-mono text-slate-400 mt-2 flex justify-between border-t border-slate-800/80 pt-2">
-            <span>Open: <b id="ins-open" class="text-white">-</b></span>
-            <span>High: <b id="ins-high" class="text-emerald-400">-</b></span>
-            <span>Low: <b id="ins-low" class="text-rose-400">-</b></span>
-            <span>Close: <b id="ins-close" class="text-white">-</b></span>
+
+          <!-- Inspector Bar -->
+          <div id="candle-inspector" class="text-[11px] font-mono text-slate-400 mt-2 flex justify-between border-t border-slate-800/80 pt-1.5">
+            <span>O: <b id="ins-open" class="text-white">-</b></span>
+            <span>H: <b id="ins-high" class="text-emerald-400">-</b></span>
+            <span>L: <b id="ins-low" class="text-rose-400">-</b></span>
+            <span>C: <b id="ins-close" class="text-white">-</b></span>
           </div>
         </div>
       </section>
@@ -395,7 +413,7 @@
       </div>
     </main>
 
-    <!-- 4. VIEW: ADMIN OVERVIEW -->
+    <!-- 4. VIEW: ADMIN OVERVIEW (เฉพาะ ADMIN) -->
     <main id="view-admin" class="hidden flex-1 p-4 max-w-7xl mx-auto w-full space-y-5">
       <div class="bg-gradient-to-r from-slate-900 to-indigo-950/60 border border-indigo-900/60 rounded-3xl p-6 shadow-xl space-y-4">
         <div class="flex justify-between items-start flex-wrap gap-3">
@@ -448,13 +466,11 @@
             <p class="text-xs text-slate-400 mt-0.5">สามารถแก้ไขข้อมูลส่วนตัว ชื่อ เบอร์โทร อีเมล ยอดเงิน หรือลบสมาชิกรายบุคคลและล้างระบบ</p>
           </div>
 
-          <!-- Master Reset Button -->
           <button type="button" onclick="adminMasterResetAllMembers()" class="px-4 py-2.5 bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white border border-rose-600/40 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-lg">
             <i data-lucide="trash-2" class="w-4 h-4"></i> ลบสมาชิกและประวัติการเล่นทั้งหมด
           </button>
         </div>
 
-        <!-- Members Management Table -->
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs font-mono">
             <thead class="bg-slate-800/80 text-slate-400">
@@ -468,16 +484,54 @@
                 <th class="p-3 text-right">ดำเนินการ (Action)</th>
               </tr>
             </thead>
-            <tbody id="admin-full-members-rows" class="divide-y divide-slate-800">
-              <!-- Dynamically populated rows -->
-            </tbody>
+            <tbody id="admin-full-members-rows" class="divide-y divide-slate-800"></tbody>
           </table>
         </div>
       </div>
     </main>
   </div>
 
-  <!-- Modal: Edit Member Info -->
+  <!-- Modal: Edit Self Profile (สำหรับสมาชิกทั่วไปกดแก้ไขตัวเอง) -->
+  <div id="modal-self-profile" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i data-lucide="user-pen" class="w-5 h-5 text-emerald-400"></i> แก้ไขข้อมูลส่วนตัวของคุณ
+        </h3>
+        <button type="button" onclick="closeSelfProfileModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-400 font-medium mb-1">ชื่อผู้ใช้งาน (Username - ไม่สามารถแก้ไขได้)</label>
+          <input type="text" id="self-profile-username" disabled class="w-full bg-slate-800/50 border border-slate-700/60 rounded-xl px-3 py-2 text-sm text-slate-400 font-mono cursor-not-allowed" />
+        </div>
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">ชื่อ-นามสกุลจริง (Display Name)</label>
+          <input type="text" id="self-profile-fullname" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500" />
+        </div>
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">เบอร์โทรศัพท์</label>
+          <input type="tel" id="self-profile-phone" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500" />
+        </div>
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">อีเมล (Email)</label>
+          <input type="email" id="self-profile-email" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500" />
+        </div>
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">เปลี่ยนรหัสผ่านใหม่ (เว้นว่างไว้หากไม่ต้องการเปลี่ยน)</label>
+          <input type="password" id="self-profile-password" placeholder="ระบุรหัสผ่านใหม่" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500" />
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
+        <button type="button" onclick="closeSelfProfileModal()" class="px-4 py-2 bg-slate-800 rounded-xl text-xs font-bold text-slate-300 hover:text-white">ยกเลิก</button>
+        <button type="button" onclick="saveSelfProfileInfo()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold">บันทึกข้อมูลส่วนตัว</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Edit Member Info (สำหรับ Admin แก้ไขสมาชิก) -->
   <div id="modal-edit-member" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -580,6 +634,7 @@
     let realTimeTimer = null;
     let nextTickTimestamp = 0;
     let editingTargetUsername = null;
+    let isChartExpanded = false; // ตัวแปรจัดการขยาย/ย่อกราฟ
 
     const MACRO_ERAS = [
       {
@@ -876,9 +931,12 @@
       document.getElementById('app-screen').classList.remove('hidden');
 
       const isAdmin = currentUser.role === 'admin';
+      
+      // Role Isolation: ซ่อน Admin Bar และ Tab 4 กับ Tab 5 ทันทีถ้าเป็นสมาชิกทั่วไป
       document.getElementById('admin-bar').classList.toggle('hidden', !isAdmin);
       document.getElementById('tab-btn-admin').classList.toggle('hidden', !isAdmin);
       document.getElementById('tab-btn-admin-members').classList.toggle('hidden', !isAdmin);
+
       document.getElementById('role-badge').innerText = isAdmin ? "ผู้ดูแลระบบ (Admin)" : "สมาชิกทั่วไป";
       document.getElementById('user-display-name').innerText = currentUser.fullname || currentUser.username;
 
@@ -891,8 +949,10 @@
       updateUserBalances();
       renderHoldings();
       renderDashboard();
-      renderAdminEraInfo();
-      renderAdminMembersManagementTable();
+      if (isAdmin) {
+        renderAdminEraInfo();
+        renderAdminMembersManagementTable();
+      }
 
       if (window.lucide) {
         try { lucide.createIcons(); } catch(e){}
@@ -916,7 +976,9 @@
       selectAsset(activeSymbol);
       renderHoldings();
       renderDashboard();
-      renderAdminMembersManagementTable();
+      if (currentUser && currentUser.role === 'admin') {
+        renderAdminMembersManagementTable();
+      }
     }
 
     function formatMoney(valTHB) {
@@ -1017,6 +1079,34 @@
       renderWatchlist();
     }
 
+    /* =========================================================================
+       ฟังก์ชันสลับย่อ-ขยายกราฟ (Toggle Chart Size)
+       ========================================================================= */
+    function toggleChartSize() {
+      isChartExpanded = !isChartExpanded;
+      const wrapper = document.getElementById('candle-canvas-wrapper');
+      const label = document.getElementById('label-toggle-chart');
+      const icon = document.getElementById('icon-toggle-chart');
+
+      if (isChartExpanded) {
+        // ขยายใหญ่เต็มอิ่ม (Expanded Mode ~480px)
+        wrapper.className = "relative w-full h-[480px] transition-all duration-300";
+        label.innerText = "ย่อกราฟ";
+        icon.setAttribute('data-lucide', 'minimize-2');
+      } else {
+        // ย่อลง 50% กะทัดรัด (Compact Mode ~190px)
+        wrapper.className = "relative w-full h-[190px] transition-all duration-300";
+        label.innerText = "ขยายกราฟ";
+        icon.setAttribute('data-lucide', 'maximize-2');
+      }
+
+      if (window.lucide) lucide.createIcons();
+      // หน่วงเวลาเล็กน้อยเพื่อให้ DOM ปรับขนาดแล้ววาดกราฟซ้ำ
+      setTimeout(() => {
+        if (assets[activeSymbol]) drawCandlestickChart(assets[activeSymbol]);
+      }, 150);
+    }
+
     function drawCandlestickChart(asset) {
       const canvas = document.getElementById('candleCanvas');
       if (!canvas) return;
@@ -1044,28 +1134,28 @@
       minP -= pad;
       maxP += pad;
 
-      const getY = (val) => h - ((val - minP) / (maxP - minP)) * (h - 40) - 20;
+      const getY = (val) => h - ((val - minP) / (maxP - minP)) * (h - 32) - 16;
 
       ctx.strokeStyle = 'rgba(51, 65, 85, 0.3)';
       ctx.lineWidth = 1;
-      for (let i = 1; i <= 4; i++) {
-        const yLine = (h / 5) * i;
+      for (let i = 1; i <= 3; i++) {
+        const yLine = (h / 4) * i;
         ctx.beginPath();
         ctx.moveTo(0, yLine);
         ctx.lineTo(w, yLine);
         ctx.stroke();
 
-        const pVal = maxP - (i / 5) * (maxP - minP);
+        const pVal = maxP - (i / 4) * (maxP - minP);
         ctx.fillStyle = '#64748b';
-        ctx.font = '10px monospace';
-        ctx.fillText(formatMoney(pVal * (currentCurrency === 'USD' ? USD_RATE : 1)), 8, yLine - 4);
+        ctx.font = '9px monospace';
+        ctx.fillText(formatMoney(pVal * (currentCurrency === 'USD' ? USD_RATE : 1)), 6, yLine - 3);
       }
 
-      const candleWidth = Math.max(4, Math.floor((w - 40) / candles.length) - 4);
-      const stepX = (w - 20) / candles.length;
+      const candleWidth = Math.max(3, Math.floor((w - 30) / candles.length) - 3);
+      const stepX = (w - 15) / candles.length;
 
       candles.forEach((c, i) => {
-        const x = 15 + i * stepX;
+        const x = 12 + i * stepX;
         const openY = getY(c.o * mult);
         const closeY = getY(c.c * mult);
         const highY = getY(c.h * mult);
@@ -1076,7 +1166,7 @@
         ctx.strokeStyle = color;
         ctx.fillStyle = color;
 
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 1.2;
         ctx.beginPath();
         ctx.moveTo(x + candleWidth / 2, highY);
         ctx.lineTo(x + candleWidth / 2, lowY);
@@ -1177,7 +1267,9 @@
       updateUserBalances();
       renderHoldings();
       renderDashboard();
-      renderAdminMembersManagementTable();
+      if (currentUser.role === 'admin') {
+        renderAdminMembersManagementTable();
+      }
       calcOrderTotal();
 
       syncStatsToGoogleDrive(false);
@@ -1385,7 +1477,9 @@
         selectAsset(activeSymbol);
         renderHoldings();
         renderDashboard();
-        renderAdminMembersManagementTable();
+        if (currentUser && currentUser.role === 'admin') {
+          renderAdminMembersManagementTable();
+        }
         updateSimTimeDisplay();
       }
     }
@@ -1458,9 +1552,6 @@
       if (bearishList.children.length === 0) bearishList.innerHTML = '<span class="text-slate-500 text-xs">ไม่มีสินทรัพย์ที่รับแรงกดดันรุนแรง</span>';
     }
 
-    /* =========================================================================
-       ฟังก์ชันแท็บที่ 5: จัดการสมาชิก (เฉพาะ Admin)
-       ========================================================================= */
     function renderAdminMembersManagementTable() {
       const tbody = document.getElementById('admin-full-members-rows');
       if (!tbody) return;
@@ -1564,7 +1655,6 @@
       alert(`ลบบัญชีสมาชิก [${username}] สำเร็จ!`);
     }
 
-    // ฟังก์ชันลบสมาชิกและล้างประวัติการเล่นทั้งหมด (Master Reset)
     function adminMasterResetAllMembers() {
       const confirmText = prompt("⚠️ คำเตือนขั้นสูง: การกระทำนี้จะลบสมาชิกทั่วไปทั้งหมด และลบประวัติการเทรดย้อนหลังทั้งหมดทิ้งถาวร!\n\nหากต้องการดำเนินการ ให้พิมพ์คำว่า \"DELETE\" ลงในช่องด้านล่าง:");
       if (confirmText !== "DELETE") {
@@ -1572,7 +1662,6 @@
         return;
       }
 
-      // รีเซ็ตผู้ใช้งานให้เหลือเฉพาะ Admin คนเดียว
       users = {
         admin: {
           password: '00',
@@ -1589,7 +1678,6 @@
       };
       saveUsers(users);
 
-      // รีเซ็ตเกมและสถิติ
       simWeek = 1;
       localStorage.setItem('fsgs_sim_week', '1');
       localStorage.setItem('fsgs_sim_state', 'stopped');
@@ -1600,6 +1688,56 @@
       renderDashboard();
       renderAdminMembersManagementTable();
       alert("ลบสมาชิกและล้างประวัติการเล่นทั้งหมดในระบบเรียบร้อยแล้ว!");
+    }
+
+    function openSelfProfileModal() {
+      if (!currentUser) return;
+      users = loadUsers();
+      const user = users[currentUser.username] || currentUser;
+
+      document.getElementById('self-profile-username').value = user.username;
+      document.getElementById('self-profile-fullname').value = user.fullname || user.username;
+      document.getElementById('self-profile-phone').value = user.phone !== '-' ? user.phone : '';
+      document.getElementById('self-profile-email').value = user.email !== '-' ? user.email : '';
+      document.getElementById('self-profile-password').value = '';
+
+      document.getElementById('modal-self-profile').classList.remove('hidden');
+    }
+
+    function closeSelfProfileModal() {
+      document.getElementById('modal-self-profile').classList.add('hidden');
+    }
+
+    function saveSelfProfileInfo() {
+      if (!currentUser) return;
+      users = loadUsers();
+      const user = users[currentUser.username];
+      if (!user) return;
+
+      const newFullname = document.getElementById('self-profile-fullname').value.trim();
+      const newPhone = document.getElementById('self-profile-phone').value.trim() || '-';
+      const newEmail = document.getElementById('self-profile-email').value.trim() || '-';
+      const newPassword = document.getElementById('self-profile-password').value.trim();
+
+      user.fullname = newFullname || user.username;
+      user.phone = newPhone;
+      user.email = newEmail;
+      if (newPassword) {
+        user.password = newPassword;
+      }
+
+      users[currentUser.username] = user;
+      currentUser = user;
+      saveUsers(users);
+
+      document.getElementById('user-display-name').innerText = user.fullname || user.username;
+
+      closeSelfProfileModal();
+      renderDashboard();
+      if (currentUser.role === 'admin') {
+        renderAdminMembersManagementTable();
+      }
+      alert("บันทึกการแก้ไขข้อมูลส่วนตัวของคุณเรียบร้อยแล้ว!");
     }
 
     function openResetModal() { document.getElementById('modal-reset').classList.remove('hidden'); }
@@ -1800,7 +1938,13 @@
       ensureHistoryTabIsLast();
     }
 
+    /* Tab Switcher พร้อมระบบป้องกัน Route Guard */
     function switchTab(t) {
+      // Role Guard: หากสมาชิกทั่วไปพยายามเข้าถึง Tab 4 หรือ Tab 5 ให้บังคับกลับ Tab 1
+      if ((t === 'admin-view' || t === 'admin-members') && (!currentUser || currentUser.role !== 'admin')) {
+        t = 'trade';
+      }
+
       document.getElementById('view-trade').classList.toggle('hidden', t !== 'trade');
       document.getElementById('view-holdings').classList.toggle('hidden', t !== 'holdings');
       document.getElementById('view-dashboard').classList.toggle('hidden', t !== 'dashboard');
@@ -1812,6 +1956,10 @@
       document.getElementById('tab-btn-dash').className = t === 'dashboard' ? "py-3 border-b-2 border-emerald-500 text-emerald-400 whitespace-nowrap" : "py-3 border-b-2 border-transparent text-slate-400 hover:text-white whitespace-nowrap";
       document.getElementById('tab-btn-admin').className = t === 'admin-view' ? "py-3 border-b-2 border-indigo-500 text-indigo-400 whitespace-nowrap" : "py-3 border-b-2 border-transparent text-indigo-400 hover:text-white whitespace-nowrap";
       document.getElementById('tab-btn-admin-members').className = t === 'admin-members' ? "py-3 border-b-2 border-rose-500 text-rose-400 whitespace-nowrap" : "py-3 border-b-2 border-transparent text-slate-400 hover:text-white whitespace-nowrap";
+
+      if (t === 'trade' && assets[activeSymbol]) {
+        setTimeout(() => drawCandlestickChart(assets[activeSymbol]), 80);
+      }
     }
 
     function openDescModal() {
@@ -1888,6 +2036,12 @@
       if (savedUser && users[savedUser]) {
         currentUser = users[savedUser];
         startSession();
+      }
+    };
+
+    window.onresize = function() {
+      if (activeSymbol && assets[activeSymbol]) {
+        drawCandlestickChart(assets[activeSymbol]);
       }
     };
   </script>
